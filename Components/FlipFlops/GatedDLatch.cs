@@ -14,7 +14,7 @@ namespace DigitalElectronics.Components.FlipFlops
         }
 
         /// <summary>
-        /// Sets value for input 'Data'
+        /// Sets value for 'Data' input
         /// </summary>
         public void SetInputD(bool value)
         {
@@ -24,7 +24,7 @@ namespace DigitalElectronics.Components.FlipFlops
         }
 
         /// <summary>
-        /// Sets value for input 'Enable'
+        /// Sets value for 'Enable' input
         /// </summary>
         public void SetInputE(bool value)
         {

@@ -12,6 +12,9 @@ namespace DigitalElectronics.Components.LogicGates
     {
         private bool _inputA;
 
+        /// <summary>
+        /// Sets value for A input
+        /// </summary>
         public void SetInputA(bool value)
         {
             _inputA = value;

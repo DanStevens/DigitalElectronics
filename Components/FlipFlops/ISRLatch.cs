@@ -8,12 +8,12 @@
     public interface ISRLatch : IOutputsQAndNQ
     {
         /// <summary>
-        /// Sets value for input 'Reset'
+        /// Sets value for 'Reset' input
         /// </summary>
         void SetInputR(bool value);
         
         /// <summary>
-        /// Sets value for input 'Set'
+        /// Sets value for 'Set' input
         /// </summary>
         void SetInputS(bool value);
     }
