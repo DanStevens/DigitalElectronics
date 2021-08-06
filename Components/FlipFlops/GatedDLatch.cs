@@ -1,7 +1,9 @@
 ﻿using DigitalElectronics.Components.LogicGates;
+using System.Diagnostics;
 
 namespace DigitalElectronics.Components.FlipFlops
 {
+    [DebuggerDisplay("D Latch: Q = {OutputQ}; Q̅ = {OutputNQ}")]
     public class GatedDLatch : IOutputsQAndNQ
     {
         private GatedSRLatch _gatedSRLatch;

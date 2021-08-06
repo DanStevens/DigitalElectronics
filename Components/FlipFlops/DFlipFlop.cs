@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using System.Diagnostics;
 
 namespace DigitalElectronics.Components.FlipFlops
 {
@@ -10,6 +7,7 @@ namespace DigitalElectronics.Components.FlipFlops
     /// <summary>
     /// Represents a D flip-flop
     /// </summary>
+    [DebuggerDisplay("D Flip-flop: Q = {OutputQ}; Q̅ = {OutputNQ}")]
     public class DFlipFlop : IOutputsQAndNQ
     {
         private GatedDLatch _gatedDLatch;
