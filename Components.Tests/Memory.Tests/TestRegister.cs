@@ -62,10 +62,10 @@ namespace DigitalElectronics.Components.Memory.Tests
             ReleaseD(); AssertOutput(true);
             Clock();    AssertOutput(false);
 
-            PushD(); AssertOutput(false);
-            Clock(); AssertOutput(true);
+            PushD();    AssertOutput(false);
+            Clock();    AssertOutput(true);
             ReleaseD(); AssertOutput(true);
-            Clock(); AssertOutput(false);
+            Clock();    AssertOutput(false);
         }
 
 
@@ -95,27 +95,27 @@ namespace DigitalElectronics.Components.Memory.Tests
         {
             AssertOutput(true);
 
-            PushL(); AssertOutput(true);
-            Clock(); AssertOutput(false);
+            PushL();    AssertOutput(true);
+            Clock();    AssertOutput(false);
             ReleaseL(); AssertOutput(false);
 
-            PushL(); AssertOutput(false);
-            PushD(); AssertOutput(false);
-            Clock(); AssertOutput(true);
+            PushL();    AssertOutput(false);
+            PushD();    AssertOutput(false);
+            Clock();    AssertOutput(true);
             ReleaseL(); AssertOutput(true);
 
-            Clock(); AssertOutput(true);
+            Clock();    AssertOutput(true);
 
-            PushL(); AssertOutput(true);
-            Clock(); AssertOutput(true);
+            PushL();    AssertOutput(true);
+            Clock();    AssertOutput(true);
             ReleaseD(); AssertOutput(true);
-            Clock(); AssertOutput(false);
+            Clock();    AssertOutput(false);
             ReleaseL(); AssertOutput(false);
-            PushD(); AssertOutput(false);
-            Clock(); AssertOutput(false);
+            PushD();    AssertOutput(false);
+            Clock();    AssertOutput(false);
 
-            PushL(); AssertOutput(false);
-            Clock(); AssertOutput(true);
+            PushL();    AssertOutput(false);
+            Clock();    AssertOutput(true);
         }
 
 
