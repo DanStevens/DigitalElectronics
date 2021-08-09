@@ -11,6 +11,9 @@ namespace DigitalElectronics.Components.Memory.Tests
         public void SetUp()
         {
             _register = new Register();
+            AssertOutput(null);
+            _register.SetInputE(true);
+            AssertOutput(true);
         }
 
         [Test]
@@ -118,12 +121,28 @@ namespace DigitalElectronics.Components.Memory.Tests
             Clock();    AssertOutput(true);
         }
 
+        [Test]
+        public void OutputIsNullWhenInputEIsLow()
+        {
+            AssertOutput(true);
+            ReleaseE(); AssertOutput(null);
+            PushE();    AssertOutput(true);
+            ReleaseE(); AssertOutput(null);
 
+            PushL();    AssertOutput(null);
+            ReleaseD(); AssertOutput(null);
+            Clock();    AssertOutput(null);
+            PushE();    AssertOutput(false);
+        }
+
+
+        private void PushE() => _register.SetInputE(true);
+        private void ReleaseE() => _register.SetInputE(false);
         private void PushL() => _register.SetInputL(true);
         private void ReleaseL() => _register.SetInputL(false);
         private void PushD() => _register.SetInputD(true);
         private void ReleaseD() => _register.SetInputD(false);
         private void Clock() => _register.Clock();
-        private void AssertOutput(bool v) => _register.OutputQ.Should().Be(v);
+        private void AssertOutput(bool? v) => _register.OutputQ.Should().Be(v);
     }
 }

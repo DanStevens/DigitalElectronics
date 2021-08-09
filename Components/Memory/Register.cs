@@ -19,6 +19,7 @@ namespace DigitalElectronics.Components.Memory
         private Inverter _not;
         private AndGate _and1, _and2;
         private OrGate _or;
+        private TriStateBuffer _triStateBuffer;
 
         public Register()
         {
@@ -27,6 +28,21 @@ namespace DigitalElectronics.Components.Memory
             _and1 = new AndGate();
             _and2 = new AndGate();
             _or = new OrGate();
+            _triStateBuffer = new TriStateBuffer();
+            Sync();
+        }
+
+        /// <summary>
+        /// Sets for for 'Enabled' input
+        /// </summary>
+        /// <param name="value">Set to `true` to enable output and `false` to disable output</param>
+        /// <remarks>
+        /// The `Enabled` input determines whether the register outputs the currently latched value,
+        /// or `null`, which represents the Z (high impedance) state.
+        /// <seealso cref="NBitRegister.SetInputE"/>
+        public void SetInputE(bool value)
+        {
+            _triStateBuffer.SetInputB(value);
             Sync();
         }
 
@@ -48,10 +64,12 @@ namespace DigitalElectronics.Components.Memory
             _and2.SetInputB(value);
             Sync();
         }
+
         /// <summary>
-        /// Gets state of Q output
+        /// Gets state of C output, where `null` indicates Z (high impedance) state
         /// </summary>
-        public bool OutputQ => _dFlipFlop.OutputQ;
+        //public bool? OutputQ => _dFlipFlop.OutputQ;
+        public bool? OutputQ => _triStateBuffer.OutputC;
 
         /// <summary>
         /// Simulates the receipt of a clock pulse
@@ -59,6 +77,7 @@ namespace DigitalElectronics.Components.Memory
         public void Clock()
         {
             _dFlipFlop.Clock();
+            Sync();
         }
 
         private void Sync()
@@ -68,6 +87,7 @@ namespace DigitalElectronics.Components.Memory
             _and1.SetInputA(_dFlipFlop.OutputQ);
             _or.SetInputA(_and1.OutputQ);
             _dFlipFlop.SetInputD(_or.OutputQ);
+            _triStateBuffer.SetInputA(_dFlipFlop.OutputQ);
         }
 
     }

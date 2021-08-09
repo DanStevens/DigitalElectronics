@@ -12,6 +12,8 @@ namespace DigitalElectronics.Components.Memory.Tests
         public void SetUp()
         {
             _4bitRegister = new NBitRegister(4);
+            AssertOutputs(null, null, null, null);
+            _4bitRegister.SetInputE(true);
         }
 
         [Test]
@@ -83,6 +85,26 @@ namespace DigitalElectronics.Components.Memory.Tests
         }
 
         [Test]
+        public void AllOutputsNull_WhenInputEIsLow()
+        {
+            ReleaseE();
+            AssertOutputs(null, null, null, null);
+            PushE();
+            AssertOutputs(true, true, true, true);
+            ReleaseE();
+            AssertOutputs(null, null, null, null);
+
+            PushL();
+            AssertOutputs(null, null, null, null);
+            SetInputsD(false, true, true, false);
+            AssertOutputs(null, null, null, null);
+            Clock();
+            AssertOutputs(null, null, null, null);
+            PushE();
+            AssertOutputs(false, true, true, false);
+        }
+
+        [Test]
         public void TestFrom0CountTo15()
         {
             for (byte i = 0; i <= 15; i++)
@@ -93,7 +115,7 @@ namespace DigitalElectronics.Components.Memory.Tests
             }
         }
 
-        private void AssertOutputs(params bool[] expectedOutputs)
+        private void AssertOutputs(params bool?[] expectedOutputs)
         {
             for (int x = 0; x < _4bitRegister.BitCount; x++)
             {
@@ -120,5 +142,9 @@ namespace DigitalElectronics.Components.Memory.Tests
         void ReleaseL() => SetInputL(false);
 
         void Clock() => _4bitRegister.Clock();
+
+        private void PushE() => _4bitRegister.SetInputE(true);
+
+        private void ReleaseE() => _4bitRegister.SetInputE(false);
     }
 }

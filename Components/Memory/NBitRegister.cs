@@ -24,6 +24,21 @@
         public int BitCount => _registers.Length;
 
         /// <summary>
+        /// Sets for for 'Enabled' input
+        /// </summary>
+        /// <param name="value">Set to `true` to enable output and `false` to disable output</param>
+        /// <remarks>
+        /// The `Enabled` input determines whether the register outputs the currently latched value,
+        /// or `null`, which represents the Z (high impedance) state.
+        /// 
+        /// When using a register in a bus configuration, keep 'Enabled' input low expect when
+        /// performing a bus transfer.
+        public void SetInputE(bool value)
+        {
+            for (int x = 0; x < BitCount; x++) _registers[x].SetInputE(value);
+        }
+
+        /// <summary>
         /// Sets value for the input 'Data' for the bit at the given position
         /// </summary>
         /// <param name="x">The bit position (zero-based index)</param>
@@ -46,7 +61,7 @@
         /// </summary>
         /// <param name="x">The bit position (zero-based index)</param>
         /// <returns></returns>
-        public bool GetOutputQx(int x)
+        public bool? GetOutputQx(int x)
         {
             return _registers[x].OutputQ;
         }
