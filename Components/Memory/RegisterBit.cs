@@ -5,15 +5,16 @@ using System.Diagnostics;
 namespace DigitalElectronics.Components.Memory
 {
     /// <summary>
-    /// Represents a single-bit register
+    /// Represents a single-bit of a multi-bit register
     /// </summary>
     /// <remarks>
     /// A register 'latches' in whatever value is on 'Data' input at the point `Clock()` is
     /// invoked, but only if 'Load' input is high. If 'Load' is low, the currently latched
     /// value remains latched.
     /// </remarks>
+    /// <seealso cref="NBitRegister"/>
     [DebuggerDisplay("Register: Q = {OutputQ}")]
-    public class Register
+    public class RegisterBit
     {
         private DFlipFlop _dFlipFlop;
         private Inverter _not;
@@ -21,7 +22,7 @@ namespace DigitalElectronics.Components.Memory
         private OrGate _or;
         private TriStateBuffer _triStateBuffer;
 
-        public Register()
+        public RegisterBit()
         {
             _dFlipFlop = new DFlipFlop();
             _not = new Inverter();

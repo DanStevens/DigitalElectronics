@@ -5,17 +5,17 @@ using NUnit.Framework;
 
 namespace DigitalElectronics.Components.Memory.Tests
 {
-    class TestNBitRegister
+    public class TestRegister
     {
         // Number of bits or 'N'
         private const int NumberOfBits = 4;
 
-        NBitRegister _4bitRegister;
+        Register _4bitRegister;
 
         [SetUp]
         public void SetUp()
         {
-            _4bitRegister = new NBitRegister(NumberOfBits);
+            _4bitRegister = new Register(NumberOfBits);
             AssertOutputs(null, null, null, null);
             _4bitRegister.SetInputE(true);
         }
@@ -29,7 +29,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         [Test]
         public void Constructor_GivenZeroNumberOfBits_ShouldThrow()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new NBitRegister(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new Register(0));
         }
 
         [Test]

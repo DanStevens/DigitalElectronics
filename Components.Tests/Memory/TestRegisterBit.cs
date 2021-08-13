@@ -3,14 +3,14 @@ using NUnit.Framework;
 
 namespace DigitalElectronics.Components.Memory.Tests
 {
-    public class TestRegister
+    public class TestRegisterBit
     {
-        Register _register;
+        RegisterBit _register;
 
         [SetUp]
         public void SetUp()
         {
-            _register = new Register();
+            _register = new RegisterBit();
             AssertOutput(null);
             _register.SetInputE(true);
             AssertOutput(true);

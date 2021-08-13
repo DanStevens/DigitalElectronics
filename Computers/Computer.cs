@@ -5,10 +5,10 @@ namespace DigitalElectronics.Computers
 {
     public class Computer
     {
-        private NBitRegister _registerA;
-        private NBitRegister _registerB;
+        private Register _registerA;
+        private Register _registerB;
 
-        public Computer(NBitRegister registerA, NBitRegister registerB)
+        public Computer(Register registerA, Register registerB)
         {
             _registerA = registerA ?? throw new ArgumentNullException(nameof(registerA));
             _registerB = registerB ?? throw new ArgumentNullException(nameof(registerB));

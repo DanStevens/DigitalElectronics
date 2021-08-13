@@ -9,15 +9,15 @@ namespace DigitalElectronics.Computers.Tests
     {
         private const int NumberOfBits = 8;
 
-        private NBitRegister _registerA;
-        private NBitRegister _registerB;
+        private Register _registerA;
+        private Register _registerB;
         private Computer _computer;
 
         [SetUp]
         public void SetUp()
         {
-            _registerA = new NBitRegister(NumberOfBits);
-            _registerB = new NBitRegister(NumberOfBits);
+            _registerA = new Register(NumberOfBits);
+            _registerB = new Register(NumberOfBits);
             _computer = new Computer(_registerA, _registerB);
         }
 

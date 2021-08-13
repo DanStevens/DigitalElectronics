@@ -7,22 +7,22 @@ namespace DigitalElectronics.Components.Memory
     /// <summary>
     /// Represents a multi-bit register of N bits, where each bit has its own input
     /// </summary>
-    public class NBitRegister
+    public class Register
     {
 
-        private Register[] _registers;
+        private RegisterBit[] _registers;
 
         /// <summary>
         /// Constructs a multi-bit register with the given number of bits
         /// </summary>
         /// <param name="numberOfBits"></param>
-        public NBitRegister(int numberOfBits)
+        public Register(int numberOfBits)
         {
             if (numberOfBits <= 0)
                 throw new ArgumentOutOfRangeException(nameof(numberOfBits), "Argument must be greater than 0");
 
-            _registers = new Register[numberOfBits];
-            for (int x = 0; x < numberOfBits; x++) _registers[x] = new Register();
+            _registers = new RegisterBit[numberOfBits];
+            for (int x = 0; x < numberOfBits; x++) _registers[x] = new RegisterBit();
         }
 
         /// <summary>
