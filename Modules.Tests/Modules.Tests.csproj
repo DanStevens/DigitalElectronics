@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>DigitalElectronics.Modules.Tests</RootNamespace>
+    <RootNamespace>DigitalElectronics.Modules</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

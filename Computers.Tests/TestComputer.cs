@@ -31,17 +31,17 @@ namespace DigitalElectronics.Computers.Tests
 
             // Load data into register A
             _registerA.SetInputL(true);
-            _registerA.SetAllInputsD(data);
+            _registerA.SetInputD(data);
              _computer.Clock();
             _registerA.ProbeState().Should().BeEquivalentTo(data);
 
             // Enable register A for reading
             _registerA.SetInputE(true);
-            _registerA.AllOutputs.Should().BeEquivalentTo(data);
+            _registerA.Output.Should().BeEquivalentTo(data);
 
             // Load data into register B from register A
             _registerB.SetInputL(true);
-            _registerB.SetAllInputsD(_registerA.AllOutputs);
+            _registerB.SetInputD(_registerA.Output);
              _computer.Clock();
             _registerB.ProbeState().Should().BeEquivalentTo(data);
         }

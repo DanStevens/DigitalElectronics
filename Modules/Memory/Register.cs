@@ -26,26 +26,26 @@ namespace DigitalElectronics.Components.Memory
         }
 
         /// <summary>
-        /// Sets all inputs according to the given array of bools
+        /// Sets the 'Data' input according to the given array of bools
         /// </summary>
-        /// <param name="inputs">The array of boolean values to set the register too, starting with the
+        /// <param name="bits">The array of boolean values to set the register to, starting with the
         /// low-order bit. If the array contains less items than the number of bits in the register, the
         /// higher-order bits remain unchanged. If the array contains more items than the number of
         /// bits in the register, the excess items are unused.</param>
-        public void SetAllInputsD(params bool[] inputs)
+        public void SetInputD(params bool[] bits)
         {
-            var upper = Math.Min(inputs.Length, _registers.Length);
-            for (int x = 0; x < upper; x++) SetInputDx(x, inputs[x]);
+            var upper = Math.Min(bits.Length, _registers.Length);
+            for (int x = 0; x < upper; x++) SetInputDx(x, bits[x]);
         }
 
         /// <summary>
-        /// Sets all inputs according to the given <see cref="BitArray"/>
+        /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
         /// </summary>
         /// <param name="inputs">A <see cref="BitArray"/> containing values to set the register too,
         /// starting with the low-order bit. If the BitArray contains less elements than the number
         /// of bits in the register, the higher-order bits remain unchanged. If the BitArray contains
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
-        public void SetAllInputsD(BitArray data)
+        public void SetInputD(BitArray data)
         {
             var upper = Math.Min(data.Length, _registers.Length);
             for (int x = 0; x < upper; x++) SetInputDx(x, data[x]);
@@ -75,7 +75,7 @@ namespace DigitalElectronics.Components.Memory
         /// Sets value for the input 'Data' for the bit at the given position
         /// </summary>
         /// <param name="x">The bit position (zero-based index)</param>
-        public void SetInputDx(int x, bool value)
+        private void SetInputDx(int x, bool value)
         {
             _registers[x].SetInputD(value);
         }
@@ -88,16 +88,6 @@ namespace DigitalElectronics.Components.Memory
         {
             for (int x = 0; x < BitCount; x++) _registers[x].SetInputL(value);
         }
-        
-        /// <summary>
-        /// Gets state of Q output for the given bit
-        /// </summary>
-        /// <param name="x">The bit position (zero-based index)</param>
-        /// <returns></returns>
-        public bool? GetOutputQx(int x)
-        {
-            return _registers[x].OutputQ;
-        }
 
         /// <summary>
         /// Simulates the receipt of a clock pulse
@@ -107,7 +97,10 @@ namespace DigitalElectronics.Components.Memory
             for (int x = 0; x < BitCount; x++) _registers[x].Clock();
         }
 
-        public BitArray AllOutputs
+        /// <summary>
+        /// The output of the register
+        /// </summary>
+        public BitArray Output
         {
             get
             {
