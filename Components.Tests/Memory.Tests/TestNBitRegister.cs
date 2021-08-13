@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -6,12 +7,15 @@ namespace DigitalElectronics.Components.Memory.Tests
 {
     class TestNBitRegister
     {
+        // Number of bits or 'N'
+        private const int NumberOfBits = 4;
+
         NBitRegister _4bitRegister;
 
         [SetUp]
         public void SetUp()
         {
-            _4bitRegister = new NBitRegister(4);
+            _4bitRegister = new NBitRegister(NumberOfBits);
             AssertOutputs(null, null, null, null);
             _4bitRegister.SetInputE(true);
         }
@@ -19,7 +23,87 @@ namespace DigitalElectronics.Components.Memory.Tests
         [Test]
         public void BitCount_ShouldBe4()
         {
-            _4bitRegister.BitCount.Should().Be(4);
+            _4bitRegister.BitCount.Should().Be(NumberOfBits);
+        }
+
+        [Test]
+        public void Constructor_GivenZeroNumberOfBits_ShouldThrow()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new NBitRegister(0));
+        }
+
+        [Test]
+        public void SetAllInputsD_UsingArrayOfBoolsOfSizeN()
+        {
+            bool[] inputs = new bool[] { false, false, false, false };
+            PushL();
+            _4bitRegister.SetAllInputsD(inputs);
+            Clock();
+            AssertOutputs(false, false, false, false);
+        }
+
+        [Test]
+        public void SetAllInputsD_UsingArrayOfBoolsOfSizeNMinus1()
+        {
+            // Initialize all inputs to false
+            bool[] inputs = new bool[] { false, false, false, false };
+            PushL();
+            _4bitRegister.SetAllInputsD(inputs);
+            Clock();
+            AssertOutputs(false, false, false, false);
+
+            bool[] inputs2 = new bool[] { true, false, true };
+            PushL();
+            _4bitRegister.SetAllInputsD(inputs2);
+            Clock();
+            AssertOutputs(true, false, true, false);
+        }
+
+        [Test]
+        public void SetAllInputsD_UsingArrayOfBoolsOfSizeNPlus1()
+        {
+            bool[] inputs = new bool[] { true, false, true, false, true };
+            PushL();
+            _4bitRegister.SetAllInputsD(inputs);
+            Clock();
+            AssertOutputs(true, false, true, false);
+        }
+
+        [Test]
+        public void SetAllInputsD_UsingBitArrayOfSizeN()
+        {
+            BitArray data = new BitArray(new bool[] { true, false, true, false });
+            PushL();
+            _4bitRegister.SetAllInputsD(data);
+            Clock();
+            AssertOutputs(true, false, true, false);
+        }
+
+        [Test]
+        public void SetAllInputsD_UsingBitArrayOfSizeNMinus1()
+        {
+            // Initialize all inputs to false
+            bool[] inputs = new bool[] { false, false, false, false };
+            PushL();
+            _4bitRegister.SetAllInputsD(inputs);
+           Clock();
+            AssertOutputs(false, false, false, false);
+
+            BitArray data = new BitArray(new bool[] { true, false, true });
+            PushL();
+            _4bitRegister.SetAllInputsD(data);
+           Clock();
+            AssertOutputs(true, false, true, false);
+        }
+
+        [Test]
+        public void SetAllInputsD_UsingBitArrayOfSizeNPlus1()
+        {
+            BitArray data = new BitArray(new bool[] { true, false, true, false, true });
+            PushL();
+            _4bitRegister.SetAllInputsD(data);
+            Clock();
+            AssertOutputs(true, false, true, false);
         }
 
         [Test]
@@ -53,7 +137,6 @@ namespace DigitalElectronics.Components.Memory.Tests
             Clock();
             AssertOutputs(false, false, false, true);
         }
-
 
         [Test]
         public void OutputOnlyChanges_WhenClocking_IfInputLIsHigh()
@@ -105,6 +188,42 @@ namespace DigitalElectronics.Components.Memory.Tests
         }
 
         [Test]
+        public void AllOuputs_ShouldReturnBitArray_WhenInputEIsHigh()
+        {
+            BitArray data = new BitArray(new bool[] { true, false, true, false });
+            PushE();
+            PushL();
+            _4bitRegister.SetAllInputsD(data);
+            Clock();
+            _4bitRegister.AllOutputs.Should().BeEquivalentTo(data);
+        }
+
+        [Test]
+        public void AllOuputs_ShouldReturnNull_WhenInputEIsLow()
+        {
+            BitArray data = new BitArray(new bool[] { true, false, true, false });
+            PushE();
+            PushL();
+            _4bitRegister.SetAllInputsD(data);
+            Clock();
+            ReleaseE();
+            _4bitRegister.AllOutputs.Should().BeNull();
+        }
+
+        [Test]
+        public void ProbeState_ReturnsInternalState()
+        {
+            BitArray data = new BitArray(new bool[] { true, false, true, false });
+            PushE();
+            PushL();
+            _4bitRegister.SetAllInputsD(data);
+            Clock();
+            ReleaseE();
+            _4bitRegister.AllOutputs.Should().BeNull();
+            _4bitRegister.ProbeState().Should().BeEquivalentTo(data);
+        }
+
+        [Test]
         public void TestFrom0CountTo15()
         {
             for (byte i = 0; i <= 15; i++)
@@ -119,7 +238,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         {
             for (int x = 0; x < _4bitRegister.BitCount; x++)
             {
-                _4bitRegister.GetOutputQx(x).Should().Be(expectedOutputs[x]);
+                _4bitRegister.GetOutputQx(x).Should().Be(expectedOutputs[x], $"Bit #{x}");
             }
         }
 

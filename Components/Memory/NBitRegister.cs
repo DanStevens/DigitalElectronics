@@ -1,4 +1,8 @@
-﻿namespace DigitalElectronics.Components.Memory
+﻿using System;
+using System.Collections;
+using System.Linq;
+
+namespace DigitalElectronics.Components.Memory
 {
     /// <summary>
     /// Represents a multi-bit register of N bits, where each bit has its own input
@@ -14,8 +18,37 @@
         /// <param name="numberOfBits"></param>
         public NBitRegister(int numberOfBits)
         {
+            if (numberOfBits <= 0)
+                throw new ArgumentOutOfRangeException(nameof(numberOfBits), "Argument must be greater than 0");
+
             _registers = new Register[numberOfBits];
             for (int x = 0; x < numberOfBits; x++) _registers[x] = new Register();
+        }
+
+        /// <summary>
+        /// Sets all inputs according to the given array of bools
+        /// </summary>
+        /// <param name="inputs">The array of boolean values to set the register too, starting with the
+        /// low-order bit. If the array contains less items than the number of bits in the register, the
+        /// higher-order bits remain unchanged. If the array contains more items than the number of
+        /// bits in the register, the excess items are unused.</param>
+        public void SetAllInputsD(params bool[] inputs)
+        {
+            var upper = Math.Min(inputs.Length, _registers.Length);
+            for (int x = 0; x < upper; x++) SetInputDx(x, inputs[x]);
+        }
+
+        /// <summary>
+        /// Sets all inputs according to the given <see cref="BitArray"/>
+        /// </summary>
+        /// <param name="inputs">A <see cref="BitArray"/> containing values to set the register too,
+        /// starting with the low-order bit. If the BitArray contains less elements than the number
+        /// of bits in the register, the higher-order bits remain unchanged. If the BitArray contains
+        /// more elements than the number of bits in the register, the excess elements are unused.</param>
+        public void SetAllInputsD(BitArray data)
+        {
+            var upper = Math.Min(data.Length, _registers.Length);
+            for (int x = 0; x < upper; x++) SetInputDx(x, data[x]);
         }
 
         /// <summary>
@@ -72,6 +105,21 @@
         public void Clock()
         {
             for (int x = 0; x < BitCount; x++) _registers[x].Clock();
+        }
+
+        public BitArray AllOutputs
+        {
+            get
+            {
+                return !_registers[0].OutputQ.HasValue ?
+                    null :
+                    new BitArray(_registers.Select(_ => _.OutputQ.Value).ToArray());
+            }
+        }
+
+        public BitArray ProbeState()
+        {
+            return new BitArray(_registers.Select(_ => _.ProbeState()).ToArray());
         }
     }
 }

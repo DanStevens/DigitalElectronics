@@ -16,5 +16,17 @@ namespace DigitalElectronics.Components.LogicGates.Tests
             triStateBuffer.SetInputB(inputB);
             triStateBuffer.OutputC.Should().Be(expectedOutputC);
         }
+
+        [Test]
+        public void ProbeInputA_ReturnsCurrentStateOfInputA()
+        {
+            TriStateBuffer triStateBuffer = new TriStateBuffer();
+            triStateBuffer.OutputC.Should().Be(null);
+            triStateBuffer.ProbeInputA().Should().Be(false);
+            triStateBuffer.SetInputA(true);
+            triStateBuffer.SetInputB(false);
+            triStateBuffer.OutputC.Should().Be(null);
+            triStateBuffer.ProbeInputA().Should().Be(true);
+        }
     }
 }

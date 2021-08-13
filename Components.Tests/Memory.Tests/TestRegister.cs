@@ -135,6 +135,18 @@ namespace DigitalElectronics.Components.Memory.Tests
             PushE();    AssertOutput(false);
         }
 
+        [Test]
+        public void ProbeState_ReturnsInternalState()
+        {
+            ReleaseE();
+            AssertOutput(null);
+            _register.ProbeState().Should().Be(true);
+
+            PushL();    AssertOutput(null);
+            ReleaseD(); AssertOutput(null);
+            Clock();    AssertOutput(null);
+            _register.ProbeState().Should().Be(false);
+        }
 
         private void PushE() => _register.SetInputE(true);
         private void ReleaseE() => _register.SetInputE(false);

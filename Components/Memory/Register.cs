@@ -80,6 +80,11 @@ namespace DigitalElectronics.Components.Memory
             Sync();
         }
 
+        /// <summary>
+        /// Returns the internal state of the register
+        /// </summary>
+        public bool ProbeState() => _triStateBuffer.ProbeInputA();
+
         private void Sync()
         {
             _and1.SetInputB(_not.OutputQ);

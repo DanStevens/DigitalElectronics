@@ -32,5 +32,10 @@ namespace DigitalElectronics.Components.LogicGates
         /// Gets state of C output, where `null` indicates Z (high impedance) state
         /// </summary>
         public bool? OutputC => _inputB ? _inputA : null;
+
+        /// <summary>
+        /// Returns the current state of A input
+        /// </summary>
+        public bool ProbeInputA() => _inputA;
     }
 }
