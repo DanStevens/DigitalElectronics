@@ -20,8 +20,40 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         }
 
         [Test]
+        public void Constructor_GivenZeroNumberOfBits_ShouldThrow()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new ArithmeticLogicUnit(0));
+        }
+
+        [Test]
+        public void BitCount_ShouldBeN()
+        {
+            _4bitAlu.BitCount.Should().Be(N);
+        }
+
+        [Test]
+        public void OutputIsNull_WhenInputEOIsLow()
+        {
+            _4bitAlu.SetInputEO(false);
+            _4bitAlu.OutputE.Should().BeNull();
+            _4bitAlu.SetInputEO(true);
+            _4bitAlu.OutputE.Should().BeEquivalentTo(new BitArray(N));
+        }
+
+        [Test]
+        public void ProbeState_ReturnsInternalState()
+        {
+            _4bitAlu.ProbeState().Should().BeEquivalentTo(new BitArray(N));
+            _4bitAlu.SetInputA(CreateBitArrayFromInt(N, 3));
+            _4bitAlu.SetInputB(CreateBitArrayFromInt(N, 5));
+            _4bitAlu.ProbeState().Should().BeEquivalentTo(CreateBitArrayFromInt(N, 8));
+        }
+
+        [Test]
         public void TestAddition()
         {
+            _4bitAlu.SetInputEO(true);
+
             for (int a = 0; a < 8; a++)
                 for (int b = 0; b < 8; b++)
                 {
