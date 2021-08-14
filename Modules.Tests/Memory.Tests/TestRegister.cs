@@ -168,7 +168,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         }
 
         [Test]
-        public void AllOutputsNull_WhenInputEIsLow()
+        public void OutputsNull_WhenInputEIsLow()
         {
             ReleaseE();
             AssertOutputIsNull();
@@ -188,7 +188,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         }
 
         [Test]
-        public void AllOuputs_ShouldReturnBitArray_WhenInputEIsHigh()
+        public void Ouput_ShouldReturnBitArray_WhenInputEIsHigh()
         {
             BitArray data = new BitArray(new bool[] { true, false, true, false });
             PushE();
@@ -199,7 +199,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         }
 
         [Test]
-        public void AllOuputs_ShouldReturnNull_WhenInputEIsLow()
+        public void OuputsShouldReturnNull_WhenInputEIsLow()
         {
             BitArray data = new BitArray(new bool[] { true, false, true, false });
             PushE();

@@ -114,6 +114,11 @@ namespace DigitalElectronics.Components.Memory
             }
         }
 
+        /// <summary>
+        /// Returns the internal state of the register
+        /// </summary>
+        /// <remarks>Consumers can use this to get the register's output without have to set
+        /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState()
         {
             return new BitArray(_registers.Select(_ => _.ProbeState()).ToArray());

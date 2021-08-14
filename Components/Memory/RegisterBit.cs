@@ -82,7 +82,7 @@ namespace DigitalElectronics.Components.Memory
         }
 
         /// <summary>
-        /// Returns the internal state of the register
+        /// Returns the internal state of the register bit
         /// </summary>
         public bool ProbeState() => _triStateBuffer.ProbeInputA();
 
