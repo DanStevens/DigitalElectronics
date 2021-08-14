@@ -20,7 +20,7 @@ namespace DigitalElectronics.Components.ALUs.Tests
             halfAdder.SetInputA(inputA);
             halfAdder.SetInputB(inputB);
             halfAdder.OutputC.Should().Be(expectedOutputC);
-            halfAdder.OutputS.Should().Be(expectedOutputS);
+            halfAdder.OutputE.Should().Be(expectedOutputS);
         }
     }
 }

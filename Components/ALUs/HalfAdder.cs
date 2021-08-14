@@ -1,4 +1,5 @@
-﻿using DigitalElectronics.Components.LogicGates;
+﻿using System.Diagnostics;
+using DigitalElectronics.Components.LogicGates;
 
 namespace DigitalElectronics.Components.ALUs
 {
@@ -6,6 +7,7 @@ namespace DigitalElectronics.Components.ALUs
     /// <summary>
     /// Represents a half adder for summing a single pair of bits
     /// </summary>
+    [DebuggerDisplay("A = {_xor._inputA}; B = {_xor._inputB}; ∑ = {OutputE}; C => {OutputC}")]
     public class HalfAdder
     {
         private readonly XorGate _xor;
@@ -41,9 +43,9 @@ namespace DigitalElectronics.Components.ALUs
         public bool OutputC => _and.OutputQ;
 
         /// <summary>
-        /// Gets state of 'Sum' output
+        /// Gets state of 'Sum' (∑) output
         /// </summary>
-        public bool OutputS => _xor.OutputQ;
+        public bool OutputE => _xor.OutputQ;
 
     }
 }

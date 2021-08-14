@@ -20,11 +20,11 @@ namespace DigitalElectronics.Components.ALUs.Tests
         public void TestLogic(bool inputA, bool inputB, bool inputC, bool expectedOutputC, bool expectedOutputS)
         {
             FullAdder fullAdder = new FullAdder();
-            fullAdder.SetInputA(inputA);
-            fullAdder.SetInputB(inputB);
-            fullAdder.SetInputC(inputC);
+            if (inputA) fullAdder.SetInputA(inputA);
+            if (inputB) fullAdder.SetInputB(inputB);
+            if (inputC) fullAdder.SetInputC(inputC);
             fullAdder.OutputC.Should().Be(expectedOutputC, nameof(fullAdder.OutputC));
-            fullAdder.OutputS.Should().Be(expectedOutputS, nameof(fullAdder.OutputS));
+            fullAdder.OutputE.Should().Be(expectedOutputS, nameof(fullAdder.OutputE));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DigitalElectronics.Components.LogicGates;
+﻿using System.Diagnostics;
+using DigitalElectronics.Components.LogicGates;
 
 namespace DigitalElectronics.Components.ALUs
 {
@@ -6,6 +7,7 @@ namespace DigitalElectronics.Components.ALUs
     /// <summary>
     /// Represents a full adder for summing a single pair of bits
     /// </summary>
+    [DebuggerDisplay("A = {_halfAdder1._xor._inputA}; B = {_halfAdder1._xor._inputB}; ∑ = {OutputE}; C => {OutputC}")]
     public class FullAdder
     {
         private readonly HalfAdder _halfAdder1, _halfAdder2;
@@ -24,6 +26,7 @@ namespace DigitalElectronics.Components.ALUs
         public void SetInputA(bool value)
         {
             _halfAdder1.SetInputA(value);
+            Sync();
         }
 
         /// <summary>
@@ -32,6 +35,8 @@ namespace DigitalElectronics.Components.ALUs
         public void SetInputB(bool value)
         {
             _halfAdder1.SetInputB(value);
+            Sync();
+
         }
 
         /// <summary>
@@ -40,7 +45,12 @@ namespace DigitalElectronics.Components.ALUs
         public void SetInputC(bool value)
         {
             _halfAdder2.SetInputB(value);
-            _halfAdder2.SetInputA(_halfAdder1.OutputS);
+            Sync();
+        }
+
+        private void Sync()
+        {
+            _halfAdder2.SetInputA(_halfAdder1.OutputE);
             _or.SetInputA(_halfAdder1.OutputC);
             _or.SetInputB(_halfAdder2.OutputC);
         }
@@ -51,9 +61,9 @@ namespace DigitalElectronics.Components.ALUs
         public bool OutputC => _or.OutputQ;
 
         /// <summary>
-        /// Gets state of 'Sum' output
+        /// Gets state of 'Sum' (∑) output
         /// </summary>
-        public bool OutputS => _halfAdder2.OutputS;
+        public bool OutputE => _halfAdder2.OutputE;
 
     }
 }
