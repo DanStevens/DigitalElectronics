@@ -34,6 +34,8 @@ namespace DigitalElectronics.Components.Memory
         /// bits in the register, the excess items are unused.</param>
         public void SetInputD(params bool[] bits)
         {
+            _ = bits ?? throw new ArgumentNullException(nameof(bits));
+            
             var upper = Math.Min(bits.Length, _registers.Length);
             for (int x = 0; x < upper; x++) SetInputDx(x, bits[x]);
         }
@@ -47,6 +49,8 @@ namespace DigitalElectronics.Components.Memory
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
         public void SetInputD(BitArray data)
         {
+            _ = data ?? throw new ArgumentNullException(nameof(data));
+            
             var upper = Math.Min(data.Length, _registers.Length);
             for (int x = 0; x < upper; x++) SetInputDx(x, data[x]);
         }
