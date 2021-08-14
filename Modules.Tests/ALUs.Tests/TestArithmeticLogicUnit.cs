@@ -54,14 +54,16 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         {
             _4bitAlu.SetInputEO(true);
 
-            for (int a = 0; a < 8; a++)
-                for (int b = 0; b < 8; b++)
+            for (int a = -8; a < 8; a++)
+                for (int b = -8; b < 8; b++)
                 {
                     _4bitAlu.SetInputA(CreateBitArrayFromInt(N, a));
                     _4bitAlu.SetInputB(CreateBitArrayFromInt(N, b));
                     _4bitAlu.OutputE.Should().BeEquivalentTo(CreateBitArrayFromInt(N, a + b), $"a = {a}; b = {b}");
                 }
         }
+        
+
 
         /// <summary>
         /// Creates a <see cref="BitArray"/> of the given length with the bits sets to the little-endian binary
