@@ -9,8 +9,4 @@
     <ProjectReference Include="..\Components\Components.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ALUs\" />
-  </ItemGroup>
-
 </Project>
