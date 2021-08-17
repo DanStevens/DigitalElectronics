@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using DigitalElectronics.Components.ALUs;
 using DigitalElectronics.Components.LogicGates;
 
 namespace DigitalElectronics.Modules.ALUs
 {
+    
+    [DebuggerDisplay("ALU: {this.ProbeState()}")]
     public class ArithmeticLogicUnit
     {
         private FullAdder[] _adders;

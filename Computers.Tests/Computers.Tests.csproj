@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Components\Components.csproj" />
     <ProjectReference Include="..\Computers\Computers.csproj" />
+    <ProjectReference Include="..\Utilities\Utilities.csproj" />
   </ItemGroup>
 
 </Project>

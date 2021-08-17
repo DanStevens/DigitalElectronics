@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DigitalElectronics.Components.Memory
@@ -7,6 +8,7 @@ namespace DigitalElectronics.Components.Memory
     /// <summary>
     /// Represents a multi-bit register of N bits, where each bit has its own input
     /// </summary>
+    [DebuggerDisplay("Register: {this.ProbeState()}")]
     public class Register
     {
 
