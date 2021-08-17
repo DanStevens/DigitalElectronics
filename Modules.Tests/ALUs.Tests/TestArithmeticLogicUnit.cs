@@ -14,11 +14,13 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         // Number of bits or 'N'
         private const int N = 4;
 
+        private ByteConverter _byteConverter;
         private ArithmeticLogicUnit _4bitAlu;
 
         [SetUp]
         public void SetUp()
         {
+            _byteConverter = new ByteConverter(Endianness.Little);
             _4bitAlu = new ArithmeticLogicUnit(N);
         }
 
@@ -99,9 +101,9 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         /// resulting BitArray will be the equivalent to the full binary representation truncated
         /// to <paramref name="length"/> (removing high-order bits).
         /// </remarks>
-        private static BitArray CreateBitArrayFromInt(int length, int value)
+        private BitArray CreateBitArrayFromInt(int length, int value)
         {
-            var fullBitArray = new BitArray(LittleEndianBitConverter.GetBytes(value));
+            var fullBitArray = new BitArray(_byteConverter.GetBytes(value));
             var result = new BitArray(length);
             for (int x = 0; x < length; x++) result.Set(x, fullBitArray[x]);
             return result;
