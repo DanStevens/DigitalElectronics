@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using DigitalElectronics.Utilities;
 using FluentAssertions;
 using NUnit.Framework;
+using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 [assembly: DebuggerDisplay("BitArray={DigitalElectronics.Utilities.Extensions.ToString(this)}", Target = typeof(BitArray))]
 
@@ -14,13 +14,13 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         // Number of bits or 'N'
         private const int N = 4;
 
-        private ByteConverter _byteConverter;
+        private BitConverter _bitConverter;
         private ArithmeticLogicUnit _4bitAlu;
 
         [SetUp]
         public void SetUp()
         {
-            _byteConverter = new ByteConverter(Endianness.Little);
+            _bitConverter = new BitConverter(Utilities.Endianness.Little);
             _4bitAlu = new ArithmeticLogicUnit(N);
         }
 
@@ -49,9 +49,9 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         public void ProbeState_ReturnsInternalState()
         {
             _4bitAlu.ProbeState().Should().BeEquivalentTo(new BitArray(N));
-            _4bitAlu.SetInputA(CreateBitArrayFromInt(N, 3));
-            _4bitAlu.SetInputB(CreateBitArrayFromInt(N, 5));
-            _4bitAlu.ProbeState().Should().BeEquivalentTo(CreateBitArrayFromInt(N, 8));
+            _4bitAlu.SetInputA(_bitConverter.GetBits(3, N));
+            _4bitAlu.SetInputB(_bitConverter.GetBits(5, N));
+            _4bitAlu.ProbeState().Should().BeEquivalentTo(_bitConverter.GetBits(8, N));
         }
 
         [Test]
@@ -78,35 +78,12 @@ namespace DigitalElectronics.Modules.ALUs.Tests
 
         private void AssertSumOfAAndB(int a, int b, int expectedSum)
         {
-            var dataA = CreateBitArrayFromInt(N, a);
+            var dataA = _bitConverter.GetBits(a, N);
             _4bitAlu.SetInputA(dataA);
-            var dataB = CreateBitArrayFromInt(N, b);
+            var dataB = _bitConverter.GetBits(b, N);
             _4bitAlu.SetInputB(dataB);
-            var expectation = CreateBitArrayFromInt(N, expectedSum);
+            var expectation = _bitConverter.GetBits(expectedSum, N);
             _4bitAlu.OutputE.Should().BeEquivalentTo(expectation, $"a = {a}; b = {b}");
-        }
-
-        /// <summary>
-        /// Creates a <see cref="BitArray"/> of the given length with the bits sets to the little-endian binary
-        /// representation of the given integer value.
-        /// </summary>
-        /// <param name="length">The number of bits in the new BitArray</param>
-        /// <param name="value">The integer value</param>
-        /// <returns>Returns a BitArray contain the little-endian binary representation of
-        /// <paramref name="value"/>.</returns>
-        /// <remarks>
-        /// <paramref name="value"/> is converted to binary form, of which the first <paramref name="length"/> bits
-        /// are used to set the BitArray. Therefore, the resulting BitArray will only correctly represent
-        /// <paramref name="value"/> if <paramref name="length"/> is of sufficient number. If not, he actual
-        /// resulting BitArray will be the equivalent to the full binary representation truncated
-        /// to <paramref name="length"/> (removing high-order bits).
-        /// </remarks>
-        private BitArray CreateBitArrayFromInt(int length, int value)
-        {
-            var fullBitArray = new BitArray(_byteConverter.GetBytes(value));
-            var result = new BitArray(length);
-            for (int x = 0; x < length; x++) result.Set(x, fullBitArray[x]);
-            return result;
         }
     }
 }

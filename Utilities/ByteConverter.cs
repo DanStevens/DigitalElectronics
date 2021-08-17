@@ -8,26 +8,13 @@ namespace DigitalElectronics.Utilities
 {
 
     /// <summary>
-    /// The order of bits or bytes of a byte or word.
-    /// </summary>
-    public enum Endianness
-    {
-        /// <summary>The endianness according to the system</summary>
-        System,
-        
-        /// <summary>Little-endian i.e. low-order bits/bytes are first</summary>
-        Little,
-            
-        /// <summary>Big-endian i.e. high-order bits/bytes are first</summary>
-        Big
-    }
-
-    /// <summary>
     /// Converts base data types to an array of bytes, and an array of bytes to base data types.
     /// </summary>
     /// <remarks>The class can be configured to convert to and from binary forms using a
     /// specific endianness, or the system architecture's endianness.</remarks>
     /// <seealso cref="System.BitConverter.IsLittleEndian"/>
+    // Dev note: This class has not been fully tested: Since most systems are little-endian, the endianness
+    // conversion is probably skipped when ran on most systems.
     public class ByteConverter
     {
         public Endianness Endianness { get; }
@@ -54,10 +41,11 @@ namespace DigitalElectronics.Utilities
         /// Returns the specified 32-bit signed integer value as an array of bytes.
         /// </summary>
         /// <param name="value">The number to convert.</param>
-        /// <returns>An array of bytes with length 4, that represent the given integer.</returns>
+        /// <returns>An array of bytes with length 4, that represent the given integer with the endianness
+        /// specified by <see cref="Endianness"/>.</returns>
         public byte[] GetBytes(int value)
         {
-            return Normalize(BitConverter.GetBytes(value));
+            return Normalize(System.BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -74,7 +62,7 @@ namespace DigitalElectronics.Utilities
         /// the length of value minus 1.</exception>
         public int ToInt32(byte[] value, int startIndex)
         {
-            return BitConverter.ToInt32(Normalize(value), startIndex);
+            return System.BitConverter.ToInt32(Normalize(value), startIndex);
         }
 
         // TODO: Add methods to mirror BitConverter methods
@@ -91,7 +79,7 @@ namespace DigitalElectronics.Utilities
             if (bytes == null) throw new ArgumentNullException(nameof(bytes));
             
             bool reverse = Endianness == Endianness.System ||
-                (BitConverter.IsLittleEndian && Endianness != Endianness.Little);
+                (System.BitConverter.IsLittleEndian && Endianness != Endianness.Little);
 
             return reverse ? bytes.Reverse().ToArray() : bytes;
         }
