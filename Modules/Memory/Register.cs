@@ -28,21 +28,6 @@ namespace DigitalElectronics.Components.Memory
         }
 
         /// <summary>
-        /// Sets the 'Data' input according to the given array of bools
-        /// </summary>
-        /// <param name="bits">The array of boolean values to set the register to, starting with the
-        /// low-order bit. If the array contains less items than the number of bits in the register, the
-        /// higher-order bits remain unchanged. If the array contains more items than the number of
-        /// bits in the register, the excess items are unused.</param>
-        public void SetInputD(params bool[] bits)
-        {
-            _ = bits ?? throw new ArgumentNullException(nameof(bits));
-            
-            var upper = Math.Min(bits.Length, _registers.Length);
-            for (int x = 0; x < upper; x++) SetInputDx(x, bits[x]);
-        }
-
-        /// <summary>
         /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
         /// </summary>
         /// <param name="inputs">A <see cref="BitArray"/> containing values to set the register too,
@@ -51,7 +36,7 @@ namespace DigitalElectronics.Components.Memory
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
         public void SetInputD(BitArray data)
         {
-            _ = data ?? throw new ArgumentNullException(nameof(data));
+            if (data == null) return;
             
             var upper = Math.Min(data.Length, _registers.Length);
             for (int x = 0; x < upper; x++) SetInputDx(x, data[x]);

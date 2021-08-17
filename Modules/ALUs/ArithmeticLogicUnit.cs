@@ -42,6 +42,8 @@ namespace DigitalElectronics.Modules.ALUs
         /// <param name="data">A BitArray representing the value for A input</param>
         public void SetInputA(BitArray data)
         {
+            if (data == null) return;
+            
             for (int x = 0; x < BitCount; x++)
             {
                 _adders[x].SetInputA(data[x]);
@@ -55,6 +57,8 @@ namespace DigitalElectronics.Modules.ALUs
         /// <param name="data">A BitArray representing the value for B input</param>
         public void SetInputB(BitArray data)
         {
+            if (data == null) return;
+
             for (int x = 0; x < BitCount; x++)
             {
                 _xorGates[x].SetInputA(data[x]);

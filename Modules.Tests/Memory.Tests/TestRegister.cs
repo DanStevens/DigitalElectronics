@@ -33,43 +33,6 @@ namespace DigitalElectronics.Components.Memory.Tests
         }
 
         [Test]
-        public void SetAllInputsD_UsingArrayOfBoolsOfSizeN()
-        {
-            bool[] inputs = new bool[] { false, false, false, false };
-            PushL();
-            _4bitRegister.SetInputD(inputs);
-            Clock();
-            AssertOutputs(false, false, false, false);
-        }
-
-        [Test]
-        public void SetAllInputsD_UsingArrayOfBoolsOfSizeNMinus1()
-        {
-            // Initialize all inputs to false
-            bool[] inputs = new bool[] { false, false, false, false };
-            PushL();
-            _4bitRegister.SetInputD(inputs);
-            Clock();
-            AssertOutputs(false, false, false, false);
-
-            bool[] inputs2 = new bool[] { true, false, true };
-            PushL();
-            _4bitRegister.SetInputD(inputs2);
-            Clock();
-            AssertOutputs(true, false, true, false);
-        }
-
-        [Test]
-        public void SetAllInputsD_UsingArrayOfBoolsOfSizeNPlus1()
-        {
-            bool[] inputs = new bool[] { true, false, true, false, true };
-            PushL();
-            _4bitRegister.SetInputD(inputs);
-            Clock();
-            AssertOutputs(true, false, true, false);
-        }
-
-        [Test]
         public void SetAllInputsD_UsingBitArrayOfSizeN()
         {
             BitArray data = new BitArray(new bool[] { true, false, true, false });
@@ -83,10 +46,10 @@ namespace DigitalElectronics.Components.Memory.Tests
         public void SetAllInputsD_UsingBitArrayOfSizeNMinus1()
         {
             // Initialize all inputs to false
-            bool[] inputs = new bool[] { false, false, false, false };
+            var inputs = new BitArray(new bool[] { false, false, false, false });
             PushL();
             _4bitRegister.SetInputD(inputs);
-           Clock();
+            Clock();
             AssertOutputs(false, false, false, false);
 
             BitArray data = new BitArray(new bool[] { true, false, true });
@@ -247,7 +210,7 @@ namespace DigitalElectronics.Components.Memory.Tests
 
         void SetInputsD(params bool[] bits)
         {
-            _4bitRegister.SetInputD(bits);
+            SetInputsD(new BitArray(bits));
         }
 
         void SetInputsD(BitArray data)
