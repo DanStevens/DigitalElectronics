@@ -10,6 +10,7 @@ namespace DigitalElectronics.Modules.ALUs
     {
         private FullAdder[] _adders;
         private TriStateBuffer[] _3Sbuffers;
+        private XorGate[] _xorGates;
 
         public ArithmeticLogicUnit(int numberOfBits)
         {
@@ -18,12 +19,16 @@ namespace DigitalElectronics.Modules.ALUs
             
             _adders = new FullAdder[numberOfBits];
             _3Sbuffers = new TriStateBuffer[numberOfBits];
-            for (int x = 0; x < _adders.Length; x++)
+            _xorGates = new XorGate[numberOfBits];
+
+            for (int x = 0; x < BitCount; x++)
             {
                 _adders[x] = new FullAdder();
                 _3Sbuffers[x] = new TriStateBuffer();
+                _xorGates[x] = new XorGate();
             }
-            Sync();
+
+            for (int x = 0; x < BitCount; x++) SyncBit(x);
         }
 
         public int BitCount => _adders.Length;
@@ -34,8 +39,11 @@ namespace DigitalElectronics.Modules.ALUs
         /// <param name="data">A BitArray representing the value for A input</param>
         public void SetInputA(BitArray data)
         {
-            for (int x = 0; x < _adders.Length; x++) _adders[x].SetInputA(data[x]);
-            Sync();
+            for (int x = 0; x < BitCount; x++)
+            {
+                _adders[x].SetInputA(data[x]);
+                SyncBit(x);
+            }
         }
 
         /// <summary>
@@ -44,8 +52,11 @@ namespace DigitalElectronics.Modules.ALUs
         /// <param name="data">A BitArray representing the value for B input</param>
         public void SetInputB(BitArray data)
         {
-            for (int x = 0; x < _adders.Length; x++) _adders[x].SetInputB(data[x]);
-            Sync();
+            for (int x = 0; x < BitCount; x++)
+            {
+                _xorGates[x].SetInputA(data[x]);
+                SyncBit(x);
+            }
         }
 
         /// <summary>
@@ -55,8 +66,27 @@ namespace DigitalElectronics.Modules.ALUs
         /// to disable the 'Sum' output</param>
         public void SetInputEO(bool value)
         {
-            for (int x = 0; x < BitCount; x++) _3Sbuffers[x].SetInputB(value);
-            Sync();
+            for (int x = 0; x < BitCount; x++)
+            {
+                _3Sbuffers[x].SetInputB(value);
+                SyncBit(x);
+            }
+        }
+
+        /// <summary>
+        /// Sets the value for the 'Subtract' signal
+        /// </summary>
+        /// <param name="value">Set to `true` to set ALU to subtraction mode and `false` for
+        /// addition mode</param>
+        public void SetInputSu(bool value)
+        {
+            _adders[0].SetInputC(value);
+            
+            for (int x = 0; x < BitCount; x++)
+            {
+                _xorGates[x].SetInputB(value);
+                SyncBit(x);
+            }
         }
 
         /// <summary>
@@ -86,22 +116,11 @@ namespace DigitalElectronics.Modules.ALUs
             return new BitArray(_adders.Select(_ => _.OutputE).ToArray());
         }
 
-        private void Sync()
+        private void SyncBit(int x)
         {
-            CarryTheOne();
-            SyncTriStateBuffersWithAdders();
-
-            void CarryTheOne()
-            {
-                for (int x = 0; x < _adders.Length - 1; x++)
-                    _adders[x + 1].SetInputC(_adders[x].OutputC);
-            }
-
-            void SyncTriStateBuffersWithAdders()
-            {
-                for (int x = 0; x < BitCount; x++)
-                    _3Sbuffers[x].SetInputA(_adders[x].OutputE);
-            }
+            _adders[x].SetInputB(_xorGates[x].OutputQ);
+            if (x < BitCount - 1) _adders[x + 1].SetInputC(_adders[x].OutputC);
+            _3Sbuffers[x].SetInputA(_adders[x].OutputE);
         }
     }
 }

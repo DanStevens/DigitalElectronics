@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using DigitalElectronics.Utilities;
 using FluentAssertions;
 using NUnit.Framework;
+
+[assembly: DebuggerDisplay("BitArray={DigitalElectronics.Utilities.Extensions.ToString(this)}", Target = typeof(BitArray))]
 
 namespace DigitalElectronics.Modules.ALUs.Tests
 {
@@ -50,20 +53,36 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         }
 
         [Test]
-        public void TestAddition()
+        public void TestAdditionFull()
         {
             _4bitAlu.SetInputEO(true);
+            _4bitAlu.SetInputSu(false);
 
             for (int a = -8; a < 8; a++)
                 for (int b = -8; b < 8; b++)
-                {
-                    _4bitAlu.SetInputA(CreateBitArrayFromInt(N, a));
-                    _4bitAlu.SetInputB(CreateBitArrayFromInt(N, b));
-                    _4bitAlu.OutputE.Should().BeEquivalentTo(CreateBitArrayFromInt(N, a + b), $"a = {a}; b = {b}");
-                }
+                    AssertSumOfAAndB(a, b, a + b);
         }
-        
 
+        [Test]
+        public void TestSubtractionFull()
+        {
+            _4bitAlu.SetInputEO(true);
+            _4bitAlu.SetInputSu(true);
+
+            for (int a = -8; a < 8; a++)
+                for (int b = -8; b < 8; b++)
+                    AssertSumOfAAndB(a, b, a - b);
+        }
+
+        private void AssertSumOfAAndB(int a, int b, int expectedSum)
+        {
+            var dataA = CreateBitArrayFromInt(N, a);
+            _4bitAlu.SetInputA(dataA);
+            var dataB = CreateBitArrayFromInt(N, b);
+            _4bitAlu.SetInputB(dataB);
+            var expectation = CreateBitArrayFromInt(N, expectedSum);
+            _4bitAlu.OutputE.Should().BeEquivalentTo(expectation, $"a = {a}; b = {b}");
+        }
 
         /// <summary>
         /// Creates a <see cref="BitArray"/> of the given length with the bits sets to the little-endian binary
