@@ -78,7 +78,7 @@ namespace DigitalElectronics.Utilities
         {
             if (bytes == null) throw new ArgumentNullException(nameof(bytes));
             
-            bool reverse = Endianness == Endianness.System ||
+            bool reverse = Endianness != Endianness.System &&
                 (System.BitConverter.IsLittleEndian && Endianness != Endianness.Little);
 
             return reverse ? bytes.Reverse().ToArray() : bytes;
