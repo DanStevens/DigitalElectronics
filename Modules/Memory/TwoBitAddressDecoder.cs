@@ -1,4 +1,5 @@
-﻿using DigitalElectronics.Components.LogicGates;
+﻿using System.Collections;
+using DigitalElectronics.Components.LogicGates;
 
 namespace DigitalElectronics.Modules.Memory
 {
@@ -45,12 +46,15 @@ namespace DigitalElectronics.Modules.Memory
             _and[3].SetInputB(value);
         }
 
-        public bool OutputY0 => _and[0].OutputQ;
-
-        public bool OutputY1 => _and[1].OutputQ;
-
-        public bool OutputY2 => _and[2].OutputQ;
-
-        public bool OutputY3 => _and[3].OutputQ;
+        public BitArray OutputY
+        {
+            get
+            {
+                var result = new BitArray(NumberOfOutputs);
+                for (int e = 0; e < NumberOfOutputs; e++)
+                    result[e] = _and[e].OutputQ;
+                return result;
+            }
+        }
     }
 }

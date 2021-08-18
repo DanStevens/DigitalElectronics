@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace DigitalElectronics.Modules.Memory.Tests
@@ -15,10 +16,8 @@ namespace DigitalElectronics.Modules.Memory.Tests
             var decoder = new TwoBitAddressDecoder();
             decoder.SetInputA0(a0);
             decoder.SetInputA1(a1);
-            decoder.OutputY0.Should().Be(y0);
-            decoder.OutputY1.Should().Be(y1);
-            decoder.OutputY2.Should().Be(y2);
-            decoder.OutputY3.Should().Be(y3);
+            var expectedOutput = new BitArray(new bool[] { y0, y1, y2, y3 });
+            decoder.OutputY.Should().BeEquivalentTo(expectedOutput);
         }
     }
 }
