@@ -54,6 +54,29 @@ namespace DigitalElectronics.Utilities
         }
 
         /// <summary>
+        /// Returns the specified 16-bit signed integer value as a <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="value">The number to convert.</param>
+        /// <returns>A `BitArray` with length 16, that represents the given integer with the endianness
+        /// specified by <see cref="Endianness"/>.</returns>
+        /// <seealso cref="ByteConverter.GetBytes(short)"/>
+        public BitArray GetBits(short value)
+        {
+            return new BitArray(_byteConverter.GetBytes(value));
+        }
+
+        /// <summary>
+        /// Returns the specified 8-bit signed integer value as a <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="value">The number to convert.</param>
+        /// <returns>A `BitArray` with length 8, that represents the given integer with the endianness
+        /// specified by <see cref="Endianness"/>.</returns>
+        public BitArray GetBits(byte value)
+        {
+            return new BitArray(new byte[] { value });
+        }
+
+        /// <summary>
         /// Returns the specified 32-bit signed integer value as a <see cref="BitArray"/> padded or truncated
         /// to match the given <paramref name="length"/>.
         /// </summary>
@@ -70,10 +93,47 @@ namespace DigitalElectronics.Utilities
         /// </remarks>
         public BitArray GetBits(int value, int length)
         {
-            var fullBitArray = GetBits(value);
-            var result = new BitArray(length);
-            for (int x = 0; x < length; x++) result.Set(x, fullBitArray[x]);
-            return result;
+            return CreateBitArrayOfLengthAndPopulate(length, GetBits(value));
+        }
+
+        /// <summary>
+        /// Returns the specified 16-bit signed integer value as a <see cref="BitArray"/> padded or truncated
+        /// to match the given <paramref name="length"/>.
+        /// </summary>
+        /// <param name="value">The number to convert.</param>
+        /// <param name="length">The number of bits in the resulting `BitArray`</param>
+        /// <returns>Returns a BitArray with length <paramref name="length"/> that represents the given integer
+        /// with the endianness of <see cref="Endianness"/>.</returns>
+        /// <remarks>
+        /// <paramref name="value"/> is converted to binary form, of which the first <paramref name="length"/> bits
+        /// are used to set the BitArray. Therefore, the resulting BitArray will only correctly represent
+        /// <paramref name="value"/> if <paramref name="length"/> is of sufficient number. If not, the actual
+        /// resulting BitArray will be the equivalent to the full binary representation truncated
+        /// to <paramref name="length"/> (removing high-order bits).
+        /// </remarks>
+        public BitArray GetBits(short value, int length)
+        {
+            return CreateBitArrayOfLengthAndPopulate(length, GetBits(value));
+        }
+
+        /// <summary>
+        /// Returns the specified 8-bit signed integer value as a <see cref="BitArray"/> padded or truncated
+        /// to match the given <paramref name="length"/>.
+        /// </summary>
+        /// <param name="value">The number to convert.</param>
+        /// <param name="length">The number of bits in the resulting `BitArray`</param>
+        /// <returns>Returns a BitArray with length <paramref name="length"/> that represents the given integer
+        /// with the endianness of <see cref="Endianness"/>.</returns>
+        /// <remarks>
+        /// <paramref name="value"/> is converted to binary form, of which the first <paramref name="length"/> bits
+        /// are used to set the BitArray. Therefore, the resulting BitArray will only correctly represent
+        /// <paramref name="value"/> if <paramref name="length"/> is of sufficient number. If not, the actual
+        /// resulting BitArray will be the equivalent to the full binary representation truncated
+        /// to <paramref name="length"/> (removing high-order bits).
+        /// </remarks>
+        public BitArray GetBits(byte value, int length)
+        {
+            return CreateBitArrayOfLengthAndPopulate(length, GetBits(value));
         }
 
         /// <summary>
@@ -94,5 +154,12 @@ namespace DigitalElectronics.Utilities
         }
 
         // TODO: Add methods to mirror BitConverter methods
+
+        private static BitArray CreateBitArrayOfLengthAndPopulate(int length, BitArray ba)
+        {
+            var result = new BitArray(length);
+            for (int x = 0; x < length; x++) result.Set(x, ba[x]);
+            return result;
+        }
     }
 }

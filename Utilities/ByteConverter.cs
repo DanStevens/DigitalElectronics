@@ -49,6 +49,17 @@ namespace DigitalElectronics.Utilities
         }
 
         /// <summary>
+        /// Returns the specified 16-bit signed integer value as an array of bytes.
+        /// </summary>
+        /// <param name="value">The number to convert.</param>
+        /// <returns>An array of bytes with length 2, that represent the given integer with the endianness
+        /// specified by <see cref="Endianness"/>.</returns>
+        public byte[] GetBytes(short value)
+        {
+            return Normalize(System.BitConverter.GetBytes(value));
+        }
+
+        /// <summary>
         /// Returns a 32-bit signed integer converted from four bytes
         /// at a specified position in a byte array.
         /// </summary>
@@ -63,6 +74,22 @@ namespace DigitalElectronics.Utilities
         public int ToInt32(byte[] value, int startIndex)
         {
             return System.BitConverter.ToInt32(Normalize(value), startIndex);
+        }
+
+        /// <summary>
+        /// Returns a 16-bit signed integer converted from two bytes
+        /// at a specified position in a byte array.
+        /// </summary>
+        /// <param name="value">An array of bytes that includes the two bytes to convert.</param>
+        /// <param name="startIndex">The starting position within `value`.</param>
+        /// <returns>A 16-bit signed integer formed by four bytes beginning at `startIndex`.</returns>
+        /// <exception cref="ArgumentException">`startIndex` equals the length of `value` minus 1.</exception>
+        /// <exception cref="ArgumentNullException">`value` is `null`</exception>
+        /// <exception cref="ArgumentOutOfRangeException">`startIndex` is less than zero or
+        /// greater than the length of `value` minus 1.</exception>
+        public int ToInt16(byte[] value, int startIndex)
+        {
+            return System.BitConverter.ToInt16(Normalize(value), startIndex);
         }
 
         // TODO: Add methods to mirror BitConverter methods
