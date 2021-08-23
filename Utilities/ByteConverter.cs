@@ -14,7 +14,7 @@ namespace DigitalElectronics.Utilities
     /// specific endianness, or the system architecture's endianness.</remarks>
     /// <seealso cref="System.BitConverter.IsLittleEndian"/>
     // Dev note: This class has not been fully tested: Since most systems are little-endian, the endianness
-    // conversion is probably skipped when ran on most systems.
+    // conversion is probably skipped when ran on most systems by default.
     public class ByteConverter
     {
         public Endianness Endianness { get; }
