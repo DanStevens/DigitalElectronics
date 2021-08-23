@@ -6,40 +6,40 @@ namespace DigitalElectronics.Components.LogicGates
     /// <summary>
     /// Represents a AND logic gate with 3 inputs
     /// </summary>
-    [DebuggerDisplay("AND: A = {_and1._inputA}; B = {_and1._inputB}; C = {_and2._inputC}; Q = {OutputQ}")]
+    [DebuggerDisplay("AND: A = {_andAB._inputA}; B = {_andAB._inputB}; C = {_andCQ._inputB}; Q = {OutputQ}")]
     public class TripleInputAndGate
     {
-        private AndGate _and1, _and2;
+        private AndGate _andAB, _andCQ;
 
         public TripleInputAndGate()
         {
-            _and1 = new AndGate();
-            _and2 = new AndGate();
+            _andAB = new AndGate();
+            _andCQ = new AndGate();
         }
 
         public void SetInputA(bool a)
         {
-            _and1.SetInputA(a);
+            _andAB.SetInputA(a);
             Sync();
         }
 
         public void SetInputB(bool b)
         {
-            _and1.SetInputB(b);
+            _andAB.SetInputB(b);
             Sync();
         }
 
         public void SetInputC(bool c)
         {
-            _and2.SetInputB(c);
+            _andCQ.SetInputB(c);
             Sync();
         }
 
-        public bool OutputQ => _and2.OutputQ;
+        public bool OutputQ => _andCQ.OutputQ;
 
         private void Sync()
         {
-            _and2.SetInputA(_and1.OutputQ);
+            _andCQ.SetInputA(_andAB.OutputQ);
         }
     }
 }
