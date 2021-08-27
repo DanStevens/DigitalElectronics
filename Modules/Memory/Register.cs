@@ -30,7 +30,7 @@ namespace DigitalElectronics.Components.Memory
         /// <summary>
         /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
         /// </summary>
-        /// <param name="inputs">A <see cref="BitArray"/> containing values to set the register too,
+        /// <param name="inputs">A <see cref="BitArray"/> containing values to set the register to,
         /// starting with the low-order bit. If the BitArray contains less elements than the number
         /// of bits in the register, the higher-order bits remain unchanged. If the BitArray contains
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
@@ -48,15 +48,16 @@ namespace DigitalElectronics.Components.Memory
         public int BitCount => _registers.Length;
 
         /// <summary>
-        /// Sets for for 'Enabled' input
+        /// Sets value for 'Enabled' input
         /// </summary>
         /// <param name="value">Set to `true` to enable output and `false` to disable output</param>
         /// <remarks>
         /// The `Enabled` input determines whether the register outputs the currently latched value,
         /// or `null`, which represents the Z (high impedance) state.
         /// 
-        /// When using a register in a bus configuration, keep 'Enabled' input low expect when
+        /// When using a register in a bus configuration, keep 'Enabled' input low except when
         /// performing a bus transfer.
+        /// </remarks>
         public void SetInputE(bool value)
         {
             for (int x = 0; x < BitCount; x++) _registers[x].SetInputE(value);
@@ -74,7 +75,8 @@ namespace DigitalElectronics.Components.Memory
         /// <summary>
         /// Sets value for 'Load' input
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">Set to `true` to enable loading of a data into the register;
+        /// otherwise loading is disabled</param>
         public void SetInputL(bool value)
         {
             for (int x = 0; x < BitCount; x++) _registers[x].SetInputL(value);
@@ -83,6 +85,9 @@ namespace DigitalElectronics.Components.Memory
         /// <summary>
         /// Simulates the receipt of a clock pulse
         /// </summary>
+        /// <remarks>When <see cref="Clock"/> method is called, if the
+        /// <see cref="SetInputL(bool)">'Load' input</see> is `true`, the data set via
+        /// <see cref="SetInputD(BitArray)"/> is loaded into the registry.</remarks>
         public void Clock()
         {
             for (int x = 0; x < BitCount; x++) _registers[x].Clock();
