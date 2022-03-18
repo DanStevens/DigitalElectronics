@@ -24,7 +24,7 @@ namespace DigitalElectronics.Utilities
         public Endianness Endianness => _byteConverter.Endianness;
 
         /// <summary>
-        /// Creates new instance of `ByteConverter` configured to use the system's endianness
+        /// Creates new instance of `BitConverter` configured to use the system's endianness
         /// </summary>
         /// <seealso cref="System.BitConverter.IsLittleEndian"/>
         public BitConverter()
@@ -33,7 +33,7 @@ namespace DigitalElectronics.Utilities
         }
 
         /// <summary>
-        /// Creates a new instance of `ByteConverter` configured to use the given endianness
+        /// Creates a new instance of `BitConverter` configured to use the given endianness
         /// </summary>
         /// <param name="endianness">The endianness to use in conversions</param>
         public BitConverter(Endianness endianness)
