@@ -4,19 +4,19 @@ using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace SRLatchDemoViewModels.Tests
+namespace DigitalElectronics.ViewModels.Components.Tests
 {
-    public class SRLatchDemoViewModelTests
+    public class SRLatchViewModelTests
     {
         #region Helper methods
 
-        private static SRLatchDemoViewModel CreateObjectUnderTest()
+        private static SRLatchViewModel CreateObjectUnderTest()
         {
             return CreateObjectUnderTest(Substitute.For<ISRLatch>());
         }
-        private static SRLatchDemoViewModel CreateObjectUnderTest(ISRLatch srLatchMock)
+        private static SRLatchViewModel CreateObjectUnderTest(ISRLatch srLatchMock)
         {
-            return new SRLatchDemoViewModel(srLatchMock);
+            return new SRLatchViewModel(srLatchMock);
         }
 
 
@@ -32,7 +32,7 @@ namespace SRLatchDemoViewModels.Tests
         [Test]
         public void Ctor_ShouldAcceptNoParameters()
         {
-            new SRLatchDemoViewModel();
+            new SRLatchViewModel();
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace SRLatchDemoViewModels.Tests
         [Test]
         public void Ctor_ShouldThrowArgumentNullException_WhenSRLatchParameterIsNull()
         {
-            var ex=  Assert.Throws<ArgumentNullException>(() => new SRLatchDemoViewModel(null));
+            var ex=  Assert.Throws<ArgumentNullException>(() => new SRLatchViewModel(null));
             ex.ParamName.Should().Be("srLatch");
         }
 

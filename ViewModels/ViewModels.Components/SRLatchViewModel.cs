@@ -1,19 +1,19 @@
 ﻿using System.ComponentModel;
 using DigitalElectronics.Components.FlipFlops;
 
-namespace SRLatchDemoViewModels
+namespace DigitalElectronics.ViewModels.Components
 {
-    public class SRLatchDemoViewModel : INotifyPropertyChanged
+    public class SRLatchViewModel : INotifyPropertyChanged
     {
         private readonly ISRLatch _srLatch;
         private bool _reset;
         private bool _set;
 
-        public SRLatchDemoViewModel()
+        public SRLatchViewModel()
             :this(new SRLatch())
         {}
 
-        public SRLatchDemoViewModel(ISRLatch srLatch)
+        public SRLatchViewModel(ISRLatch srLatch)
         {
             _srLatch = srLatch ?? throw new ArgumentNullException(nameof(srLatch));
         }

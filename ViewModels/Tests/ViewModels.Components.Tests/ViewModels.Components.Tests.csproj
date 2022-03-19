@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>$(SolutionName).$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SRLatchDemoViewModel\SRLatchDemoViewModels.csproj" />
+    <ProjectReference Include="..\..\ViewModels.Components\ViewModels.Components.csproj" />
   </ItemGroup>
 
 </Project>
