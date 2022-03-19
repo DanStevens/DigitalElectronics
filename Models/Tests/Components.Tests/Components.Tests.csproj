@@ -5,11 +5,15 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>DigitalElectronics.Computers</RootNamespace>
+    <RootNamespace>DigitalElectronics.Components</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.0.0" />
+    <Compile Remove="TestElement.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
@@ -17,9 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Components\Components.csproj" />
-    <ProjectReference Include="..\Computers\Computers.csproj" />
-    <ProjectReference Include="..\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\..\Components\Components.csproj" />
   </ItemGroup>
 
 </Project>
