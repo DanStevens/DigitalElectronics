@@ -12,13 +12,12 @@ namespace DigitalElectronics.ViewModels.Components.Tests
 
         private static SRLatchViewModel CreateObjectUnderTest()
         {
-            return CreateObjectUnderTest(Substitute.For<ISRLatch>());
+            return new SRLatchViewModel();
         }
         private static SRLatchViewModel CreateObjectUnderTest(ISRLatch srLatchMock)
         {
             return new SRLatchViewModel(srLatchMock);
         }
-
 
         #endregion
 
@@ -44,7 +43,7 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         [Test]
         public void Ctor_ShouldThrowArgumentNullException_WhenSRLatchParameterIsNull()
         {
-            var ex=  Assert.Throws<ArgumentNullException>(() => new SRLatchViewModel(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new SRLatchViewModel(null));
             ex.ParamName.Should().Be("srLatch");
         }
 
@@ -143,10 +142,10 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         }
 
         [Test]
-        public void OutputQ_ShouldBeFalse_WhenObjectUnderTestCreated()
+        public void OutputQ_ShouldBeTrue_WhenObjectUnderTestCreated()
         {
             var objUT = CreateObjectUnderTest();
-            objUT.OutputQ.Should().Be(false);
+            objUT.OutputQ.Should().Be(true);
         }
 
         [Test]
