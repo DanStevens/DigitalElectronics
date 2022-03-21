@@ -3,20 +3,20 @@ using DigitalElectronics.Components.FlipFlops;
 
 namespace DigitalElectronics.ViewModels.Components
 {
-    public class SRLatchWithEnableViewModel : INotifyPropertyChanged
+    public class GatedSRLatchViewModel : INotifyPropertyChanged
     {
-        private readonly ISRLatch _srLatch;
+        private readonly GatedSRLatch _gatedSRLatch;
         private bool _reset;
         private bool _set;
         private bool _enable;
 
-        public SRLatchWithEnableViewModel()
-            : this(new SRLatch())
+        public GatedSRLatchViewModel()
+            : this(new GatedSRLatch())
         { }
 
-        public SRLatchWithEnableViewModel(ISRLatch srLatch)
+        public GatedSRLatchViewModel(GatedSRLatch srLatch)
         {
-            _srLatch = srLatch ?? throw new ArgumentNullException(nameof(srLatch));
+            _gatedSRLatch = srLatch ?? throw new ArgumentNullException(nameof(srLatch));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -29,7 +29,7 @@ namespace DigitalElectronics.ViewModels.Components
                 if (_reset != value)
                 {
                     _reset = value;
-                    _srLatch.SetInputR(value);
+                    _gatedSRLatch.SetInputR(value);
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Reset)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OutputQ)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OutputNQ)));
@@ -46,7 +46,7 @@ namespace DigitalElectronics.ViewModels.Components
                 if (_set != value)
                 {
                     _set = value;
-                    _srLatch.SetInputS(value);
+                    _gatedSRLatch.SetInputS(value);
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Set)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OutputQ)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OutputNQ)));
@@ -67,8 +67,8 @@ namespace DigitalElectronics.ViewModels.Components
             }
         }
 
-        public bool OutputQ => _srLatch.OutputQ;
+        public bool OutputQ => _gatedSRLatch.OutputQ;
 
-        public bool OutputNQ => _srLatch.OutputNQ;
+        public bool OutputNQ => _gatedSRLatch.OutputNQ;
     }
 }
