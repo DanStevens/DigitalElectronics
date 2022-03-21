@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace DigitalElectronics.Components.FlipFlops
 {
     [DebuggerDisplay("D Latch: Q = {OutputQ}; Q̅ = {OutputNQ}")]
-    public class GatedDLatch : IOutputsQAndNQ
+    public class GatedDLatch : IGatedDLatch
     {
         private GatedSRLatch _gatedSRLatch;
         private Inverter _inverter;
@@ -13,6 +13,7 @@ namespace DigitalElectronics.Components.FlipFlops
         {
             _gatedSRLatch = new GatedSRLatch();
             _inverter = new Inverter();
+            Sync();
         }
 
         /// <summary>
@@ -22,6 +23,11 @@ namespace DigitalElectronics.Components.FlipFlops
         {
             _gatedSRLatch.SetInputS(value);
             _inverter.SetInputA(value);
+            Sync();
+        }
+
+        private void Sync()
+        {
             _gatedSRLatch.SetInputR(_inverter.OutputQ);
         }
 

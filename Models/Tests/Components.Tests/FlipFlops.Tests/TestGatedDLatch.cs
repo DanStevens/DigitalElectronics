@@ -26,7 +26,7 @@ namespace DigitalElectronics.Components.FlipFlops.Tests
         {
             _gatedDLatch.AssertOutputs(true, false);
 
-            PushE(); _gatedDLatch.AssertOutputs(true, false);
+            PushE(); _gatedDLatch.AssertOutputs(false, true);
             PushD(); _gatedDLatch.AssertOutputs(true, false);
             ReleaseD(); _gatedDLatch.AssertOutputs(false, true);
             ReleaseE(); _gatedDLatch.AssertOutputs(false, true);
