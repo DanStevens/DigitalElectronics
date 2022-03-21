@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace DigitalElectronics.Components.FlipFlops
 {
     /// <summary>
-    /// Represents a SR NOR latch
+    /// Models a SR NOR latch
     /// </summary>
     [DebuggerDisplay("SR Latch: R = {_nor1._inputA}; S = {_nor2._inputB}; Q = {OutputQ}")]
     public class SRLatch : ISRLatch

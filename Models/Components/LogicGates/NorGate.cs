@@ -4,7 +4,7 @@ namespace DigitalElectronics.Components.LogicGates
 {
 
     /// <summary>
-    /// Represents a NOR logic gate
+    /// Models a NOR logic gate
     /// </summary>
     [DebuggerDisplay("NOR: A = {_inputA}; B = {_inputB}; Q = {OutputQ}")]
     public class NorGate

@@ -4,7 +4,7 @@ namespace DigitalElectronics.Components.LogicGates
 {
     
     /// <summary>
-    /// Represents a tri-state buffer
+    /// Models a tri-state buffer
     /// </summary>
     [DebuggerDisplay("3S Buffer: A = {_inputA}; B = {_inputB}; C = {OutputC}")]
     public class TriStateBuffer

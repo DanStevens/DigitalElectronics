@@ -4,7 +4,7 @@ namespace DigitalElectronics.Components.LogicGates
 {
 
     /// <summary>
-    /// Represents a XOR logic gate
+    /// Models a XOR logic gate
     /// </summary>
     [DebuggerDisplay("AND: A = {_inputA}; B = {_inputB}; Q = {OutputQ}")]
     public class XorGate

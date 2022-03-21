@@ -5,7 +5,7 @@ namespace DigitalElectronics.Components.FlipFlops
 {
     
     /// <summary>
-    /// Represents a D flip-flop
+    /// Models a D flip-flop
     /// </summary>
     [DebuggerDisplay("D Flip-flop: Q = {OutputQ}; Q̅ = {OutputNQ}")]
     public class DFlipFlop : IOutputsQAndNQ

@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace DigitalElectronics.Components.LogicGates
 {
     /// <summary>
-    /// Represents a digital buffer
+    /// Models a digital buffer
     /// </summary>
     [DebuggerDisplay("Buffer: A = {_inputA}; Q = {OutputQ}")]
     public class Buffer

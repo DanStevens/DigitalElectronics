@@ -5,7 +5,7 @@ namespace DigitalElectronics.Components.LogicGates
 {
     
     /// <summary>
-    /// Represents an inverter or OR logic gate
+    /// Models an inverter or OR logic gate
     /// </summary>
     [DebuggerDisplay("NOT: A = {_inputA};  Q = {OutputQ}")]
     public class Inverter

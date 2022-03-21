@@ -5,7 +5,7 @@ namespace DigitalElectronics.Components.ALUs
 {
 
     /// <summary>
-    /// Represents a half adder for summing a single pair of bits
+    /// Models a half adder for summing a single pair of bits
     /// </summary>
     [DebuggerDisplay("A = {_xor._inputA}; B = {_xor._inputB}; ∑ = {OutputE}; C => {OutputC}")]
     public class HalfAdder

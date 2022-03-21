@@ -4,7 +4,7 @@ namespace DigitalElectronics.Components.LogicGates
 {
     
     /// <summary>
-    /// Represents a AND logic gate with 3 inputs
+    /// Models a AND logic gate with 3 inputs
     /// </summary>
     [DebuggerDisplay("AND: A = {_andAB._inputA}; B = {_andAB._inputB}; C = {_andCQ._inputB}; Q = {OutputQ}")]
     public class TripleInputAndGate

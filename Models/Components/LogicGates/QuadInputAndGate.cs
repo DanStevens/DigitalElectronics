@@ -4,7 +4,7 @@ namespace DigitalElectronics.Components.LogicGates
 {
     
     /// <summary>
-    /// Represents a AND logic gate with 4 inputs
+    /// Models a AND logic gate with 4 inputs
     /// </summary>
     [DebuggerDisplay("AND: A = {_andAB._inputA}; B = {_andAB._inputB}; C = {_andCD._inputA};  D = {_andCD._inputB}; Q = {OutputQ}")]
     public class QuadInputAndGate

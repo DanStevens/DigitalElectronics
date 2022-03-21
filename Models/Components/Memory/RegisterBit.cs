@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace DigitalElectronics.Components.Memory
 {
     /// <summary>
-    /// Represents a single-bit of a multi-bit register
+    /// Models a single-bit of a multi-bit register
     /// </summary>
     /// <remarks>
     /// A register 'latches' in whatever value is on 'Data' input at the point `Clock()` is

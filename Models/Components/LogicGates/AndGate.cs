@@ -4,7 +4,7 @@ namespace DigitalElectronics.Components.LogicGates
 {
 
     /// <summary>
-    /// Represents a AND logic gate
+    /// Models a AND logic gate
     /// </summary>
     [DebuggerDisplay("AND: A = {_inputA}; B = {_inputB}; Q = {OutputQ}")]
     public class AndGate

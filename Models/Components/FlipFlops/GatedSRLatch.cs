@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace DigitalElectronics.Components.FlipFlops
 {
     /// <summary>
-    /// Represents a Gated SR NOR latch
+    /// Models a Gated SR NOR latch
     /// </summary>
     [DebuggerDisplay("SR Latch: E = {_and1._inputA}, R = {_and1._inputA}; S = {_and2._inputB}; Q = {OutputQ}")]
     public class GatedSRLatch : IGatedSRLatch
