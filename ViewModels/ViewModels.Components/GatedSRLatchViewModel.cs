@@ -62,6 +62,7 @@ namespace DigitalElectronics.ViewModels.Components
                 if (_enable != value)
                 {
                     _enable = value;
+                    _gatedSRLatch.SetInputE(_enable);
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Enable)));
                 }
             }

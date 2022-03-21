@@ -185,10 +185,26 @@ namespace DigitalElectronics.ViewModels.Components.Tests
             objUT.Enable.Should().Be(false);
             objUT.Reset = true;
             objUT.Reset = false;
-
             objUT.OutputQ.Should().Be(true);
             objUT.OutputNQ.Should().Be(false);
 
+            objUT.Enable = true;
+            objUT.Reset = true;
+            objUT.Reset = false;
+            objUT.OutputQ.Should().Be(false);
+            objUT.OutputNQ.Should().Be(true);
+
+            objUT.Enable = false;
+            objUT.Set = true;
+            objUT.Set = false;
+            objUT.OutputQ.Should().Be(false);
+            objUT.OutputNQ.Should().Be(true);
+
+            objUT.Enable = true;
+            objUT.Set = true;
+            objUT.Set = false;
+            objUT.OutputQ.Should().Be(true);
+            objUT.OutputNQ.Should().Be(false);
         }
 
         [Test]
