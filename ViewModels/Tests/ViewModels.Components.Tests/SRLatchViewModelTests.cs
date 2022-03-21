@@ -63,7 +63,7 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         {
             bool raised = false;
             var objUT = CreateObjectUnderTest();
-            objUT.PropertyChanged += (s, e) => raised |= true;
+            objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Reset);
 
             objUT.Reset = false;
             objUT.Reset.Should().Be(false);
@@ -108,7 +108,7 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         {
             bool raised = false;
             var objUT = CreateObjectUnderTest();
-            objUT.PropertyChanged += (s, e) => raised |= true;
+            objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Set);
 
             objUT.Set = false;
             objUT.Set.Should().Be(false);
