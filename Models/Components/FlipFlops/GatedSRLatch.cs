@@ -8,9 +8,9 @@ namespace DigitalElectronics.Components.FlipFlops
     /// Represents a Gated SR NOR latch
     /// </summary>
     [DebuggerDisplay("SR Latch: E = {_and1._inputA}, R = {_and1._inputA}; S = {_and2._inputB}; Q = {OutputQ}")]
-    public class GatedSRLatch : ISRLatch, IOutputsQAndNQ
+    public class GatedSRLatch : IGatedSRLatch
     {
-        private SRLatch _srLatch;
+        private readonly SRLatch _srLatch;
         private AndGate _and1;
         private AndGate _and2;
 

@@ -5,7 +5,7 @@ namespace DigitalElectronics.ViewModels.Components
 {
     public class GatedSRLatchViewModel : INotifyPropertyChanged
     {
-        private readonly GatedSRLatch _gatedSRLatch;
+        private readonly IGatedSRLatch _gatedSRLatch;
         private bool _reset;
         private bool _set;
         private bool _enable;
@@ -14,7 +14,7 @@ namespace DigitalElectronics.ViewModels.Components
             : this(new GatedSRLatch())
         { }
 
-        public GatedSRLatchViewModel(GatedSRLatch srLatch)
+        public GatedSRLatchViewModel(IGatedSRLatch srLatch)
         {
             _gatedSRLatch = srLatch ?? throw new ArgumentNullException(nameof(srLatch));
         }

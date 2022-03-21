@@ -14,7 +14,7 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         {
             return new GatedSRLatchViewModel();
         }
-        private static GatedSRLatchViewModel CreateObjectUnderTest(GatedSRLatch srLatchMock)
+        private static GatedSRLatchViewModel CreateObjectUnderTest(IGatedSRLatch srLatchMock)
         {
             return new GatedSRLatchViewModel(srLatchMock);
         }
@@ -64,7 +64,7 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         {
             bool raised = false;
             var objUT = CreateObjectUnderTest();
-            objUT.PropertyChanged += (s, e) => raised |= true;
+            objUT.PropertyChanged += (s, e) => raised = true;
 
             objUT.Reset = false;
             objUT.Reset.Should().Be(false);
@@ -199,10 +199,9 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         }
 
         [Test]
-        [Ignore("TODO Come back to this")]
         public void OutputQ_ShouldMatchOutputQOnSRLatch()
         {
-            var gatedSRLatchMock = Substitute.For<GatedSRLatch>();
+            var gatedSRLatchMock = Substitute.For<IGatedSRLatch>();
             gatedSRLatchMock.OutputQ.Returns(true);
             var objUT = CreateObjectUnderTest(gatedSRLatchMock);
             objUT.OutputQ.Should().Be(true);
@@ -216,10 +215,9 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         }
 
         [Test]
-        [Ignore("TODO Come back to this")]
         public void OutputNQ_ShouldMatchOutputQOnSRLatch()
         {
-            var gatedSRLatchMock = Substitute.For<GatedSRLatch>();
+            var gatedSRLatchMock = Substitute.For<IGatedSRLatch>();
             gatedSRLatchMock.OutputNQ.Returns(true);
             var objUT = CreateObjectUnderTest(gatedSRLatchMock);
             objUT.OutputNQ.Should().Be(true);
