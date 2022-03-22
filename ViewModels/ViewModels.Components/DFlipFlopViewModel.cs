@@ -12,9 +12,9 @@ namespace DigitalElectronics.ViewModels.Components
             : this(new DFlipFlop())
         { }
 
-        public DFlipFlopViewModel(IDFlipFlop srLatch)
+        public DFlipFlopViewModel(IDFlipFlop dFlipFlop)
         {
-            _dFlipFlop = srLatch ?? throw new ArgumentNullException(nameof(srLatch));
+            _dFlipFlop = dFlipFlop ?? throw new ArgumentNullException(nameof(dFlipFlop));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

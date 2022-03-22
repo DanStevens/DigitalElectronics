@@ -13,9 +13,9 @@ namespace DigitalElectronics.ViewModels.Components
             : this(new GatedDLatch())
         { }
 
-        public GatedDLatchViewModel(IGatedDLatch srLatch)
+        public GatedDLatchViewModel(IGatedDLatch gatedDLatch)
         {
-            _gatedDLatch = srLatch ?? throw new ArgumentNullException(nameof(srLatch));
+            _gatedDLatch = gatedDLatch ?? throw new ArgumentNullException(nameof(gatedDLatch));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
