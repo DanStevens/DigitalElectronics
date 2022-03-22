@@ -10,8 +10,8 @@
         <viewModels:GatedDLatchViewModel x:Name="_viewModel" />
     </Window.DataContext>
     <Canvas Margin="15">
-        <CheckBox Content="Enabled" IsChecked="{Binding Enable}" Canvas.Top="44" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <CheckBox Content="Data" IsChecked="{Binding Data}" Canvas.Top="73" Canvas.Left="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <CheckBox Content="Data" IsChecked="{Binding Data}" Canvas.Top="32" Canvas.Left="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <CheckBox Content="Enable" IsChecked="{Binding Enable}" Canvas.Top="57" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Border BorderBrush="Black" BorderThickness="1" Width="60" Height="80" Canvas.Top="25" Canvas.Left="100" HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center">Gated D Latch</TextBlock>
         </Border>
