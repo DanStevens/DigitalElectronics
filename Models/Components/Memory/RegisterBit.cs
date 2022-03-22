@@ -13,8 +13,8 @@ namespace DigitalElectronics.Components.Memory
     /// value remains latched.
     /// </remarks>
     /// <seealso cref="NBitRegister"/>
-    [DebuggerDisplay("Register: Q = {OutputQ}")]
-    public class RegisterBit
+    [DebuggerDisplay("Register: Q = {OutputQ} (ProbeState = {ProbeState()})")]
+    public class RegisterBit : IRegisterBit
     {
         private DFlipFlop _dFlipFlop;
         private Inverter _not;
