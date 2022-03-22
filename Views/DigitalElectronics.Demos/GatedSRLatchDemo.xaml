@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
         mc:Ignorable="d"
-        Title="S-R Latch Demo" Height="200" Width="300">
+        Title="Gated S-R Latch Demo" Height="200" Width="300">
     <Window.DataContext>
         <viewModels:GatedSRLatchViewModel x:Name="_viewModel" />
     </Window.DataContext>
