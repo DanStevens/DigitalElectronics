@@ -3,12 +3,11 @@ using System.Diagnostics;
 
 namespace DigitalElectronics.Components.FlipFlops
 {
-    
     /// <summary>
     /// Models a D flip-flop
     /// </summary>
     [DebuggerDisplay("D Flip-flop: Q = {OutputQ}; Q̅ = {OutputNQ}")]
-    public class DFlipFlop : IOutputsQAndNQ
+    public class DFlipFlop : IDFlipFlop
     {
         private GatedDLatch _gatedDLatch;
 
