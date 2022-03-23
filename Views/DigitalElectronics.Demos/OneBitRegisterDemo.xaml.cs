@@ -26,7 +26,14 @@ namespace DigitalElectronics.Demos
 
         private void ClockButton_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.Clock();
+            try
+            {
+                _viewModel.Clock();
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -32,6 +32,7 @@ namespace DigitalElectronics.ViewModels.Components
                     _data = value;
                     _bitRegister.SetInputD(_data);
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Data)));
+                    if (Enable) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OutputQ)));
                 }
             }
         }
@@ -60,6 +61,7 @@ namespace DigitalElectronics.ViewModels.Components
                     _enable = value;
                     _bitRegister.SetInputE(value);
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Enable)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OutputQ)));
                 }
             }
         }
@@ -75,7 +77,6 @@ namespace DigitalElectronics.ViewModels.Components
 
             _bitRegister.Clock();
             if (Load) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ProbeQ)));
-            if (Enable) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OutputQ)));
         }
     }
 }

@@ -80,9 +80,7 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         [Test]
         public void Clock_ThrowsInvalidOperationException_WhenLoadAndEnableAreTrue()
         {
-            var objUT = new OneBitRegisterDemoViewModel();
-            objUT.Enable = true;
-            objUT.Load = true;
+            var objUT = new OneBitRegisterDemoViewModel {Enable = true, Load = true};
             var ex = Assert.Throws<InvalidOperationException>(() => objUT.Clock());
             ex.Message.Should().Be("Load and Enable should not both be set high at the same time");
         }
@@ -146,9 +144,8 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         {
             bool raised = false;
             var bitRegisterMock = Substitute.For<IRegisterBit>();
-            var objUT = new OneBitRegisterDemoViewModel(bitRegisterMock);
+            var objUT = new OneBitRegisterDemoViewModel(bitRegisterMock) {Load = true};
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.ProbeQ);
-            objUT.Load = true;
 
             objUT.Data.Should().Be(false);            
             objUT.Clock();
@@ -166,9 +163,8 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         {
             bool raised = false;
             var bitRegisterMock = Substitute.For<IRegisterBit>();
-            var objUT = new OneBitRegisterDemoViewModel(bitRegisterMock);
+            var objUT = new OneBitRegisterDemoViewModel(bitRegisterMock) {Load = false};
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.ProbeQ);
-            objUT.Load = false;
 
             objUT.Data.Should().Be(false);
             objUT.Clock();
@@ -182,43 +178,51 @@ namespace DigitalElectronics.ViewModels.Components.Tests
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedForOutputQ_UponClockCalled_WhenEnableIsTrue()
+        public void PropertyChanged_ShouldBeRaisedForOutputQ_UponEnableSetToTrue()
         {
             bool raised = false;
             var bitRegisterMock = Substitute.For<IRegisterBit>();
             var objUT = new OneBitRegisterDemoViewModel(bitRegisterMock);
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputQ);
+            
             objUT.Enable = true;
 
-            objUT.Data.Should().Be(false);
-            objUT.Clock();
-            raised.Should().Be(true);
-
-            raised = false;
-            objUT.Data = true;
-            raised.Should().Be(false);
-            objUT.Clock();
             raised.Should().Be(true);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedForOutputQ_UponClockCalled_WhenEnableIsFalse()
+        public void PropertyChanged_ShouldBeNotRaisedForOutputQ_WhenEnableIsFalse()
         {
             bool raised = false;
             var bitRegisterMock = Substitute.For<IRegisterBit>();
-            var objUT = new OneBitRegisterDemoViewModel(bitRegisterMock);
+            var objUT = new OneBitRegisterDemoViewModel(bitRegisterMock) {Enable = false};
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputQ);
-            objUT.Enable = false;
 
             objUT.Data.Should().Be(false);
-            objUT.Clock();
+            //objUT.Clock();
             raised.Should().Be(false);
 
             raised = false;
             objUT.Data = true;
             raised.Should().Be(false);
-            objUT.Clock();
+            //objUT.Clock();
             raised.Should().Be(false);
+        }
+
+        [Test]
+        public void PropertyChanged_ShouldBeRaisedForOutputQ_UponDataChanged_WhenEnableIsTrue()
+        {
+            bool raised = false;
+            var bitRegisterMock = Substitute.For<IRegisterBit>();
+            var objUT = new OneBitRegisterDemoViewModel(bitRegisterMock) {Enable = true};
+            objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputQ);
+
+            objUT.Data = true;
+            raised.Should().Be(true);
+
+            raised = false;
+            objUT.Data = false;
+            raised.Should().Be(true);
         }
     }
 }
