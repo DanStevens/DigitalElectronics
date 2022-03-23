@@ -4,18 +4,18 @@ using DigitalElectronics.Components.Memory;
 
 namespace DigitalElectronics.ViewModels.Components
 {
-    public class OneBitRegisterDemoViewModel : INotifyPropertyChanged
+    public class OneBitRegisterViewModel : INotifyPropertyChanged
     {
         private readonly IRegisterBit _bitRegister;
         private bool _data;
         private bool _enable;
         private bool _load;
 
-        public OneBitRegisterDemoViewModel()
+        public OneBitRegisterViewModel()
             : this(new RegisterBit())
         { }
 
-        public OneBitRegisterDemoViewModel(IRegisterBit bitRegister)
+        public OneBitRegisterViewModel(IRegisterBit bitRegister)
         {
             _bitRegister = bitRegister ?? throw new ArgumentNullException(nameof(bitRegister));
         }

@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="D Flip Flop Demo" Height="200" Width="300">
     <Window.DataContext>
-        <viewModels:OneBitRegisterDemoViewModel x:Name="_viewModel" />
+        <viewModels:OneBitRegisterViewModel x:Name="_viewModel" />
     </Window.DataContext>
     <Canvas Margin="15">
         <StackPanel Orientation="Vertical" Canvas.Top="0" Canvas.Bottom="0" Width="80" HorizontalAlignment="Left" Margin="0,20,0,0">
