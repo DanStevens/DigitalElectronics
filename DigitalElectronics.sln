@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
@@ -39,6 +39,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A82AEAFF-82D3-4B90-B055-47E2D3D7CA2D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModels.Components.Tests", "ViewModels\Tests\ViewModels.Components.Tests\ViewModels.Components.Tests.csproj", "{AA14A5FF-95BE-4BD9-9FFA-AB56C637F82B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{508EE922-16E7-46F5-B8B1-A77820A79342}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities.Tests", "Common\Tests\Utilities.Tests\Utilities.Tests.csproj", "{82F2B26F-7231-4FC5-B1A4-A92CFDD7E1FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
