@@ -1,19 +1,19 @@
-﻿<Window x:Class="DigitalElectronics.Demos.DFlipFlopDemo"
+﻿<Window x:Class="DigitalElectronics.Demos.Components.GatedDLatchDemo"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
         mc:Ignorable="d"
-        Title="D Flip Flop Demo" Height="200" Width="300">
+        Title="Gated D Latch Demo" Height="200" Width="300">
     <Window.DataContext>
-        <viewModels:DFlipFlopViewModel x:Name="_viewModel" />
+        <viewModels:GatedDLatchViewModel x:Name="_viewModel" />
     </Window.DataContext>
     <Canvas Margin="15">
         <CheckBox Content="Data" IsChecked="{Binding Data}" Canvas.Top="32" Canvas.Left="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Button Content="Clock" Canvas.Top="57" Width="50" Height="25" HorizontalAlignment="Center" VerticalAlignment="Top" Click="ClockButton_Click"/>
+        <CheckBox Content="Enable" IsChecked="{Binding Enable}" Canvas.Top="57" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Border BorderBrush="Black" BorderThickness="1" Width="60" Height="80" Canvas.Top="25" Canvas.Left="100" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <TextBlock Margin="1" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center">D Flip Flop</TextBlock>
+            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center">Gated D Latch</TextBlock>
         </Border>
         <Ellipse Stroke="Black" Height="20" Width="20" Canvas.Left="200" Canvas.Top="25" HorizontalAlignment="Center" VerticalAlignment="Top">
             <Ellipse.Style>
