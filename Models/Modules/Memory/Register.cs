@@ -9,7 +9,7 @@ namespace DigitalElectronics.Components.Memory
     /// Models a multi-bit register of N bits, where each bit has its own input
     /// </summary>
     [DebuggerDisplay("Register: {this.ProbeState()}")]
-    public class Register
+    public class Register : IRegister
     {
 
         private RegisterBit[] _registers;
