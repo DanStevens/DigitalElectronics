@@ -1,0 +1,29 @@
+﻿<Window x:Class="DigitalElectronics.Demos.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigitalElectronics.Demos"
+        xmlns:components="clr-namespace:DigitalElectronics.Demos.Components"
+        mc:Ignorable="d"
+        Title="Digital Electronics - Demos" Height="450" Width="250">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.Column="0" Header="Component Demos">
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="2.5" />
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="S-R Latch Demo" Click="Button_Click" Tag="Components.SRLatchDemo" />
+                <Button Content="Gated S-R Latch Demo" Click="Button_Click" Tag="Components.GatedSRLatchDemo"/>
+                <Button Content="Gated D Latch Demo" Click="Button_Click" Tag="Components.GatedDLatchDemo" />
+                <Button Content="D Flip-Flop Demo" Click="Button_Click" Tag="Components.DFlipFlopDemo" />
+                <Button Content="1-bit Register Demo" Click="Button_Click" Tag="Components.OneBitRegisterDemo" />
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>
