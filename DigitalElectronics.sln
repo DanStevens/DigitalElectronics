@@ -52,6 +52,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E001B6DF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalElectronics.UI", "Views\DigitalElectronics.UI\DigitalElectronics.UI.csproj", "{FFDC87AD-1EB6-4207-B3F1-ED158D3EE2F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalElectronics.UI.Tests", "Views\Tests\DigitalElectronics.UI.Tests\DigitalElectronics.UI.Tests.csproj", "{CB8FAA01-C5ED-4441-B9CB-0C1A3D661691}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,10 @@ Global
 		{FFDC87AD-1EB6-4207-B3F1-ED158D3EE2F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFDC87AD-1EB6-4207-B3F1-ED158D3EE2F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFDC87AD-1EB6-4207-B3F1-ED158D3EE2F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8FAA01-C5ED-4441-B9CB-0C1A3D661691}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8FAA01-C5ED-4441-B9CB-0C1A3D661691}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8FAA01-C5ED-4441-B9CB-0C1A3D661691}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8FAA01-C5ED-4441-B9CB-0C1A3D661691}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +143,7 @@ Global
 		{82F2B26F-7231-4FC5-B1A4-A92CFDD7E1FB} = {508EE922-16E7-46F5-B8B1-A77820A79342}
 		{E001B6DF-B204-4A08-8FEE-05EE65617AC2} = {9521D010-944E-4490-9E97-47A89CAEC515}
 		{FFDC87AD-1EB6-4207-B3F1-ED158D3EE2F9} = {9521D010-944E-4490-9E97-47A89CAEC515}
+		{CB8FAA01-C5ED-4441-B9CB-0C1A3D661691} = {E001B6DF-B204-4A08-8FEE-05EE65617AC2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDD55898-388C-4BD9-A950-235C0F896944}
