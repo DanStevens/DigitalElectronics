@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Components.Memory;
@@ -8,14 +9,14 @@ using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.ViewModels.Modules;
 
-public class EightBitRegisterViewModel : INotifyPropertyChanged
+public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposable
 {
     private const int NumberOfBits = 8;
 
     //public event PropertyChangedEventHandler? PropertyChanged;
 
     private readonly IRegister _register;
-    private ObservableCollection<bool> _data;
+    private ObservableCollection<Bit> _data;
     private bool _load;
     private bool _enable;
 
@@ -27,7 +28,15 @@ public class EightBitRegisterViewModel : INotifyPropertyChanged
     {
         _register = register;
 
-        _data = new ObservableCollection<bool>(_register.ProbeState().AsEnumerable());
+        _data = new ObservableCollection<Bit>(_register.ProbeState().AsEnumerable().Select(b => new Bit(b)));
+        _data.CollectionChanged += OnDataBitChanged;
+    }
+
+    private void OnDataBitChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        SyncDataWithInternalRegister();
+        RaisePropertyChanged(nameof(Data));
+        RaisePropertyChanged(nameof(Probe));
     }
 
     public bool Enable
@@ -59,22 +68,27 @@ public class EightBitRegisterViewModel : INotifyPropertyChanged
         }
     }
 
-    public ObservableCollection<bool> Data
+    public ObservableCollection<Bit> Data
     {
         get => _data;
         set
         {
             if (value is null)
-                value = new ObservableCollection<bool>(new BitArray(NumberOfBits).AsEnumerable());
+                value = new ObservableCollection<Bit>(new BitArray(NumberOfBits).AsEnumerable().Select(b => new Bit(b)));
 
             if (!_data.SequenceEqual(value))
             {
                 _data = value;
-                _register.SetInputD(new BitArray(value.ToArray()));
+                SyncDataWithInternalRegister();
                 RaisePropertyChanged();
                 if (Enable) RaisePropertyChanged(nameof(Output));
             }
         }
+    }
+
+    private void SyncDataWithInternalRegister()
+    {
+        _register.SetInputD(new BitArray(_data.Select(_ => _.Value).ToArray()));
     }
 
     public ReadOnlyObservableCollection<bool> Probe =>
@@ -87,6 +101,7 @@ public class EightBitRegisterViewModel : INotifyPropertyChanged
         if (Load && Enable)
             throw new InvalidOperationException("Load and Enable should not both be set high at the same time");
 
+        SyncDataWithInternalRegister();
         _register.Clock();
         if (Load) RaisePropertyChanged(nameof(Probe));
     }
@@ -94,8 +109,13 @@ public class EightBitRegisterViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     [NotifyPropertyChangedInvocator]
-    protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
+    private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void Dispose()
+    {
+        _data.CollectionChanged -= OnDataBitChanged;
     }
 }
