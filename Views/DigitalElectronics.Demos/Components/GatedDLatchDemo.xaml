@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
         Title="Gated D Latch Demo" Height="200" Width="300">
     <Window.DataContext>
@@ -15,29 +16,7 @@
         <Border BorderBrush="Black" BorderThickness="1" Width="60" Height="80" Canvas.Top="25" Canvas.Left="100" HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center">Gated D Latch</TextBlock>
         </Border>
-        <Ellipse Stroke="Black" Height="20" Width="20" Canvas.Left="200" Canvas.Top="25" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <Ellipse.Style>
-                <Style TargetType="{x:Type Ellipse}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding OutputQ}" Value="true">
-                            <Setter Property="Fill" Value="Lime" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Ellipse.Style>
-        </Ellipse>
-        <TextBlock Text="Q" Padding="1" Height="20" Width="20" Canvas.Left="200" Canvas.Top="25" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" />
-        <Ellipse Stroke="Black" Height="20" Width="20" Canvas.Left="200" Canvas.Top="85" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <Ellipse.Style>
-                <Style TargetType="{x:Type Ellipse}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding OutputNQ}" Value="true">
-                            <Setter Property="Fill" Value="Lime" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Ellipse.Style>
-        </Ellipse>
-        <TextBlock Text="Q̅" Padding="1" Height="20" Width="20" Canvas.Left="200" Canvas.Top="85" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="25" IsOn="{Binding OutputQ}" OnColor="Lime" Text="Q" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="85" IsOn="{Binding OutputNQ}" OnColor="Lime" Text="Q̅" />
     </Canvas>
 </Window>

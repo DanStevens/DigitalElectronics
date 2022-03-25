@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
         Title="S-R Latch Demo" Height="170" Width="300">
     <Window.DataContext>
@@ -19,29 +20,7 @@
         <Border BorderBrush="Black" BorderThickness="1" Width="60" Height="80" Canvas.Top="10" Canvas.Left="100">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">S-R Latch</TextBlock>
         </Border>
-        <Ellipse Stroke="Black" Height="20" Width="20" Canvas.Left="200" Canvas.Top="10">
-            <Ellipse.Style>
-                <Style TargetType="{x:Type Ellipse}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding OutputQ}" Value="true">
-                            <Setter Property="Fill" Value="Lime" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Ellipse.Style>
-        </Ellipse>
-        <TextBlock Text="Q" Padding="1" Height="20" Width="20" Canvas.Left="200" Canvas.Top="10" TextAlignment="Center" />
-        <Ellipse Stroke="Black" Height="20" Width="20" Canvas.Left="200" Canvas.Top="70">
-            <Ellipse.Style>
-                <Style TargetType="{x:Type Ellipse}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding OutputNQ}" Value="true">
-                            <Setter Property="Fill" Value="Lime" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Ellipse.Style>
-        </Ellipse>
-        <TextBlock Text="Q̅" Padding="1" Height="20" Width="20" Canvas.Left="200" Canvas.Top="70" TextAlignment="Center" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="10" Text="Q" IsOn="{Binding OutputQ}" OnColor="Lime" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="70" Text="Q̅" IsOn="{Binding OutputNQ}" OnColor="Lime" />
     </Canvas>
 </Window>

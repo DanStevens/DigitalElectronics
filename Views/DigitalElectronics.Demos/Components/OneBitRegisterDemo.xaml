@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
         Title="D Flip Flop Demo" Height="200" Width="300">
     <Window.DataContext>
@@ -32,17 +33,16 @@
                 </Ellipse>
             </StackPanel>
         </Border>
-        <Ellipse Stroke="Black" Height="20" Width="20" Canvas.Left="200" Canvas.Top="55" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <Ellipse.Style>
-                <Style TargetType="{x:Type Ellipse}">
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="55" Text="Q" OnColor="Lime">
+            <controls:LED.Style>
+                <Style TargetType="{x:Type controls:LED}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding OutputQ}" Value="true">
-                            <Setter Property="Fill" Value="Lime" />
+                            <Setter Property="IsOn" Value="true" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </Ellipse.Style>
-        </Ellipse>
-        <TextBlock Text="Q" Padding="1" Height="20" Width="20" Canvas.Left="200" Canvas.Top="55" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="0.47,1.682" />
+            </controls:LED.Style>
+        </controls:LED>
     </Canvas>
 </Window>
