@@ -6,6 +6,9 @@
     /// </summary>
     public class Bit : Box<bool>
     {
+        public Bit() : this(false)
+        {}
+
         public Bit(bool value) : base(value)
         { }
 

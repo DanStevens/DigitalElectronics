@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Utilities\Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Controls\LED.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
