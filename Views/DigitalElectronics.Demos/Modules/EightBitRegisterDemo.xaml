@@ -6,10 +6,12 @@
         xmlns:local="clr-namespace:DigitalElectronics.Demos.Modules"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         xmlns:components="clr-namespace:DigitalElectronics.ViewModels.Modules;assembly=ViewModels.Modules"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
-        Title="8-bit Register Demo" Height="250" Width="500">
+        Title="8-bit Register Demo" Height="170" Width="470">
     <Window.DataContext>
-        <components:EightBitRegisterViewModel x:Name="_viewModel" />
+        <components:EightBitRegisterViewModel x:Name="_viewModel" d:Enable="false" />
     </Window.DataContext>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -17,7 +19,7 @@
             <ColumnDefinition Width="180"/>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="0,10,0,0" Orientation="Vertical">
+        <StackPanel Grid.Column="0" Margin="0,10,0,0" Orientation="Vertical" HorizontalAlignment="Left">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type CheckBox}">
                     <Setter Property="Margin" Value="7.5" />
@@ -39,17 +41,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Ellipse Stroke="Black" Height="15" Width="15" Margin="0.5" HorizontalAlignment="Center" VerticalAlignment="Top">
-                                    <Ellipse.Style>
-                                        <Style TargetType="{x:Type Ellipse}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding}" Value="true">
-                                                    <Setter Property="Fill" Value="OrangeRed" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Ellipse.Style>
-                                </Ellipse>
+                                <controls:LED Height="15" Width="15" Margin="0.5" OnColor="OrangeRed" IsOn="{Binding}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -64,6 +56,22 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <CheckBox IsChecked="{Binding Value, Mode=TwoWay}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Vertical" Margin="10,23,10,10" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <TextBlock Text="Output" TextAlignment="Center" Margin="0,0,0,5"/>
+            <TextBlock TextAlignment="Center" MinWidth="170" Text="[Z state (high impedance)]" Visibility="{Binding Output, Converter={converters:NullToVisibilityConverter NullVisibility=Visible, NonNullVisibility=Collapsed}}" />
+            <ItemsControl ItemsSource="{Binding Output}" Visibility="{Binding Output, Converter={converters:NullToVisibilityConverter}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <controls:LED Height="20" Width="20" Margin="0.5" OnColor="Lime" IsOn="{Binding}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

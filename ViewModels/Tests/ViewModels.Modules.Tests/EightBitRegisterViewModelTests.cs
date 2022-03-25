@@ -61,7 +61,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
             objUT.Probe.Should().BeEquivalentTo(BoolCollectionFor255);
-            objUT.Output.Should().Be(null);
+            objUT.Output.Should().BeNull();
         }
 
 
@@ -109,6 +109,27 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             objUT.Load = false;
             registerMock.Received(1).SetInputL(false);
         }
+
+        [Test]
+        public void Output_ShouldBeNull_WhenEnableIsFalse()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+            
+            objUT.Enable.Should().Be(false);
+            objUT.Output.Should().BeNull();
+        }
+
+        [Test]
+        public void Output_ShouldBeProbe_WhenEnableIsTrue()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+
+            objUT.Enable = true;
+            objUT.Output.Should().BeEquivalentTo(objUT.Probe);
+        }
+
 
         [Test]
         public void Enable_ShouldCallSetInputLMethodOnRegister_WhenSet()

@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:DigitalElectronics.Demos"
         xmlns:components="clr-namespace:DigitalElectronics.Demos.Components"
         mc:Ignorable="d"
-        Title="Digital Electronics - Demos" Height="450" Width="250">
+        Title="Digital Electronics - Demos" Height="450" Width="400">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <GroupBox Grid.Column="0" Header="Component Demos">
@@ -23,6 +24,20 @@
                 <Button Content="Gated D Latch Demo" Click="Button_Click" Tag="Components.GatedDLatchDemo" />
                 <Button Content="D Flip-Flop Demo" Click="Button_Click" Tag="Components.DFlipFlopDemo" />
                 <Button Content="1-bit Register Demo" Click="Button_Click" Tag="Components.OneBitRegisterDemo" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Module Demos">
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="2.5" />
+                    </Style>
+                </StackPanel.Resources>
+                <!--<Button Content="S-R Latch Demo" Click="Button_Click" Tag="Components.SRLatchDemo" />
+                <Button Content="Gated S-R Latch Demo" Click="Button_Click" Tag="Components.GatedSRLatchDemo"/>
+                <Button Content="Gated D Latch Demo" Click="Button_Click" Tag="Components.GatedDLatchDemo" />
+                <Button Content="D Flip-Flop Demo" Click="Button_Click" Tag="Components.DFlipFlopDemo" />-->
+                <Button Content="8-bit Register Demo" Click="Button_Click" Tag="Modules.EightBitRegisterDemo" />
             </StackPanel>
         </GroupBox>
     </Grid>

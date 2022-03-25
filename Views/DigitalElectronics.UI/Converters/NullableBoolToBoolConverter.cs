@@ -17,11 +17,9 @@ namespace DigitalElectronics.Demos.Converters
     [ValueConversion(typeof(bool?), typeof(bool))]
     public class NullableBoolToBoolConverter : MarkupExtension, IValueConverter
     {
-        private static Lazy<NullableBoolToBoolConverter> instance = new ();
-
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return instance.Value;
+            return this;
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

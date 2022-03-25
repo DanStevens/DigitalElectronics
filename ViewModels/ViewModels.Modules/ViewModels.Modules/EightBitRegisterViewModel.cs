@@ -17,6 +17,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
 
     private readonly IRegister _register;
     private ObservableCollection<Bit> _data;
+    private ObservableCollection<bool> _output;
     private bool _load;
     private bool _enable;
 
@@ -28,13 +29,15 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
     {
         _register = register;
 
-        _data = new ObservableCollection<Bit>(_register.ProbeState().AsEnumerable().Select(b => new Bit(b)));
+        var bits = _register.ProbeState().AsEnumerable().ToArray();
+        _data = new ObservableCollection<Bit>(bits.Select(b => new Bit(b)));
         _data.CollectionChanged += OnDataBitChanged;
+        _output = new ObservableCollection<bool>(bits);
     }
 
     private void OnDataBitChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        SyncDataWithInternalRegister();
+        Sync();
         RaisePropertyChanged(nameof(Data));
         RaisePropertyChanged(nameof(Probe));
     }
@@ -79,29 +82,31 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
             if (!_data.SequenceEqual(value))
             {
                 _data = value;
-                SyncDataWithInternalRegister();
+                Sync();
                 RaisePropertyChanged();
                 if (Enable) RaisePropertyChanged(nameof(Output));
             }
         }
     }
 
-    private void SyncDataWithInternalRegister()
+    private void Sync()
     {
-        _register.SetInputD(new BitArray(_data.Select(_ => _.Value).ToArray()));
+        var bits = _data.Select(_ => _.Value).ToArray();
+        _register.SetInputD(new BitArray(bits));
+        _output = new ObservableCollection<bool>(bits);
     }
 
     public ReadOnlyObservableCollection<bool> Probe =>
         new(new ObservableCollection<bool>(_register.ProbeState().AsEnumerable()));
 
-    public BitArray Output => null;
+    public ReadOnlyObservableCollection<bool>? Output => Enable ? new ReadOnlyObservableCollection<bool>(_output) : null;
 
     public void Clock()
     {
         if (Load && Enable)
             throw new InvalidOperationException("Load and Enable should not both be set high at the same time");
 
-        SyncDataWithInternalRegister();
+        Sync();
         _register.Clock();
         if (Load) RaisePropertyChanged(nameof(Probe));
     }
