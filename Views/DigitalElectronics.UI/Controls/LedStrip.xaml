@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="DigitalElectronics.UI.Controls.LedStrip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DigitalElectronics.UI.Controls"
+             mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="150">
+    <Grid x:Name="_layoutRoot">
+        <Grid.Resources>
+            <RelativeSource x:Key="ThisRelativeSource" Mode="FindAncestor" AncestorType="{x:Type local:LedStrip}" />
+        </Grid.Resources>
+        <ItemsControl ItemsSource="{Binding Lines}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="{Binding Orientation}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:LED Width="{Binding LedSize, RelativeSource={StaticResource ThisRelativeSource}}"
+                               Height="{Binding LedSize, RelativeSource={StaticResource ThisRelativeSource}}"
+                               Margin="{Binding Spacing, RelativeSource={StaticResource ThisRelativeSource}}"
+                               OnColor="{Binding LedColorWhenLit, RelativeSource={StaticResource ThisRelativeSource}}"
+                               IsLit="{Binding}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>

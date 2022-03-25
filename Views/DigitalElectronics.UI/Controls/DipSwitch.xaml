@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:DigitalElectronics.UI.Controls"
              xmlns:utilities="clr-namespace:DigitalElectronics.Utilities;assembly=Utilities"
              mc:Ignorable="d" d:DesignHeight="15" d:DesignWidth="150">
-    <Grid x:Name="_layoutRoot" d:DataContext="{d:DesignInstance Type=local:DipSwitch, IsDesignTimeCreatable=False}">
+    <Grid x:Name="_layoutRoot">
         <ItemsControl ItemsSource="{Binding Lines}">
             <d:ItemsControl.Items>
                 <utilities:Bit Value="false" />

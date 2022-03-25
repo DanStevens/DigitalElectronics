@@ -12,7 +12,7 @@ namespace DigitalElectronics.Components.Memory
     /// invoked, but only if 'Load' input is high. If 'Load' is low, the currently latched
     /// value remains latched.
     /// </remarks>
-    /// <seealso cref="NBitRegister"/>
+    /// <seealso cref="DigitalElectronics.Components.Memory.Register"/>
     [DebuggerDisplay("Register: Q = {OutputQ} (ProbeState = {ProbeState()})")]
     public class RegisterBit : IRegisterBit
     {
@@ -40,7 +40,7 @@ namespace DigitalElectronics.Components.Memory
         /// <remarks>
         /// The `Enabled` input determines whether the register outputs the currently latched value,
         /// or `null`, which represents the Z (high impedance) state.
-        /// <seealso cref="NBitRegister.SetInputE"/>
+        /// <seealso cref="DigitalElectronics.Components.Memory.Register.SetInputE"/>
         public void SetInputE(bool value)
         {
             _triStateBuffer.SetInputB(value);
@@ -67,9 +67,8 @@ namespace DigitalElectronics.Components.Memory
         }
 
         /// <summary>
-        /// Gets state of C output, where `null` indicates Z (high impedance) state
+        /// Gets state of Q output, where `null` indicates Z (high impedance) state
         /// </summary>
-        //public bool? OutputQ => _dFlipFlop.OutputQ;
         public bool? OutputQ => _triStateBuffer.OutputC;
 
         /// <summary>

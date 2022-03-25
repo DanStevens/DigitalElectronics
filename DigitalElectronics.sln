@@ -52,7 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E001B6DF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalElectronics.UI", "Views\DigitalElectronics.UI\DigitalElectronics.UI.csproj", "{FFDC87AD-1EB6-4207-B3F1-ED158D3EE2F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalElectronics.UI.Tests", "Views\Tests\DigitalElectronics.UI.Tests\DigitalElectronics.UI.Tests.csproj", "{CB8FAA01-C5ED-4441-B9CB-0C1A3D661691}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalElectronics.UI.Tests", "Views\Tests\DigitalElectronics.UI.Tests\DigitalElectronics.UI.Tests.csproj", "{CB8FAA01-C5ED-4441-B9CB-0C1A3D661691}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

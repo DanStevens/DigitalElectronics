@@ -9,7 +9,7 @@
         /// <remarks>
         /// The `Enabled` input determines whether the register outputs the currently latched value,
         /// or `null`, which represents the Z (high impedance) state.
-        /// <seealso cref="NBitRegister.SetInputE"/>
+        /// <seealso cref="DigitalElectronics.Components.Memory.Register.SetInputE"/>
         void SetInputE(bool value);
 
         /// <summary>
@@ -23,9 +23,8 @@
         void SetInputD(bool value);
 
         /// <summary>
-        /// Gets state of C output, where `null` indicates Z (high impedance) state
+        /// Gets state of Q output, where `null` indicates Z (high impedance) state
         /// </summary>
-//public bool? OutputQ => _dFlipFlop.OutputQ;
         bool? OutputQ { get; }
 
         /// <summary>
