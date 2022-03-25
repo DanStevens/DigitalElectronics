@@ -24,6 +24,6 @@
                 <Button Content="D Flip-Flop Demo" Click="Button_Click" Tag="Components.DFlipFlopDemo" />
                 <Button Content="1-bit Register Demo" Click="Button_Click" Tag="Components.OneBitRegisterDemo" />
             </StackPanel>
-        </GroupBox>Mo
+        </GroupBox>
     </Grid>
 </Window>
