@@ -16,15 +16,15 @@ namespace DigitalElectronics.UI.Controls
             _layoutRoot.DataContext = this;
         }
 
-        public bool IsOn
+        public bool IsLit
         {
-            get { return (bool)GetValue(IsOnProperty); }
-            set { SetValue(IsOnProperty, value); }
+            get { return (bool)GetValue(IsLitProperty); }
+            set { SetValue(IsLitProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsOn.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsOnProperty =
-            DependencyProperty.Register("IsOn", typeof(bool), typeof(LED), new PropertyMetadata(false));
+        // Using a DependencyProperty as the backing store for IsLit.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsLitProperty =
+            DependencyProperty.Register("IsLit", typeof(bool), typeof(LED), new PropertyMetadata(false));
 
         public Stroke Stroke
         {

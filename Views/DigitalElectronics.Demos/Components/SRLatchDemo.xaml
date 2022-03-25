@@ -20,7 +20,7 @@
         <Border BorderBrush="Black" BorderThickness="1" Width="60" Height="80" Canvas.Top="10" Canvas.Left="100">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">S-R Latch</TextBlock>
         </Border>
-        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="10" Text="Q" IsOn="{Binding OutputQ}" OnColor="Lime" />
-        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="70" Text="Q̅" IsOn="{Binding OutputNQ}" OnColor="Lime" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="10" Text="Q" IsLit="{Binding OutputQ}" OnColor="Lime" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="70" Text="Q̅" IsLit="{Binding OutputNQ}" OnColor="Lime" />
     </Canvas>
 </Window>

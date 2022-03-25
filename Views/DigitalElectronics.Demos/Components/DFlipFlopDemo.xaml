@@ -16,7 +16,7 @@
         <Border BorderBrush="Black" BorderThickness="1" Width="60" Height="80" Canvas.Top="25" Canvas.Left="100" HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock Margin="1" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center">D Flip Flop</TextBlock>
         </Border>
-        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="25" IsOn="{Binding OutputQ}" OnColor="Lime" Text="Q" />
-        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="85" IsOn="{Binding OutputNQ}" OnColor="Lime" Text="Q̅" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="25" IsLit="{Binding OutputQ}" OnColor="Lime" Text="Q" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="85" IsLit="{Binding OutputNQ}" OnColor="Lime" Text="Q̅" />
     </Canvas>
 </Window>

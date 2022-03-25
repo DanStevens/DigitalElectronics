@@ -41,7 +41,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <controls:LED Height="15" Width="15" Margin="0.5" OnColor="OrangeRed" IsOn="{Binding}"/>
+                                <controls:LED Height="15" Width="15" Margin="0.5" OnColor="OrangeRed" IsLit="{Binding}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -60,7 +60,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <controls:LED Height="20" Width="20" Margin="0.5" OnColor="Lime" IsOn="{Binding}" />
+                        <controls:LED Height="20" Width="20" Margin="0.5" OnColor="Lime" IsLit="{Binding}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -13,7 +13,7 @@
             <Ellipse.Style>
                 <Style TargetType="{x:Type Ellipse}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsOn}" Value="true">
+                        <DataTrigger Binding="{Binding IsLit}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource OnBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
