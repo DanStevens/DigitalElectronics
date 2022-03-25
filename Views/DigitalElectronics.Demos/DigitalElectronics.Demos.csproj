@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ViewModels\ViewModels.Components\ViewModels.Components.csproj" />
+    <ProjectReference Include="..\..\ViewModels\ViewModels.Modules\ViewModels.Modules\ViewModels.Modules.csproj" />
   </ItemGroup>
 
 </Project>
