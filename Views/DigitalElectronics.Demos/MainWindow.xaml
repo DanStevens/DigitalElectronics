@@ -33,11 +33,8 @@
                         <Setter Property="Margin" Value="2.5" />
                     </Style>
                 </StackPanel.Resources>
-                <!--<Button Content="S-R Latch Demo" Click="Button_Click" Tag="Components.SRLatchDemo" />
-                <Button Content="Gated S-R Latch Demo" Click="Button_Click" Tag="Components.GatedSRLatchDemo"/>
-                <Button Content="Gated D Latch Demo" Click="Button_Click" Tag="Components.GatedDLatchDemo" />
-                <Button Content="D Flip-Flop Demo" Click="Button_Click" Tag="Components.DFlipFlopDemo" />-->
                 <Button Content="8-bit Register Demo" Click="Button_Click" Tag="Modules.EightBitRegisterDemo" />
+                <Button Content="Bus Transfer Demo" Click="Button_Click" Tag="Boards.BusTransferBoardDemo" />
             </StackPanel>
         </GroupBox>
     </Grid>

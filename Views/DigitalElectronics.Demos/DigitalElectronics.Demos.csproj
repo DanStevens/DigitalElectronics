@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Boards\Boards\Boards.csproj" />
     <ProjectReference Include="..\..\ViewModels\ViewModels.Components\ViewModels.Components.csproj" />
     <ProjectReference Include="..\..\ViewModels\ViewModels.Modules\ViewModels.Modules\ViewModels.Modules.csproj" />
     <ProjectReference Include="..\DigitalElectronics.UI\DigitalElectronics.UI.csproj" />

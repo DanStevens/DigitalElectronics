@@ -9,9 +9,9 @@ using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.ViewModels.Modules;
 
-public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposable
+public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposable, IRegisterViewModel
 {
-    private const int NumberOfBits = 8;
+    private const int _NumberOfBits = 8;
 
     //public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -22,7 +22,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
     private bool _enable;
 
     public EightBitRegisterViewModel()
-        : this(new Register(NumberOfBits))
+        : this(new Register(_NumberOfBits))
     { }
 
     public EightBitRegisterViewModel(IRegister register)
@@ -42,6 +42,8 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
         RaisePropertyChanged(nameof(Probe));
     }
 
+    public int NumberOfBits => _NumberOfBits;
+
     public bool Enable
     {
         get => _enable;
@@ -53,6 +55,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
                 _register.SetInputE(value);
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Output));
+                EnableChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }
@@ -77,7 +80,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
         set
         {
             if (value is null)
-                value = new ObservableCollection<Bit>(new BitArray(NumberOfBits).AsEnumerable().Select(b => new Bit(b)));
+                value = new ObservableCollection<Bit>(new BitArray(_NumberOfBits).AsEnumerable().Select(b => new Bit(b)));
 
             if (!_data.SequenceEqual(value))
             {
@@ -101,6 +104,16 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
 
     public ReadOnlyObservableCollection<bool>? Output => Enable ? new ReadOnlyObservableCollection<bool>(_output) : null;
 
+    IList<Bit> IRegisterViewModel.Data
+    {
+        get => Data;
+        set => Data = new ObservableCollection<Bit>(value);
+    }
+
+    IReadOnlyList<bool> IRegisterViewModel.Probe => Probe;
+
+    IReadOnlyList<bool>? IRegisterViewModel.Output => Output;
+
     public void Clock()
     {
         if (Load && Enable)
@@ -118,6 +131,8 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    public event EventHandler EnableChanged;
 
     public void Dispose()
     {
