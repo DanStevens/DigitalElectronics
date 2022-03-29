@@ -39,12 +39,12 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
         private static ObservableCollection<Bit> CreateObservableBitCollection(byte value)
         {
-            return new ObservableCollection<Bit>(BitConverter.GetBits(value).AsEnumerable().Select(b => new Bit(b)));
+            return new ObservableCollection<Bit>(BitConverter.GetBits(value));
         }
 
         private static ObservableCollection<bool> CreateObservableBoolCollection(byte value)
         {
-            return new ObservableCollection<bool>(BitConverter.GetBits(value).AsEnumerable());
+            return new ObservableCollection<bool>(BitConverter.GetBits(value));
         }
 
 

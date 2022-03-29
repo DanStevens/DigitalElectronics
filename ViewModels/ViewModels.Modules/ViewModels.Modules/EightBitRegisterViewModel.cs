@@ -31,7 +31,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
     {
         _register = register;
 
-        var bits = _register.ProbeState().AsEnumerable().ToArray();
+        var bits = _register.ProbeState().ToArray<bool>();
         _data = new ObservableCollection<Bit>(bits.Select(b => new Bit(b)));
         _data.CollectionChanged += OnDataBitChanged;
         _output = new ObservableCollection<bool>(bits);
@@ -82,7 +82,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
         set
         {
             if (value is null)
-                value = new ObservableCollection<Bit>(new BitArray(_NumberOfBits).AsEnumerable().Select(b => new Bit(b)));
+                value = new ObservableCollection<Bit>(new BitArray(_NumberOfBits));
 
             if (!_data.SequenceEqual(value))
             {
@@ -102,7 +102,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
     }
 
     public ReadOnlyObservableCollection<bool> Probe =>
-        new(new ObservableCollection<bool>(_register.ProbeState().AsEnumerable()));
+        new(new ObservableCollection<bool>(_register.ProbeState()));
 
     public ReadOnlyObservableCollection<bool>? Output => Enable ? new ReadOnlyObservableCollection<bool>(_output) : null;
 
