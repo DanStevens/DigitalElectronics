@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.ViewModels.Modules;

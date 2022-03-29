@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace DigitalElectronics.Utilities
+namespace DigitalElectronics.Concepts
 {
     [Serializable]
     public class BusCollisionException : Exception

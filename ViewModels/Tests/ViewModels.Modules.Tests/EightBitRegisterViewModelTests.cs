@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DigitalElectronics.Components.Memory;
+using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 using FluentAssertions;
 using NSubstitute;

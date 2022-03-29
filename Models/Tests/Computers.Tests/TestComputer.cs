@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DigitalElectronics.Components.Memory;
 using NUnit.Framework;
 using FluentAssertions;
 using DigitalElectronics.Utilities;
 using DigitalElectronics.Modules.ALUs;
 using System.Diagnostics;
+using DigitalElectronics.Concepts;
+using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 [assembly: DebuggerDisplay("BitArray={DigitalElectronics.Utilities.Extensions.ToString(this)}", Target = typeof(BitArray))]
 

@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using DigitalElectronics.Components.LogicGates;
+using DigitalElectronics.Concepts;
+using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.Modules.Memory
 {
@@ -19,7 +21,7 @@ namespace DigitalElectronics.Modules.Memory
         private Inverter[] _notA;
         private QuadInputAndGate[] _andY;
 
-        private Utilities.BitConverter _bitConverter = new(Utilities.Endianness.Little);
+        private BitConverter _bitConverter = new(Endianness.Little);
 
         public FourBitAddressDecoder()
         {

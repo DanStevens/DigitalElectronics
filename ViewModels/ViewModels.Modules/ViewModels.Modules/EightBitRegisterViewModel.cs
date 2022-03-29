@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Components.Memory;
+using DigitalElectronics.Concepts;
 using DigitalElectronics.ViewModels.Modules.Annotations;
 using DigitalElectronics.Utilities;
 

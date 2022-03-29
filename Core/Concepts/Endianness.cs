@@ -1,4 +1,4 @@
-﻿namespace DigitalElectronics.Utilities
+﻿namespace DigitalElectronics.Concepts
 {
     /// <summary>
     /// The order of bits or bytes of a byte or word.

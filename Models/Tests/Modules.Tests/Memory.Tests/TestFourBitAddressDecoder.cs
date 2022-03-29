@@ -1,4 +1,5 @@
 ﻿using System;
+using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
@@ -17,7 +18,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
         [SetUp]
         public void SetUp()
         {
-            _bitConverter = new BitConverter(Utilities.Endianness.Little);
+            _bitConverter = new BitConverter(Endianness.Little);
             _decoder = new FourBitAddressDecoder();
         }
 

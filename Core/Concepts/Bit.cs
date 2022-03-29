@@ -1,4 +1,4 @@
-﻿namespace DigitalElectronics.Utilities
+﻿namespace DigitalElectronics.Concepts
 {
     
     /// <summary>

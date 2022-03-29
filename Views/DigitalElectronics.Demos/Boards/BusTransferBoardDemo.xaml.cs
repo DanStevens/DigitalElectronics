@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.Demos.Boards

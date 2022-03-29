@@ -9,11 +9,11 @@ namespace DigitalElectronics.Modules.ALUs
 {
     
     [DebuggerDisplay("ALU: {this.ProbeState()}")]
-    public class ArithmeticLogicUnit
+    public class ArithmeticLogicUnit : IArithmeticLogicUnit
     {
-        private FullAdder[] _adders;
-        private TriStateBuffer[] _3Sbuffers;
-        private XorGate[] _xorGates;
+        private readonly FullAdder[] _adders;
+        private readonly TriStateBuffer[] _3Sbuffers;
+        private readonly XorGate[] _xorGates;
 
         public ArithmeticLogicUnit(int numberOfBits)
         {

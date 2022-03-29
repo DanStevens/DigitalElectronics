@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
-namespace DigitalElectronics.Utilities
+namespace DigitalElectronics.Concepts
 {
     
     /// <summary>

@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.UI.Controls
