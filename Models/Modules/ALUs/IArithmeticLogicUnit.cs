@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Modules.ALUs
 {

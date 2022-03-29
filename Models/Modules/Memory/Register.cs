@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Components.Memory
 {

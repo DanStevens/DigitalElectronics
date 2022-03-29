@@ -11,6 +11,7 @@ using DigitalElectronics.Utilities;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 namespace DigitalElectronics.ViewModels.Modules.Tests

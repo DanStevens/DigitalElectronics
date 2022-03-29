@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Linq;
 using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Utilities
@@ -71,7 +69,7 @@ namespace DigitalElectronics.Utilities
         /// specified by <see cref="Endianness"/>.</returns>
         public BitArray GetBits(byte value)
         {
-            return new BitArray(new byte[] { value });
+            return new BitArray(value);
         }
 
         /// <summary>

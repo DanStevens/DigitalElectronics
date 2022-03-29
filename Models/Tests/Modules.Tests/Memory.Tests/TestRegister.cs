@@ -2,6 +2,7 @@
 using System.Collections;
 using FluentAssertions;
 using NUnit.Framework;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Components.Memory.Tests
 {

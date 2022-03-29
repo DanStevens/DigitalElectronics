@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using DigitalElectronics.Components.ALUs;
 using DigitalElectronics.Components.LogicGates;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Modules.ALUs
 {
