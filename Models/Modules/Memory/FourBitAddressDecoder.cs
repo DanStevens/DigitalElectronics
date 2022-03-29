@@ -2,6 +2,7 @@
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Modules.Memory
 {

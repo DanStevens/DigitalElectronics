@@ -4,6 +4,7 @@ using System.Diagnostics;
 using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 [assembly: DebuggerDisplay("BitArray={DigitalElectronics.Utilities.Extensions.ToString(this)}", Target = typeof(BitArray))]

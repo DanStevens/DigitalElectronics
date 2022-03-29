@@ -3,6 +3,7 @@ using System.Collections;
 using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 namespace DigitalElectronics.Modules.Memory.Tests

@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using FluentAssertions;
 using NUnit.Framework;
+using DigitalElectronics.Concepts;
 
 [assembly: DebuggerDisplay("BitArray={DigitalElectronics.Utilities.Extensions.ToString(this)}", Target = typeof(BitArray))]
 

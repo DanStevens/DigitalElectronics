@@ -7,6 +7,7 @@ using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.ViewModels.Modules.Annotations;
 using DigitalElectronics.Utilities;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.ViewModels.Modules;
 

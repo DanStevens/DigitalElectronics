@@ -8,6 +8,7 @@ using DigitalElectronics.Modules.ALUs;
 using System.Diagnostics;
 using DigitalElectronics.Concepts;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
+using BitArray = DigitalElectronics.Concepts.BitArray;
 
 [assembly: DebuggerDisplay("BitArray={DigitalElectronics.Utilities.Extensions.ToString(this)}", Target = typeof(BitArray))]
 
