@@ -15,7 +15,7 @@ namespace DigitalElectronics.Concepts
     /// in such a way as to add features like <see cref="IReadOnlyList{Boolean}"/> and
     /// <see cref="IEnumerable{Boolean}"/></note>
     /// <seealso cref="DotNetBitArray"/>
-    public class BitArray : ICollection, ICloneable, IReadOnlyList<bool>
+    public class BitArray : ICollection, ICloneable, IReadOnlyList<Bit>, IReadOnlyList<bool>
     {
         /// <summary>
         /// Casts the <see cref="BitArray"/> to the built-in .NET class <see cref="DotNetBitArray"/>
@@ -29,7 +29,7 @@ namespace DigitalElectronics.Concepts
         public BitArray(DotNetBitArray bitArray) => this.bitArray = bitArray ?? throw new ArgumentNullException(nameof(bitArray));
         public BitArray(params bool[] values) => bitArray = new DotNetBitArray(values ?? throw new ArgumentNullException(nameof(values)));
         public BitArray(params byte[] bytes) => bitArray = new DotNetBitArray(bytes ?? throw new ArgumentNullException(nameof(bytes)));
-        public BitArray(BitArray bits) => bitArray = new DotNetBitArray(bits.ToArray());
+        public BitArray(BitArray bits) => bitArray = new DotNetBitArray(bits.ToArray<bool>());
         public BitArray(int length) => bitArray = new DotNetBitArray(length);
         public BitArray(int[] values) => bitArray = new DotNetBitArray(values ?? throw new ArgumentNullException(nameof(values)));
         public BitArray(int length, bool defaultValue) => bitArray = new DotNetBitArray(length, defaultValue);
@@ -37,11 +37,13 @@ namespace DigitalElectronics.Concepts
         /// <summary>
         /// Gets or sets the value of the bit at a specific position in the BitArray.
         /// </summary>
-        public bool this[int index]
+        public Bit this[int index]
         {
-            get => bitArray[index];
-            set => bitArray[index] = value;
+            get => new (bitArray.Get(index));
+            set => bitArray.Set(index, value?.Value ?? false);
         }
+
+        bool IReadOnlyList<bool>.this[int index] => bitArray.Get(index);
 
         /// <summary>
         /// Gets the number of elements contained in the BitArray.
@@ -69,6 +71,17 @@ namespace DigitalElectronics.Concepts
         /// will be modified to store the result of the bitwise AND operation.
         /// </summary>
         public BitArray And(BitArray value)
+        {
+            bitArray.And(value); // Mutates bitArray
+            return this;
+        }
+
+        /// <summary>
+        /// Performs the bitwise AND operation between the elements of the current BitArray object
+        /// and the corresponding elements in the specified array. The current BitArray object
+        /// will be modified to store the result of the bitwise AND operation.
+        /// </summary>
+        public BitArray And(DotNetBitArray value)
         {
             bitArray.And(value); // Mutates bitArray
             return this;
@@ -120,6 +133,18 @@ namespace DigitalElectronics.Concepts
             return this;
         }
 
+        /// <summary>
+        /// Performs the bitwise OR operation between the elements of the current BitArray object and
+        /// the corresponding elements in the specified array. The current BitArray object will be
+        /// modified to store the result of the bitwise OR operation.
+        /// </summary>
+        public BitArray Or(DotNetBitArray value)
+        {
+            bitArray.Or(value);  // Mutates bitArray
+            return this;
+        }
+
+
         public BitArray RightShift(int count)
         {
             bitArray.RightShift(count);  // Mutates bitArray
@@ -132,10 +157,20 @@ namespace DigitalElectronics.Concepts
         public void Set(int index, bool value) => bitArray.Set(index, value);
 
         /// <summary>
+        /// Sets the bit at a specific position in the BitArray to the specified value.
+        /// </summary>
+        public void Set(int index, Bit value) => bitArray.Set(index, value?.Value ?? false);
+
+        /// <summary>
+        /// Sets all bits in the BitArray to the specified value.
+        /// </summary>
+        public void SetAll(bool value) => bitArray.SetAll(value);
+
+        /// <summary>
         /// Sets all bits in the BitArray to the specified value.
         /// </summary>
         /// <param name="value"></param>
-        public void SetAll(bool value) => bitArray.SetAll(value);
+        public void SetAll(Bit value) => bitArray.SetAll(value?.Value ?? false);
 
         /// <summary>
         /// Performs the bitwise exclusive OR operation between the elements of the current BitArray object against the
@@ -143,6 +178,17 @@ namespace DigitalElectronics.Concepts
         /// result of the bitwise exclusive OR operation.
         /// </summary>
         public BitArray Xor(BitArray value)
+        {
+            bitArray.Xor(value);  // Mutates bitArray
+            return this;
+        }
+
+        /// <summary>
+        /// Performs the bitwise exclusive OR operation between the elements of the current BitArray object against the
+        /// corresponding elements in the specified array. The current BitArray object will be modified to store the
+        /// result of the bitwise exclusive OR operation.
+        /// </summary>
+        public BitArray Xor(DotNetBitArray value)
         {
             bitArray.Xor(value);  // Mutates bitArray
             return this;
@@ -162,14 +208,19 @@ namespace DigitalElectronics.Concepts
         /// </summary>
         IEnumerator<bool> IEnumerable<bool>.GetEnumerator()
         {
-            return new BitArrayEnumerator(bitArray.GetEnumerator());
+            return new BitArrayAsBooleanEnumerator(bitArray.GetEnumerator());
         }
 
-        private class BitArrayEnumerator : IEnumerator<bool>
+        IEnumerator<Bit> IEnumerable<Bit>.GetEnumerator()
         {
-            private IEnumerator bitArrayEnumerator;
+            return new BitArrayAsBitsEnumerator(bitArray.GetEnumerator());
+        }
 
-            public BitArrayEnumerator(IEnumerator enumerator)
+        private class BitArrayAsBooleanEnumerator : IEnumerator<bool>
+        {
+            private readonly IEnumerator bitArrayEnumerator;
+
+            public BitArrayAsBooleanEnumerator(IEnumerator enumerator)
             {
                 bitArrayEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
             }
@@ -179,6 +230,29 @@ namespace DigitalElectronics.Concepts
             public void Reset() => bitArrayEnumerator.Reset();
 
             public bool Current => (bool)bitArrayEnumerator.Current;
+
+            object IEnumerator.Current => bitArrayEnumerator.Current;
+
+            public void Dispose()
+            {
+                // Nothing to dispose
+            }
+        }
+
+        private class BitArrayAsBitsEnumerator : IEnumerator<Bit>
+        {
+            private readonly IEnumerator bitArrayEnumerator;
+
+            public BitArrayAsBitsEnumerator(IEnumerator enumerator)
+            {
+                bitArrayEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
+            }
+
+            public bool MoveNext() => bitArrayEnumerator.MoveNext();
+
+            public void Reset() => bitArrayEnumerator.Reset();
+
+            public Bit Current => new ((bool)bitArrayEnumerator.Current);
 
             object IEnumerator.Current => bitArrayEnumerator.Current;
 

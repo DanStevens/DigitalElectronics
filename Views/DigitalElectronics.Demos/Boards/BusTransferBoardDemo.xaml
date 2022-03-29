@@ -8,7 +8,7 @@
         xmlns:boards="clr-namespace:DigitalElectronics.Boards;assembly=Boards"
         xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
-        Title="Bus Transfer Demo" Height="400" Width="470">
+        Title="Bus Transfer Demo" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <boards:BusTransferBoard x:Name="_viewModel" />
     </Window.DataContext>
