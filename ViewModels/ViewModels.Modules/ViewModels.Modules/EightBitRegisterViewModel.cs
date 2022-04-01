@@ -11,7 +11,7 @@ using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.ViewModels.Modules;
 
-public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposable, IRegisterViewModel
+public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegisterViewModel
 {
     private const int _NumberOfBits = 8;
 
@@ -136,8 +136,5 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IDisposa
 
     public event EventHandler EnableChanged;
 
-    public void Dispose()
-    {
-        _data.CollectionChanged -= OnDataBitChanged;
-    }
+    public event EventHandler DataChanged;
 }

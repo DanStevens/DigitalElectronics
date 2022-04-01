@@ -5,14 +5,28 @@ using DigitalElectronics.ViewModels.Modules;
 
 namespace DigitalElectronics.Boards;
 
-public class AluBoard
+public sealed class AluBoard : IDisposable
 {
     public AluBoard(IRegisterViewModel registerA, IRegisterViewModel registerB, IArithmeticLogicUnit alu)
     {
         RegisterA = registerA;
         RegisterB = registerB;
         ALU = alu;
+
+        RegisterA.DataChanged += OnRegisterADataChanged;
+        RegisterB.DataChanged += OnRegisterBDataChanged;
     }
+
+    private void OnRegisterADataChanged(object? sender, EventArgs e)
+    {
+        ALU.SetInputA(RegisterA.Register.ProbeState());
+    }
+
+    private void OnRegisterBDataChanged(object? sender, EventArgs e)
+    {
+        ALU.SetInputB(RegisterB.Register.ProbeState());
+    }
+
 
     public IRegisterViewModel RegisterA { get; }
 
@@ -27,5 +41,11 @@ public class AluBoard
         
         RegisterA.Clock();
         RegisterB.Clock();
+    }
+
+    public void Dispose()
+    {
+        RegisterA.DataChanged -= OnRegisterADataChanged;
+        RegisterB.DataChanged -= OnRegisterBDataChanged;
     }
 }
