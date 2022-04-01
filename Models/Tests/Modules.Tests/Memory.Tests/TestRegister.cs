@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
 using FluentAssertions;
 using NUnit.Framework;
-using BitArray = DigitalElectronics.Concepts.BitArray;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.Memory.Tests
 {
@@ -159,7 +158,7 @@ namespace DigitalElectronics.Components.Memory.Tests
             PushL();
             _4bitRegister.SetInputD(data);
             Clock();
-            _4bitRegister.Output.Should().BeEquivalentTo(data);
+            _4bitRegister.Output.Should().BeEquivalentTo(data.AsList<bool>());
         }
 
         [Test]
@@ -184,7 +183,7 @@ namespace DigitalElectronics.Components.Memory.Tests
             Clock();
             ReleaseE();
             _4bitRegister.Output.Should().BeNull();
-            _4bitRegister.ProbeState().Should().BeEquivalentTo(data);
+            _4bitRegister.ProbeState().Should().BeEquivalentTo(data.AsList<bool>());
         }
 
         [Test]
@@ -200,7 +199,7 @@ namespace DigitalElectronics.Components.Memory.Tests
 
         private void AssertOutputs(params bool[] expectedOutputs)
         {
-            BitArray expectedData = new BitArray(expectedOutputs);
+            var expectedData = new BitArray(expectedOutputs).AsList<bool>();
             _4bitRegister.Output.Should().BeEquivalentTo(expectedData);
         }
 

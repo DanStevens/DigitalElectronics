@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
 using System.Linq;
-using BitArray = DigitalElectronics.Concepts.BitArray;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.Memory
 {

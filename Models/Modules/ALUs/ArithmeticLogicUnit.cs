@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using DigitalElectronics.Components.ALUs;
 using DigitalElectronics.Components.LogicGates;
-using BitArray = DigitalElectronics.Concepts.BitArray;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Modules.ALUs
 {

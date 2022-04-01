@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using DigitalElectronics.Components.LogicGates;
+﻿using DigitalElectronics.Components.LogicGates;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Modules.Memory
 {

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
-using BitArray = DigitalElectronics.Concepts.BitArray;
-using BitConverter = DigitalElectronics.Utilities.BitConverter;
+using DigitalElectronics.Utilities;
 
 [assembly: DebuggerDisplay("BitArray={DigitalElectronics.Utilities.Extensions.ToString(this)}", Target = typeof(BitArray))]
 
@@ -29,7 +26,7 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         [Test]
         public void Constructor_GivenZeroNumberOfBits_ShouldThrow()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new ArithmeticLogicUnit(0));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => new ArithmeticLogicUnit(0));
         }
 
         [Test]
@@ -44,16 +41,16 @@ namespace DigitalElectronics.Modules.ALUs.Tests
             _4bitAlu.SetInputEO(false);
             _4bitAlu.OutputE.Should().BeNull();
             _4bitAlu.SetInputEO(true);
-            _4bitAlu.OutputE.Should().BeEquivalentTo(new BitArray(N));
+            _4bitAlu.OutputE.Should().BeEquivalentTo(new BitArray(N).AsList<bool>());
         }
 
         [Test]
         public void ProbeState_ReturnsInternalState()
         {
-            _4bitAlu.ProbeState().Should().BeEquivalentTo(new BitArray(N));
+            _4bitAlu.ProbeState().Should().BeEquivalentTo(new BitArray(N).AsList<bool>());
             _4bitAlu.SetInputA(_bitConverter.GetBits(3, N));
             _4bitAlu.SetInputB(_bitConverter.GetBits(5, N));
-            _4bitAlu.ProbeState().Should().BeEquivalentTo(_bitConverter.GetBits(8, N));
+            _4bitAlu.ProbeState().Should().BeEquivalentTo(_bitConverter.GetBits(8, N).AsList<bool>());
         }
 
         [Test]
@@ -84,7 +81,7 @@ namespace DigitalElectronics.Modules.ALUs.Tests
             _4bitAlu.SetInputA(dataA);
             var dataB = _bitConverter.GetBits(b, N);
             _4bitAlu.SetInputB(dataB);
-            var expectation = _bitConverter.GetBits(expectedSum, N);
+            var expectation = _bitConverter.GetBits(expectedSum, N).AsList<bool>();
             _4bitAlu.OutputE.Should().BeEquivalentTo(expectation, $"a = {a}; b = {b}");
         }
     }
