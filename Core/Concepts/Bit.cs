@@ -16,9 +16,21 @@
         {
             return new Bit(value);
         }
-        public static implicit operator bool(Bit bit)
+
+        public int CompareTo(Bit? other)
         {
-            return bit.Value;
+            if (other is null)
+                return 1;
+
+            return base.CompareTo(other.Value);
+        }
+
+        public bool Equals(Bit? other)
+        {
+            if (other is null)
+                return false;
+
+            return base.Equals(other.Value);
         }
     }
 }

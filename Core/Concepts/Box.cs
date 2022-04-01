@@ -40,6 +40,7 @@ namespace DigitalElectronics.Concepts
         {
             return new Box<T>(value);
         }
+
         public static implicit operator T(Box<T> box)
         {
             return box._value;
