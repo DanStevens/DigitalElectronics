@@ -22,6 +22,8 @@ namespace DigitalElectronics.Concepts
         /// </summary>
         /// <param name="obj">The object to cast</param>
         public static implicit operator DotNetBitArray(BitArray obj) => obj.bitArray;
+
+        public static implicit operator BitArray(bool[] bools) => new (bools);
         
         private readonly DotNetBitArray bitArray;
 
@@ -33,6 +35,7 @@ namespace DigitalElectronics.Concepts
         public BitArray(int length) => bitArray = new DotNetBitArray(length);
         public BitArray(int[] values) => bitArray = new DotNetBitArray(values ?? throw new ArgumentNullException(nameof(values)));
         public BitArray(int length, bool defaultValue) => bitArray = new DotNetBitArray(length, defaultValue);
+        public BitArray(Bit[] bits) : this(bits.Select(b => b?.Value ?? false).ToArray()) {}
 
         /// <summary>
         /// Gets or sets the value of the bit at a specific position in the BitArray.
@@ -192,6 +195,11 @@ namespace DigitalElectronics.Concepts
         {
             bitArray.Xor(value);  // Mutates bitArray
             return this;
+        }
+
+        public IReadOnlyList<T> AsList<T>()
+        {
+            return (IReadOnlyList<T>)this;
         }
 
         /// <summary>
