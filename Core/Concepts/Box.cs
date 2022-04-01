@@ -46,6 +46,19 @@ namespace DigitalElectronics.Concepts
             return box._value;
         }
 
+        public static bool operator ==(Box<T> lhs, Box<T> rhs)
+        {
+            if (ReferenceEquals(lhs, null))
+                return false;
+
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Box<T> lhs, Box<T> rhs)
+        {
+            return !(lhs == rhs);
+        }
+
         public int CompareTo(Box<T>? other)
         {
             if (other is null)
@@ -61,6 +74,9 @@ namespace DigitalElectronics.Concepts
 
         public bool Equals(Box<T>? other)
         {
+            if (ReferenceEquals(other, this))
+                return true;
+            
             if (other is null)
                 return false;
 
@@ -70,6 +86,21 @@ namespace DigitalElectronics.Concepts
         public bool Equals(T other)
         {
             return _value.Equals(other);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Box<T> box)
+            {
+                return Equals(box);
+            }
+
+            if (obj is T t)
+            {
+                return Equals(t);
+            }
+
+            return false;
         }
     }
 }
