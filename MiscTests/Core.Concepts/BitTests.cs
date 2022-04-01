@@ -81,12 +81,104 @@ namespace DigitalElectronics.Concepts.Tests
         }
 
         [Test]
+        public void Bit_ShouldBeComparableToBool()
+        {
+            new Bit(false).CompareTo(false).Should().Be(0);
+            new Bit(false).CompareTo(true).Should().Be(-1);
+            new Bit(true).CompareTo(false).Should().Be(1);
+            new Bit(true).CompareTo(true).Should().Be(0);
+        }
+
+
+        [Test]
         public void Bit_ShouldEqualsOtherBit()
         {
             new Bit(false).Equals(new Bit(false)).Should().Be(true);
             new Bit(false).Equals(new Bit(true)).Should().Be(false);
             new Bit(true).Equals(new Bit(false)).Should().Be(false);
             new Bit(true).Equals(new Bit(true)).Should().Be(true);
+        }
+
+        [Test]
+        public void Bit_ShouldEqualsBool()
+        {
+            new Bit(false).Equals(false).Should().Be(true);
+            new Bit(false).Equals(true).Should().Be(false);
+            new Bit(true).Equals(false).Should().Be(false);
+            new Bit(true).Equals(true).Should().Be(true);
+        }
+
+        [Test]
+        public void Bit_ShouldEqualsOtherBitUsingObjectEquals()
+        {
+            Equals(new Bit(false), new Bit(false)).Should().Be(true);
+            Equals(new Bit(false), new Bit(true)).Should().Be(false);
+            Equals(new Bit(true), new Bit(false)).Should().Be(false);
+            Equals(new Bit(true), new Bit(true)).Should().Be(true);
+        }
+
+        [Test]
+        public void Bit_ShouldEqualsOtherBitUsingEqualityOperator()
+        {
+            (new Bit(false) == new Bit(false)).Should().Be(true);
+            (new Bit(false) == new Bit(true)).Should().Be(false);
+            (new Bit(true) == new Bit(false)).Should().Be(false);
+            (new Bit(true) == new Bit(true)).Should().Be(true);
+        }
+
+        [Test]
+        public void Bit_ShouldNotEqualsOtherBitUsingInequalityOperator()
+        {
+            (new Bit(false) != new Bit(false)).Should().Be(false);
+            (new Bit(false) != new Bit(true)).Should().Be(true);
+            (new Bit(true) != new Bit(false)).Should().Be(true);
+            (new Bit(true) != new Bit(true)).Should().Be(false);
+        }
+
+        [Test]
+        public void Bit_ShouldEqualsBoolUsingObjectEquals()
+        {
+            Equals(new Bit(false), false).Should().Be(true);
+            Equals(new Bit(false), true).Should().Be(false);
+            Equals(new Bit(true), false).Should().Be(false);
+            Equals(new Bit(true), true).Should().Be(true);
+        }
+
+        [Test]
+        public void Bit_ShouldEqualsBoolUsingEqualityOperator()
+        {
+            (new Bit(false) == false).Should().Be(true);
+            (new Bit(false) == true).Should().Be(false);
+            (new Bit(true) == false).Should().Be(false);
+            (new Bit(true) == true).Should().Be(true);
+        }
+
+        [Test]
+        public void Bit_ShouldNotEqualsBoolUsingInequalityOperator()
+        {
+            (new Bit(false) != false).Should().Be(false);
+            (new Bit(false) != true).Should().Be(true);
+            (new Bit(true) != false).Should().Be(true);
+            (new Bit(true) != true).Should().Be(false);
+        }
+
+        [Test]
+        public void Bit_ShouldEqualItSelf()
+        {
+            var bit = new Bit(true);
+            bit.Equals(bit).Should().Be(true);
+        }
+
+        [Test]
+        public void Bit_ShouldBeComparableUsingFluentAssertions()
+        {
+            new Bit(true).Should().Be(new Bit(true));
+            new Bit(true).Should().Be(true);
+            new Bit(true).Should().NotBe(null);
+            new Bit(true).Should().NotBe("fish");
+            new Bit(true).Should().NotBe(false);
+            new Bit(true).Should().NotBe("true");
+            new Bit(true).Should().NotBe(new Bit(false));
         }
     }
 }

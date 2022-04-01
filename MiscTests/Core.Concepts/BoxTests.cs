@@ -44,10 +44,9 @@ namespace DigitalElectronics.Concepts.Tests
         [Test]
         public void BoxOfInt_ShouldBeComparableWithInt()
         {
-            var box42 = new Box<int>(42);
-            box42.CompareTo(42).Should().Be(0);
-            box42.CompareTo(41).Should().Be(1);
-            box42.CompareTo(43).Should().Be(-1);
+            new Box<int>(42).CompareTo(42).Should().Be(0);
+            new Box<int>(42).CompareTo(41).Should().Be(1);
+            new Box<int>(42).CompareTo(43).Should().Be(-1);
         }
 
         [Test]
@@ -61,28 +60,93 @@ namespace DigitalElectronics.Concepts.Tests
         [Test]
         public void BoxOfInt_ShouldBeComparableWithOtherBoxOfInt()
         {
-            var box42 = new Box<int>(42);
-            box42.CompareTo(new Box<int>(42)).Should().Be(0);
-            box42.CompareTo(new Box<int>(41)).Should().Be(1);
-            box42.CompareTo(new Box<int>(43)).Should().Be(-1);
+            new Box<int>(42).CompareTo(new Box<int>(42)).Should().Be(0);
+            new Box<int>(42).CompareTo(new Box<int>(41)).Should().Be(1);
+            new Box<int>(42).CompareTo(new Box<int>(43)).Should().Be(-1);
         }
 
         [Test]
         public void BoxOfInt_ShouldEqualsInt()
         {
-            var box42 = new Box<int>(42);
-            box42.Equals(42).Should().Be(true);
-            box42.Equals(41).Should().Be(false);
-            box42.Equals(43).Should().Be(false);
+            new Box<int>(42).Equals(42).Should().Be(true);
+            new Box<int>(42).Equals(41).Should().Be(false);
+            new Box<int>(42).Equals(43).Should().Be(false);
         }
 
         [Test]
         public void BoxOfInt_ShouldEqualsOtherBoxOfInt()
         {
+            new Box<int>(42).Equals(new Box<int>(42)).Should().Be(true);
+            new Box<int>(42).Equals(new Box<int>(41)).Should().Be(false);
+            new Box<int>(42).Equals(new Box<int>(43)).Should().Be(false);
+        }
+
+        [Test]
+        public void BoxOfInt_ShouldEqualsOtherBoxOfIntUsingObjectEquals()
+        {
+            Equals(new Box<int>(42), new Box<int>(42)).Should().Be(true);
+            Equals(new Box<int>(42), new Box<int>(41)).Should().Be(false);
+            Equals(new Box<int>(42), new Box<int>(43)).Should().Be(false);
+        }
+
+        [Test]
+        public void BoxOfInt_ShouldEqualsOtherBoxOfIntUsingEqualityOperator()
+        {
+            (new Box<int>(42) == new Box<int>(42)).Should().Be(true);
+            (new Box<int>(42) == new Box<int>(41)).Should().Be(false);
+            (new Box<int>(42) == new Box<int>(43)).Should().Be(false);
+        }
+
+        [Test]
+        public void BoxOfInt_ShouldNotEqualsOtherBoxOfIntUsingInequalityOperator()
+        {
+            (new Box<int>(42) != new Box<int>(42)).Should().Be(false);
+            (new Box<int>(42) != new Box<int>(41)).Should().Be(true);
+            (new Box<int>(42) != new Box<int>(43)).Should().Be(true);
+        }
+
+        [Test]
+        public void BoxOfInt_ShouldEqualsIntUsingEqualityOperator()
+        {
+            (new Box<int>(42) == 42).Should().Be(true);
+            (new Box<int>(42) == 41).Should().Be(false);
+            (new Box<int>(42) == 43).Should().Be(false);
+        }
+
+        [Test]
+        public void BoxOfInt_ShouldNotEqualsUsingInequalityOperator()
+        {
+            (new Box<int>(42) != 42).Should().Be(false);
+            (new Box<int>(42) != 41).Should().Be(true);
+            (new Box<int>(42) != 43).Should().Be(true);
+        }
+
+
+        [Test]
+        public void BoxOfInt_ShouldEqualsIntUsingObjectEquals()
+        {
+            Equals(new Box<int>(42), 42).Should().Be(true);
+            Equals(new Box<int>(42), 41).Should().Be(false);
+            Equals(new Box<int>(42), 43).Should().Be(false);
+        }
+
+        [Test]
+        public void BoxOfInt_ShouldEqualItSelf()
+        {
             var box42 = new Box<int>(42);
-            box42.Equals(new Box<int>(42)).Should().Be(true);
-            box42.Equals(new Box<int>(41)).Should().Be(false);
-            box42.Equals(new Box<int>(43)).Should().Be(false);
+            box42.Equals(box42).Should().Be(true);
+        }
+
+        [Test]
+        public void Bit_ShouldBeComparableUsingFluentAssertions()
+        {
+            new Box<int>(42).Should().Be(new Box<int>(42));
+            new Box<int>(42).Should().Be(42);
+            new Box<int>(42).Should().NotBe(null);
+            new Box<int>(42).Should().NotBe("fish");
+            new Box<int>(42).Should().NotBe(41);
+            new Box<int>(42).Should().NotBe("42");
+            new Box<int>(42).Should().NotBe(new Box<int>(41));
         }
     }
 }
