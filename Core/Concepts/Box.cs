@@ -102,5 +102,10 @@ namespace DigitalElectronics.Concepts
 
             return false;
         }
+
+        public override string ToString()
+        {
+            return $"Box<{typeof(T)}>({_value})";
+        }
     }
 }

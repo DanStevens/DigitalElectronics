@@ -2,6 +2,8 @@
 using FluentAssertions;
 using NUnit.Framework;
 using DigitalElectronics.Concepts;
+using DotNetBitArray = System.Collections.BitArray;
+using DotNetBitConverter = System.BitConverter;
 
 [assembly: DebuggerDisplay("BitArray={DigitalElectronics.Utilities.Extensions.ToString(this)}", Target = typeof(BitArray))]
 
@@ -32,17 +34,16 @@ namespace DigitalElectronics.Utilities.Tests
         }
 
         [Test]
-        public void Compare_BitArrayComparedWithBitArray_ShouldReturnTBD()
+        public void Compare_BitArrayComparedWithBitArray_ShouldReturnResultEquivalentToComparingBytes()
         {
             var comparer = new BitArrayComparer();
-            var bitConverter = new BitConverter();
 
             for (byte x = 0; x < 255; x++)
             {
                 for (byte y = 0; y < 255; y++)
                 {
-                    var bitArrayX = bitConverter.GetBits(x);
-                    var bitArrayY = bitConverter.GetBits(y);
+                    var bitArrayX = new BitArray(x);
+                    var bitArrayY = new BitArray(y);
                     var expected = x.CompareTo(y);
 
                     var result = comparer.Compare(bitArrayX, bitArrayY);

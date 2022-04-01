@@ -32,5 +32,10 @@
 
             return base.Equals(other.Value);
         }
+
+        public override string ToString()
+        {
+            return $"Bit({Value})";
+        }
     }
 }

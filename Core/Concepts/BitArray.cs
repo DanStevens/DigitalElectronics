@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using DotNetBitArray = System.Collections.BitArray;
 
@@ -15,6 +16,7 @@ namespace DigitalElectronics.Concepts
     /// in such a way as to add features like <see cref="IReadOnlyList{Boolean}"/> and
     /// <see cref="IEnumerable{Boolean}"/></note>
     /// <seealso cref="DotNetBitArray"/>
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class BitArray : ICollection, ICloneable, IReadOnlyList<Bit>, IReadOnlyList<bool>
     {
         /// <summary>
@@ -201,6 +203,38 @@ namespace DigitalElectronics.Concepts
         {
             return (IReadOnlyList<T>)this;
         }
+
+        public byte ToByte()
+        {
+            if (Length > sizeof(byte) * 8)
+                throw new ArgumentException($"{nameof(BitArray)} is too long to convert to Byte without data loss.");
+
+            byte[] arr = new byte[1];
+            CopyTo(arr, 0);
+            return arr[0];
+        }
+
+        public int ToInt32()
+        {
+            if (Length > sizeof(int) * 8)
+                throw new ArgumentException($"{nameof(BitArray)} is too long to convert to Int32 without data loss.");
+
+            int[] arr = new int[1];
+            CopyTo(arr, 0);
+            return arr[0];
+        }
+
+        /// <summary>
+        /// Returns the binary representation of the BitArray as a string
+        /// </summary>
+        /// <returns>A string of '1's or '0's representing each bit of the BitArray</returns>
+        public override string ToString()
+        {
+            return string.Join(string.Empty, this.AsEnumerable<bool>().Select(b => b ? "1" : "0"));
+        }
+
+        internal string DebuggerDisplay =>
+            ToString() + (Length <= sizeof(int)* 8 ? $" ({ToInt32()})" : string.Empty);
 
         /// <summary>
         /// Returns an enumerator that iterates through the BitArray.
