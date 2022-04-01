@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 
@@ -6,7 +7,8 @@ namespace DigitalElectronics.ViewModels.Modules;
 
 public interface IRegisterViewModel
 {
-    public event EventHandler EnableChanged;
+    event EventHandler EnableChanged;
+    event EventHandler DataChanged;
     int NumberOfBits { get; }
     bool Enable { get; set; }
     bool Load { get; set; }

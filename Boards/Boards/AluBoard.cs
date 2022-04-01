@@ -1,4 +1,5 @@
-﻿using DigitalElectronics.Concepts;
+﻿using DigitalElectronics.Components.Memory;
+using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.ALUs;
 using DigitalElectronics.Utilities;
 using DigitalElectronics.ViewModels.Modules;
@@ -7,45 +8,55 @@ namespace DigitalElectronics.Boards;
 
 public sealed class AluBoard : IDisposable
 {
-    public AluBoard(IRegisterViewModel registerA, IRegisterViewModel registerB, IArithmeticLogicUnit alu)
+    public AluBoard(
+        IRegisterViewModel registerAVM,
+        IRegister registerA,
+        IRegisterViewModel registerBVM,
+        IRegister registerB,
+        IArithmeticLogicUnit alu)
     {
+        RegisterAVM = registerAVM;
         RegisterA = registerA;
+        RegisterBVM = registerBVM;
         RegisterB = registerB;
         ALU = alu;
 
-        RegisterA.DataChanged += OnRegisterADataChanged;
-        RegisterB.DataChanged += OnRegisterBDataChanged;
+        RegisterAVM.DataChanged += OnRegisterADataChanged;
+        RegisterBVM.DataChanged += OnRegisterBDataChanged;
     }
 
     private void OnRegisterADataChanged(object? sender, EventArgs e)
     {
-        ALU.SetInputA(RegisterA.Register.ProbeState());
+        ALU.SetInputA(RegisterA.ProbeState());
     }
 
     private void OnRegisterBDataChanged(object? sender, EventArgs e)
     {
-        ALU.SetInputB(RegisterB.Register.ProbeState());
+        ALU.SetInputB(RegisterB.ProbeState());
     }
 
+    public IRegisterViewModel RegisterAVM { get; }
 
-    public IRegisterViewModel RegisterA { get; }
+    public IRegisterViewModel RegisterBVM { get; }
 
-    public IRegisterViewModel RegisterB { get; }
+    public IRegister RegisterA { get; }
+
+    public IRegister RegisterB { get; }
 
     public IArithmeticLogicUnit ALU { get; }
 
     public void Clock()
     {
-        if (RegisterA.Enable && RegisterB.Enable)
+        if (RegisterAVM.Enable && RegisterBVM.Enable)
             throw new BusCollisionException("Register A and Register B should not be enabled at the same time.");
         
-        RegisterA.Clock();
-        RegisterB.Clock();
+        RegisterAVM.Clock();
+        RegisterBVM.Clock();
     }
 
     public void Dispose()
     {
-        RegisterA.DataChanged -= OnRegisterADataChanged;
-        RegisterB.DataChanged -= OnRegisterBDataChanged;
+        RegisterAVM.DataChanged -= OnRegisterADataChanged;
+        RegisterBVM.DataChanged -= OnRegisterBDataChanged;
     }
 }

@@ -15,8 +15,6 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 {
     private const int _NumberOfBits = 8;
 
-    //public event PropertyChangedEventHandler? PropertyChanged;
-
     private readonly IRegister _register;
     private ObservableCollection<Bit> _data;
     private ObservableCollection<bool> _output;
@@ -42,6 +40,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
         Sync();
         RaisePropertyChanged(nameof(Data));
         RaisePropertyChanged(nameof(Probe));
+        DataChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public int NumberOfBits => _NumberOfBits;
@@ -86,9 +85,12 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 
             if (!_data.SequenceEqual(value))
             {
+                _data.CollectionChanged -= OnDataBitChanged;
                 _data = value;
+                _data.CollectionChanged += OnDataBitChanged;
                 Sync();
                 RaisePropertyChanged();
+                DataChanged?.Invoke(this, EventArgs.Empty);
                 if (Enable) RaisePropertyChanged(nameof(Output));
             }
         }
@@ -96,7 +98,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 
     private void Sync()
     {
-        var bits = _data.Select(_ => _.Value).ToArray();
+        var bits = _data.ToBitArray();
         _register.SetInputD(new BitArray(bits));
         _output = new ObservableCollection<bool>(bits);
     }

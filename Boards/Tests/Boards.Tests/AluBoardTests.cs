@@ -27,8 +27,8 @@ public class AluBoardTests
     {
         var mocks = new Mocks();
         using var objUT = CreateObjectUnderTest(mocks);
-        objUT.RegisterA.Should().BeSameAs(mocks.registerAVM);
-        objUT.RegisterB.Should().BeSameAs(mocks.registerBVM);
+        objUT.RegisterAVM.Should().BeSameAs(mocks.registerAVM);
+        objUT.RegisterBVM.Should().BeSameAs(mocks.registerBVM);
         objUT.ALU.Should().BeSameAs(mocks.alu);
     }
 
@@ -65,7 +65,7 @@ public class AluBoardTests
         using var objUT = CreateObjectUnderTest(mocks);
 
         var binary42 = _bitConverter.GetBits((byte)42);
-        objUT.RegisterA.Data = binary42.AsEnumerable<Bit>().ToList();
+        objUT.RegisterAVM.Data = binary42.AsEnumerable<Bit>().ToList();
         mocks.registerAVM.DataChanged += Raise.Event();
 
         var expectedArgs = CreateExpectedBitArrayArg(binary42);
@@ -79,7 +79,7 @@ public class AluBoardTests
         using var objUT = CreateObjectUnderTest(mocks);
 
         var binary42 = _bitConverter.GetBits((byte)42);
-        objUT.RegisterB.Data = binary42.AsEnumerable<Bit>().ToList();
+        objUT.RegisterBVM.Data = binary42.AsEnumerable<Bit>().ToList();
         mocks.registerBVM.DataChanged += Raise.Event();
 
         var expectedArgs = CreateExpectedBitArrayArg(binary42);
@@ -91,7 +91,12 @@ public class AluBoardTests
     private static AluBoard CreateObjectUnderTest(Mocks mocks)
     {
         _ = mocks ?? throw new ArgumentNullException(nameof(mocks));
-        return new AluBoard(mocks.registerAVM, mocks.registerBVM, mocks.alu);
+        return new AluBoard(
+            mocks.registerAVM,
+            mocks.registerA,
+            mocks.registerBVM,
+            mocks.registerB,
+            mocks.alu);
     }
 
     private class Mocks
@@ -105,9 +110,7 @@ public class AluBoardTests
         public Mocks()
         {
             registerA.ProbeState().Returns(_ => registerAVM.Data.ToBitArray());
-            registerAVM.Register.Returns(registerA);
             registerB.ProbeState().Returns(_ => registerBVM.Data.ToBitArray());
-            registerBVM.Register.Returns(registerB);
         }
     }
 

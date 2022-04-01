@@ -98,6 +98,35 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
+        public void Data_WhenChangingABit_ShouldCallSetInputDMethodOnRegister()
+        {
+            var binary254 = BitConverter.GetBits((byte)254);
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+            objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
+
+            objUT.Data[0] = false;
+
+            var expectedArg = CreateExpectedBitArrayArg(binary254);
+            registerMock.Received().SetInputD(expectedArg);
+        }
+
+        [Test]
+        public void Data_WhenChangingABit_AfterAssigningNewValue_ShouldCallSetInputDMethdOnRegister()
+        {
+            var binary1 = BitConverter.GetBits((byte)1);
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+            objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
+
+            objUT.Data = BitCollectionFor0;
+            objUT.Data[0] = true;
+
+            var expectedArg = CreateExpectedBitArrayArg(binary1);
+            registerMock.Received().SetInputD(expectedArg);
+        }
+
+        [Test]
         public void Load_ShouldCallSetInputLMethodOnRegister_WhenSet()
         {
             var registerMock = CreateRegisterMock();
@@ -330,17 +359,21 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
-        [Ignore("TODO come back to this")]
-        public void WhenChangingBitOnData_TBD()
+        public void DataChanged_ShouldBeRaised_WhenDataPropertyChanges()
         {
+            var raised = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
+            objUT.DataChanged += (s, e) => raised = true;
 
-            objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
-            objUT.Data[0] = false;
+            objUT.Data = BitCollectionFor0;
 
-            var expectedArg = CreateExpectedBitArrayArg(BitConverter.GetBits((byte)127));
-            registerMock.Received().SetInputD(Arg.Any<BitArray>());
+            raised.Should().Be(true);
+
+            raised = false;
+            objUT.Data[0] = true;
+
+            raised.Should().Be(true);
         }
     }
 }
