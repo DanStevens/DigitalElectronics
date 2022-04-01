@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
-using DigitalElectronics.Concepts;
+﻿using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
-using BitArray = DigitalElectronics.Concepts.BitArray;
-using BitConverter = DigitalElectronics.Utilities.BitConverter;
+using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.Modules.Memory.Tests
 {
@@ -87,7 +84,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
         {
             _16ByteRAM.SetInputA(addressBits);
             _16ByteRAM.SetInputE(true);
-            _16ByteRAM.Output.Should().BeEquivalentTo(expectedData);
+            _16ByteRAM.Output.Should().BeEquivalentTo(expectedData.AsList<bool>());
         }
 
         private void WriteToMemoryLocation(BitArray addressBits, BitArray data)
@@ -97,7 +94,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
             _16ByteRAM.SetInputD(data);
             _16ByteRAM.Clock();
             _16ByteRAM.SetInputE(true);
-            _16ByteRAM.Output.Should().BeEquivalentTo(data);
+            _16ByteRAM.Output.Should().BeEquivalentTo(data.AsList<bool>());
             _16ByteRAM.SetInputE(false);
             _16ByteRAM.Output.Should().BeNull();
         }

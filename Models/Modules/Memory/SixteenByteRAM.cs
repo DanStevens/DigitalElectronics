@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Components.Memory;
-using BitArray = DigitalElectronics.Concepts.BitArray;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Modules.Memory
 {

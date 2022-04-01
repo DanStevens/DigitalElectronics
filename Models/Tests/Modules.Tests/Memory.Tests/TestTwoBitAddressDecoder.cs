@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 using FluentAssertions;
@@ -20,7 +20,20 @@ namespace DigitalElectronics.Modules.Memory.Tests
             decoder.SetInputA0(a0);
             decoder.SetInputA1(a1);
             var expectedOutput = _bitConverter.GetBits(expectedY, 4);
-            decoder.OutputY.Should().BeEquivalentTo(expectedOutput);
+            decoder.OutputY.Should().BeEquivalentTo(expectedOutput.AsList<bool>());
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// fluent assertions should beequivalentto class implements IEnumerable<X> and IEnumerable<Y> so cannot determine which on to use for asserting the equivalency of the collection
