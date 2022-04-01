@@ -197,7 +197,7 @@ namespace DigitalElectronics.Concepts
             return this;
         }
 
-        public IReadOnlyList<T> AsList<T>()
+        public IReadOnlyList<T> AsReadOnlyList<T>()
         {
             return (IReadOnlyList<T>)this;
         }

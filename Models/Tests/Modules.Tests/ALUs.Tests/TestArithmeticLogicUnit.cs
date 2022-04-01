@@ -41,16 +41,16 @@ namespace DigitalElectronics.Modules.ALUs.Tests
             _4bitAlu.SetInputEO(false);
             _4bitAlu.OutputE.Should().BeNull();
             _4bitAlu.SetInputEO(true);
-            _4bitAlu.OutputE.Should().BeEquivalentTo(new BitArray(N).AsList<bool>());
+            _4bitAlu.OutputE.Should().BeEquivalentTo(new BitArray(N).AsReadOnlyList<bool>());
         }
 
         [Test]
         public void ProbeState_ReturnsInternalState()
         {
-            _4bitAlu.ProbeState().Should().BeEquivalentTo(new BitArray(N).AsList<bool>());
+            _4bitAlu.ProbeState().Should().BeEquivalentTo(new BitArray(N).AsReadOnlyList<bool>());
             _4bitAlu.SetInputA(_bitConverter.GetBits(3, N));
             _4bitAlu.SetInputB(_bitConverter.GetBits(5, N));
-            _4bitAlu.ProbeState().Should().BeEquivalentTo(_bitConverter.GetBits(8, N).AsList<bool>());
+            _4bitAlu.ProbeState().Should().BeEquivalentTo(_bitConverter.GetBits(8, N).AsReadOnlyList<bool>());
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace DigitalElectronics.Modules.ALUs.Tests
             _4bitAlu.SetInputA(dataA);
             var dataB = _bitConverter.GetBits(b, N);
             _4bitAlu.SetInputB(dataB);
-            var expectation = _bitConverter.GetBits(expectedSum, N).AsList<bool>();
+            var expectation = _bitConverter.GetBits(expectedSum, N).AsReadOnlyList<bool>();
             _4bitAlu.OutputE.Should().BeEquivalentTo(expectation, $"a = {a}; b = {b}");
         }
     }

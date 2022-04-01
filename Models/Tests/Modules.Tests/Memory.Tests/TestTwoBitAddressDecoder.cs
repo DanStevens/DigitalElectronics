@@ -20,7 +20,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
             decoder.SetInputA0(a0);
             decoder.SetInputA1(a1);
             var expectedOutput = _bitConverter.GetBits(expectedY, 4);
-            decoder.OutputY.Should().BeEquivalentTo(expectedOutput.AsList<bool>());
+            decoder.OutputY.Should().BeEquivalentTo(expectedOutput.AsReadOnlyList<bool>());
         }
     }
 }

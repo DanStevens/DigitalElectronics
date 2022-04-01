@@ -35,26 +35,26 @@ namespace DigitalElectronics.Computers.Tests
         {
             BitArray data = _bitConverter.GetBits(47, NumberOfBits);
 
-            _registerA.ProbeState().Should().BeEquivalentTo(new BitArray(NumberOfBits, true).AsList<bool>());
-            _registerB.ProbeState().Should().BeEquivalentTo(new BitArray(NumberOfBits, true).AsList<bool>());
+            _registerA.ProbeState().Should().BeEquivalentTo(new BitArray(NumberOfBits, true).AsReadOnlyList<bool>());
+            _registerB.ProbeState().Should().BeEquivalentTo(new BitArray(NumberOfBits, true).AsReadOnlyList<bool>());
 
             // Load data into register A
             _registerA.SetInputL(true);
             _registerA.SetInputD(data);
              _computer.Clock();
             _registerA.SetInputL(false);
-            _registerA.ProbeState().Should().BeEquivalentTo(data.AsList<bool>());
+            _registerA.ProbeState().Should().BeEquivalentTo(data.AsReadOnlyList<bool>());
 
             // Enable register A for reading
             _registerA.SetInputE(true);
-            _registerA.Output.Should().BeEquivalentTo(data.AsList<bool>());
+            _registerA.Output.Should().BeEquivalentTo(data.AsReadOnlyList<bool>());
 
             // Load data into register B from register A
             _registerB.SetInputL(true);
             _registerB.SetInputD(_registerA.Output);
              _computer.Clock();
             _registerB.SetInputL(false);
-            _registerB.ProbeState().Should().BeEquivalentTo(data.AsList<bool>());
+            _registerB.ProbeState().Should().BeEquivalentTo(data.AsReadOnlyList<bool>());
         }
 
         [Test]
@@ -68,30 +68,30 @@ namespace DigitalElectronics.Computers.Tests
             _registerA.SetInputL(true);
             _registerA.SetInputD(binary20);
             _computer.Clock();
-            _registerA.ProbeState().Should().BeEquivalentTo(binary20.AsList<bool>());
+            _registerA.ProbeState().Should().BeEquivalentTo(binary20.AsReadOnlyList<bool>());
 
             // Load 23 into register B
             _registerB.SetInputL(true);
             _registerB.SetInputD(binary23);
             _computer.Clock();
-            _registerB.ProbeState().Should().BeEquivalentTo(binary23.AsList<bool>());
+            _registerB.ProbeState().Should().BeEquivalentTo(binary23.AsReadOnlyList<bool>());
 
             // Verify state of ALU
-            _alu.ProbeState().Should().BeEquivalentTo(result1.AsList<bool>());
+            _alu.ProbeState().Should().BeEquivalentTo(result1.AsReadOnlyList<bool>());
             _alu.SetInputEO(true);
-            _alu.OutputE.Should().BeEquivalentTo(result1.AsList<bool>());
+            _alu.OutputE.Should().BeEquivalentTo(result1.AsReadOnlyList<bool>());
 
             // Load ALU result into register A
             _registerA.SetInputL(true);
             _registerA.SetInputD(_alu.OutputE);
             _computer.Clock();
-            _registerA.ProbeState().Should().BeEquivalentTo(result1.AsList<bool>());
+            _registerA.ProbeState().Should().BeEquivalentTo(result1.AsReadOnlyList<bool>());
             _registerA.SetInputL(false);
 
             // Verify state of ALU
             BitArray result2 = _bitConverter.GetBits(20 + 23 + 23, NumberOfBits);
-            _alu.ProbeState().Should().BeEquivalentTo(result2.AsList<bool>());
-            _alu.OutputE.Should().BeEquivalentTo(result2.AsList<bool>());
+            _alu.ProbeState().Should().BeEquivalentTo(result2.AsReadOnlyList<bool>());
+            _alu.OutputE.Should().BeEquivalentTo(result2.AsReadOnlyList<bool>());
         }
     }
 }

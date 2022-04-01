@@ -84,7 +84,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
         {
             _16ByteRAM.SetInputA(addressBits);
             _16ByteRAM.SetInputE(true);
-            _16ByteRAM.Output.Should().BeEquivalentTo(expectedData.AsList<bool>());
+            _16ByteRAM.Output.Should().BeEquivalentTo(expectedData.AsReadOnlyList<bool>());
         }
 
         private void WriteToMemoryLocation(BitArray addressBits, BitArray data)
@@ -94,7 +94,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
             _16ByteRAM.SetInputD(data);
             _16ByteRAM.Clock();
             _16ByteRAM.SetInputE(true);
-            _16ByteRAM.Output.Should().BeEquivalentTo(data.AsList<bool>());
+            _16ByteRAM.Output.Should().BeEquivalentTo(data.AsReadOnlyList<bool>());
             _16ByteRAM.SetInputE(false);
             _16ByteRAM.Output.Should().BeNull();
         }

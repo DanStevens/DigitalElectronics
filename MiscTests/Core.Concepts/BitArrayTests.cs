@@ -149,7 +149,7 @@ namespace DigitalElectronics.Concepts.Tests
         {
             bool[] bits = { false, false, true, false, true, false, true, false };
             var objUT = new BitArray(bits);
-            IReadOnlyList<bool> listOfBools = objUT.AsList<bool>();
+            IReadOnlyList<bool> listOfBools = objUT.AsReadOnlyList<bool>();
             listOfBools.Should().Equal(bits);
         }
 
@@ -158,7 +158,7 @@ namespace DigitalElectronics.Concepts.Tests
         {
             Bit[] bits = { false, false, true, false, true, false, true, false };
             var objUT = new BitArray(bits);
-            IReadOnlyList<Bit> listOfBits = objUT.AsList<Bit>();
+            IReadOnlyList<Bit> listOfBits = objUT.AsReadOnlyList<Bit>();
             listOfBits.Should().BeEquivalentTo(bits);
         }
 
