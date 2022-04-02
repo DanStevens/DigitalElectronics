@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using DigitalElectronics.Concepts;
+using DigitalElectronics.Utilities;
 using FluentAssertions;
 using DotNetBitArray = System.Collections.BitArray;
 
@@ -162,5 +162,42 @@ namespace DigitalElectronics.Concepts.Tests
             listOfBits.Should().BeEquivalentTo(bits);
         }
 
+        [TestCase(0, "00000000")]
+        [TestCase(1, "00000001")]
+        [TestCase(2, "00000010")]
+        [TestCase(3, "00000011")]
+        [TestCase(128, "10000000")]
+        [TestCase(254, "11111110")]
+        [TestCase(255, "11111111")]
+        public void ToString_WithArg_LsbBinary(int v, string expected)
+        {
+            var objUT = new BitArray((byte)v);
+            objUT.ToString(NumberFormat.LsbBinary).Should().Be(expected);
+        }
+
+        [TestCase(0, "00000000")]
+        [TestCase(1, "10000000")]
+        [TestCase(2, "01000000")]
+        [TestCase(3, "11000000")]
+        [TestCase(128, "00000001")]
+        [TestCase(254, "01111111")]
+        [TestCase(255, "11111111")]
+        public void ToString_WithArg_MsbBinary(int v, string expected)
+        {
+            var b = (byte)v;
+            var objUT = new BitArray(b);
+            objUT.ToString(NumberFormat.MsbBinary).Should().Be(expected);
+        }
+
+        [Test]
+        public void ToString_WithArg_UnsignedDecimal()
+        {
+            var bitConverter = new BitConverter();
+            for (int i = short.MinValue; i < short.MaxValue; i++)
+            {
+                var objUT = bitConverter.GetBits(i);
+                objUT.ToString(NumberFormat.SignedDecimal).Should().Be(i.ToString());
+            }
+        }
     }
 }

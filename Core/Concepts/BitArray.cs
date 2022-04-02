@@ -3,7 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DotNetBitArray = System.Collections.BitArray;
+
+#if DEBUG
+[assembly: InternalsVisibleTo("MiscTests")]
+#endif
 
 namespace DigitalElectronics.Concepts
 {
@@ -230,11 +235,22 @@ namespace DigitalElectronics.Concepts
         /// <returns>A string of '1's or '0's representing each bit of the BitArray</returns>
         public override string ToString()
         {
-            return string.Join(string.Empty, this.AsEnumerable<bool>().Select(b => b ? "1" : "0"));
+            return ToString(NumberFormat.MsbBinary);
         }
 
-        internal string DebuggerDisplay =>
-            ToString() + (Length <= sizeof(int)* 8 ? $" ({ToInt32()})" : string.Empty);
+        public string ToString(NumberFormat format)
+        {
+            switch (format)
+            {
+                case NumberFormat.LsbBinary:
+                    return string.Join(string.Empty, this.AsEnumerable<bool>().Reverse().Select(b => b ? "1" : "0"));
+                case NumberFormat.SignedDecimal:
+                    return ToInt32().ToString();
+                case NumberFormat.MsbBinary:
+                default:
+                    return string.Join(string.Empty, this.AsEnumerable<bool>().Select(b => b ? "1" : "0"));
+            }
+        }
 
         /// <summary>
         /// Returns an enumerator that iterates through the BitArray.
@@ -303,5 +319,14 @@ namespace DigitalElectronics.Concepts
                 // Nothing to dispose
             }
         }
+
+#if DEBUG
+        internal string DebuggerDisplay =>
+            ToString() + (Length <= sizeof(int) * 8 ? $" ({ToInt32()})" : string.Empty);
+
+        internal string AsLsbBinaryString => ToString(NumberFormat.LsbBinary);
+
+        internal string AsSignedDecimal => ToString(NumberFormat.SignedDecimal);
+#endif
     }
 }
