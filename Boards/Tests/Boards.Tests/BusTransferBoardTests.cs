@@ -14,12 +14,13 @@ namespace DigitalElectronics.Boards.Tests
         private readonly BitConverter _bitConverter = new BitConverter();
 
         [Test]
-        [Ignore("TODO come back to this")]
         public void InitialState()
         {
-            using var objUT = new BusTransferBoard();
-            objUT.RegisterA.Should().BeOfType<IRegisterViewModel>();
-            objUT.RegisterB.Should().BeOfType<IRegisterViewModel>();
+            var registerAMock = Substitute.For<IRegisterViewModel>();
+            var registerBMock = Substitute.For<IRegisterViewModel>();
+            using var objUT = new BusTransferBoard(registerAMock, registerBMock);
+            objUT.RegisterA.Should().BeSameAs(registerAMock);
+            objUT.RegisterB.Should().BeSameAs(registerBMock);
             objUT.BusState.Should().BeNull();
         }
 
