@@ -5,18 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DigitalElectronics.UI.Controls"
              xmlns:utilities="clr-namespace:DigitalElectronics.Utilities;assembly=Utilities"
+             xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
              mc:Ignorable="d" d:DesignHeight="15" d:DesignWidth="150">
     <Grid x:Name="_layoutRoot">
         <ItemsControl ItemsSource="{Binding Lines}">
             <d:ItemsControl.Items>
-                <utilities:Bit Value="false" />
-                <utilities:Bit Value="false" />
-                <utilities:Bit Value="true" />
-                <utilities:Bit Value="false" />
-                <utilities:Bit Value="true" />
-                <utilities:Bit Value="false" />
-                <utilities:Bit Value="true" />
-                <utilities:Bit Value="false" />
+                <concepts:Bit Value="false" />
+                <concepts:Bit Value="false" />
+                <concepts:Bit Value="true" />
+                <concepts:Bit Value="false" />
+                <concepts:Bit Value="true" />
+                <concepts:Bit Value="false" />
+                <concepts:Bit Value="true" />
+                <concepts:Bit Value="false" />
             </d:ItemsControl.Items>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
