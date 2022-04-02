@@ -27,7 +27,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 
     public EightBitRegisterViewModel(IRegister register)
     {
-        _register = register;
+        _register = register ?? throw new ArgumentNullException(nameof(register));
 
         var bits = _register.ProbeState().ToArray<bool>();
         _data = new ObservableCollection<Bit>(bits.Select(b => new Bit(b)));

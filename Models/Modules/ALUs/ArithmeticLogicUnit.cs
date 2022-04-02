@@ -5,6 +5,8 @@ using DigitalElectronics.Components.ALUs;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Concepts;
 
+#nullable enable
+
 namespace DigitalElectronics.Modules.ALUs
 {
     
@@ -100,7 +102,7 @@ namespace DigitalElectronics.Modules.ALUs
         /// Gets state of 'Sum' (∑) output
         /// </summary>
         /// <return>The sum of 'A' input and 'B' input</return>
-        public BitArray OutputE
+        public BitArray? OutputE
         {
             get
             {
