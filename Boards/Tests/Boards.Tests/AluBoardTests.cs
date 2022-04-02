@@ -29,7 +29,7 @@ public class AluBoardTests
         using var objUT = CreateObjectUnderTest(mocks);
         objUT.RegisterAVM.Should().BeSameAs(mocks.registerAVM);
         objUT.RegisterBVM.Should().BeSameAs(mocks.registerBVM);
-        objUT.ALU.Should().BeSameAs(mocks.alu);
+        mocks.alu.Should().BeSameAs(mocks.alu);
     }
 
 
@@ -69,7 +69,7 @@ public class AluBoardTests
         mocks.registerAVM.DataChanged += Raise.Event();
 
         var expectedArgs = CreateExpectedBitArrayArg(binary42);
-        objUT.ALU.Received(1).SetInputA(expectedArgs);
+        mocks.alu.Received(1).SetInputA(expectedArgs);
     }
 
     [Test]
@@ -83,7 +83,14 @@ public class AluBoardTests
         mocks.registerBVM.DataChanged += Raise.Event();
 
         var expectedArgs = CreateExpectedBitArrayArg(binary42);
-        objUT.ALU.Received(1).SetInputB(expectedArgs);
+        mocks.alu.Received(1).SetInputB(expectedArgs);
+    }
+
+    [Test]
+    public void OutputE_ShouldTBD()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
     }
 
     #region Helpers

@@ -8,6 +8,10 @@ namespace DigitalElectronics.Boards;
 
 public sealed class AluBoard : IDisposable
 {
+    private readonly IRegister _registerA;
+    private readonly IRegister _registerB;
+    private readonly IArithmeticLogicUnit _alu;
+
     public AluBoard(
         IRegisterViewModel registerAVM,
         IRegister registerA,
@@ -15,11 +19,11 @@ public sealed class AluBoard : IDisposable
         IRegister registerB,
         IArithmeticLogicUnit alu)
     {
+        _alu = alu;
+        _registerA = registerA;
+        _registerB = registerB;
         RegisterAVM = registerAVM;
-        RegisterA = registerA;
         RegisterBVM = registerBVM;
-        RegisterB = registerB;
-        ALU = alu;
 
         RegisterAVM.DataChanged += OnRegisterADataChanged;
         RegisterBVM.DataChanged += OnRegisterBDataChanged;
@@ -27,23 +31,17 @@ public sealed class AluBoard : IDisposable
 
     private void OnRegisterADataChanged(object? sender, EventArgs e)
     {
-        ALU.SetInputA(RegisterA.ProbeState());
+        _alu.SetInputA(_registerA.ProbeState());
     }
 
     private void OnRegisterBDataChanged(object? sender, EventArgs e)
     {
-        ALU.SetInputB(RegisterB.ProbeState());
+        _alu.SetInputB(_registerB.ProbeState());
     }
 
     public IRegisterViewModel RegisterAVM { get; }
 
     public IRegisterViewModel RegisterBVM { get; }
-
-    public IRegister RegisterA { get; }
-
-    public IRegister RegisterB { get; }
-
-    public IArithmeticLogicUnit ALU { get; }
 
     public void Clock()
     {
