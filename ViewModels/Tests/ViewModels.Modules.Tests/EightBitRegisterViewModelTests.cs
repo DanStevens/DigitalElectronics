@@ -23,12 +23,12 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         private static readonly BitConverter BitConverter = new ();
         private static readonly BitArray minByte = BitConverter.GetBits(byte.MinValue);
         private static readonly BitArray maxByte = BitConverter.GetBits(byte.MaxValue);
-        private static readonly ObservableCollection<Bit> BitCollectionFor255 = CreateObservableBitCollection(byte.MaxValue);
-        private static readonly ObservableCollection<Bit> BitCollectionFor0 = CreateObservableBitCollection((byte)0);
-        private static readonly ObservableCollection<bool> BoolCollectionFor255 = CreateObservableBoolCollection(byte.MaxValue);
-        private static readonly ObservableCollection<bool> BoolCollectionFor0 = CreateObservableBoolCollection((byte)0);
+        private static readonly ReadOnlyObservableCollection<Bit> BitCollectionFor255 =   new (CreateObservableBitCollection(byte.MaxValue));
+        private static readonly ReadOnlyObservableCollection<Bit> BitCollectionFor0 =     new (CreateObservableBitCollection(0));
+        private static readonly ReadOnlyObservableCollection<bool> BoolCollectionFor255 = new (CreateObservableBoolCollection(byte.MaxValue));
+        private static readonly ReadOnlyObservableCollection<bool> BoolCollectionFor0 =   new (CreateObservableBoolCollection(0));
 
-        private readonly BitArrayComparer _baComparer = new();
+        private static readonly BitArrayComparer BitArrayComparer = new();
 
         private static IRegister CreateRegisterMock()
         {
@@ -48,9 +48,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
 
-        private BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
+        private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
         {
-            return Arg.Is<BitArray>(arg => _baComparer.Compare(arg, expectedValue) == 0);
+            return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
         }
 
         [Test]
@@ -74,11 +74,11 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var objUT = new EightBitRegisterViewModel(registerMock);
 
             // Set to zero
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             AssertSetInputDWasCalled(minByte);
 
             // Set to 255
-            objUT.Data = BitCollectionFor255;
+            objUT.Data = CreateObservableBitCollection(255);
             AssertSetInputDWasCalled(maxByte);
 
             void AssertSetInputDWasCalled(BitArray bitArray)
@@ -119,7 +119,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var objUT = new EightBitRegisterViewModel(registerMock);
             objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
 
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             objUT.Data[0] = true;
 
             var expectedArg = CreateExpectedBitArrayArg(binary1);
@@ -194,35 +194,34 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
-        [Ignore("TODO come back to this")]
-        public void PropertyChanged_ShouldBeRaisedChangedForDataProperty_WhenDataPropertyIsChanged()
+        public void PropertyChanged_ShouldBeRaisedForDataProperty_WhenDataPropertyIsChanged()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Data);
 
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(true);
             raised = false;
 
             // Set to 0 again (using different `BitArray` object representing the same value)
-            objUT.Data = CreateObservableBitCollection((byte)0);
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(false);
             raised = false;
 
             // Set to 255
-            objUT.Data = BitCollectionFor255;
+            objUT.Data = CreateObservableBitCollection(255);
             raised.Should().Be(true);
             raised = false;
 
             // Set to 255 again (using different `BitArray` object representing the same value)
-            objUT.Data = CreateObservableBitCollection((byte)255);
+            objUT.Data = CreateObservableBitCollection(255);
             raised.Should().Be(false);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedChangedForLoadProperty_WhenLoadPropertyIsSet()
+        public void PropertyChanged_ShouldBeRaisedForLoadProperty_WhenLoadPropertyIsSet()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
@@ -249,7 +248,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedChangedForEnableProperty_WhenEnablePropertyIsSet()
+        public void PropertyChanged_ShouldBeRaisedForEnableProperty_WhenEnablePropertyIsSet()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
@@ -276,22 +275,22 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedForProbe_UponClockCalled_WhenLoadIsTrue()
+        public void PropertyChanged_ShouldBeRaisedForProbeProperty_UponClockCalled_WhenLoadIsTrue()
         {
-            bool raised = false;
+            bool raisedForProbe = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock) { Load = true };
-            objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Probe);
+            objUT.PropertyChanged += (s, e) => raisedForProbe |= e.PropertyName == nameof(objUT.Probe);
 
             objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
             objUT.Clock();
-            raised.Should().Be(true);
+            raisedForProbe.Should().Be(true);
 
-            raised = false;
-            objUT.Data = BitCollectionFor0;
-            raised.Should().Be(false);
+            raisedForProbe = false;
+            objUT.Data = CreateObservableBitCollection(0);
+            raisedForProbe.Should().Be(false);
             objUT.Clock();
-            raised.Should().Be(true);
+            raisedForProbe.Should().Be(true);
         }
 
         [Test]
@@ -307,14 +306,14 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             raised.Should().Be(false);
 
             raised = false;
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(false);
             objUT.Clock();
             raised.Should().Be(false);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedForOutput_UponEnableSetToTrue()
+        public void PropertyChanged_ShouldBeRaisedForOutput_WhenEnableIsChanged()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
@@ -322,39 +321,42 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
             objUT.Enable = true;
+            raised.Should().Be(true);
 
+            raised = false;
+            objUT.Enable = false;
             raised.Should().Be(true);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeNotRaisedForOutput_WhenEnableIsFalse()
+        public void PropertyChanged_ShouldBeNotRaisedForOutput_WhenDataIsChangedAndEnableIsFalse()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock) { Enable = false };
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(false);
 
             raised = false;
-            objUT.Data = BitCollectionFor255;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(false);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedForOutput_WhenEnableIsTrue()
+        public void PropertyChanged_ShouldBeRaisedForOutput_WhenDataIsChangedAndEnableIsTrue()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock) { Enable = true };
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(true);
 
             raised = false;
-            objUT.Data = BitCollectionFor255;
+            objUT.Data = CreateObservableBitCollection(255);
             raised.Should().Be(true);
         }
 
@@ -366,13 +368,29 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var objUT = new EightBitRegisterViewModel(registerMock);
             objUT.DataChanged += (s, e) => raised = true;
 
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
 
             raised.Should().Be(true);
 
             raised = false;
             objUT.Data[0] = true;
 
+            raised.Should().Be(true);
+        }
+
+        [Test]
+        public void EnableChanged_ShouldBeRaised_WhenEnablePropertyIsChanged()
+        {
+            bool raised = false;
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+            objUT.EnableChanged += (s, e) => raised = true;
+
+            objUT.Enable = true;
+            raised.Should().Be(true);
+
+            raised = false;
+            objUT.Enable = false;
             raised.Should().Be(true);
         }
     }
