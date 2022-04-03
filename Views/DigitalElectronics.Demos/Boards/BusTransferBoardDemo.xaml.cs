@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -23,7 +23,7 @@ namespace DigitalElectronics.Demos.Boards
             {
                 _viewModel.Clock();
             }
-            catch (BusCollisionException ex)
+            catch (BusContentionException ex)
             {
                 MessageBox.Show(ex.Message, "Bus Collision", MessageBoxButton.OK, MessageBoxImage.Error);
             }

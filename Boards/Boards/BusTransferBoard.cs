@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Concepts;
@@ -45,7 +45,7 @@ public sealed class BusTransferBoard : INotifyPropertyChanged, IDisposable
     public void Clock()
     {
         if (RegisterA.Enable && RegisterB.Enable)
-            throw new BusCollisionException("Register A and Register B should not be enabled at the same time.");
+            throw new BusContentionException("Register A and Register B should not be enabled at the same time.");
 
         if (RegisterB.Enable) SyncRegisterWithBus(RegisterA);
         RegisterA.Clock();

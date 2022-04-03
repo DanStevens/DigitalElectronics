@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
@@ -47,7 +47,7 @@ namespace DigitalElectronics.Boards.Tests
             registerAMock.Enable = true;
             registerBMock.Enable = true;
 
-            var ex = Assert.Throws<BusCollisionException>(() => objUT.Clock());
+            var ex = Assert.Throws<BusContentionException>(() => objUT.Clock());
             ex.Message.Should().Be("Register A and Register B should not be enabled at the same time.");
         }
 
