@@ -35,6 +35,7 @@
                 </StackPanel.Resources>
                 <Button Content="8-bit Register Demo" Click="Button_Click" Tag="Modules.EightBitRegisterDemo" />
                 <Button Content="Bus Transfer Demo" Click="Button_Click" Tag="Boards.BusTransferBoardDemo" />
+                <Button Content="ALU Demo" Click="Button_Click" Tag="Boards.AluBoardDemo" />
             </StackPanel>
         </GroupBox>
     </Grid>

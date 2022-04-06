@@ -6,10 +6,12 @@ namespace DigitalElectronics.ViewModels.Modules;
 
 public interface IAluViewModel : INotifyPropertyChanged
 {
+    event EventHandler? EnableChanged;
+    int NumberOfBits { get; }
     bool Enable { get; set; }
-    ReadOnlyObservableCollection<bool>? OutputE { get; }
     bool Subtract { get; set; }
-    ReadOnlyObservableCollection<bool> Probe { get; }
-    void SetInputA(BitArray value);
-    void SetInputB(BitArray value);
+    IReadOnlyList<bool> Probe { get; }
+    IReadOnlyList<bool>? OutputE { get; }
+    void SetInputA(IEnumerable<bool> value);
+    void SetInputB(IEnumerable<bool> value);
 }

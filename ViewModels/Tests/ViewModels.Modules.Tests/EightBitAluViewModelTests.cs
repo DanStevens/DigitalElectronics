@@ -8,10 +8,16 @@ using NSubstitute;
 
 namespace DigitalElectronics.ViewModels.Modules.Tests;
 
-public class AluViewModelTests
+public class EightBitAluViewModelTests
 {
     private static readonly BitConverter BitConverter = new ();
+    private static readonly BitArrayComparer BitArrayComparer = new();
     private static readonly ObservableCollection<bool> BoolCollectionFor0 = new (BitConverter.GetBits((byte)0));
+
+    private BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
+    {
+        return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
+    }
 
     private static IArithmeticLogicUnit CreateAluMock()
     {
@@ -23,7 +29,7 @@ public class AluViewModelTests
     [Test]
     public void InitialState()
     {
-        var objUT = new AluViewModel();
+        var objUT = new EightBitAluViewModel();
         objUT.Should().NotBeNull();
         objUT.Enable.Should().Be(false);
         objUT.Subtract.Should().Be(false);
@@ -34,7 +40,7 @@ public class AluViewModelTests
     public void Enable_ShouldCallSetInputEOOnAlu_WhenSet()
     {
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
 
         objUT.Enable = true;
         aluMock.Received(1).SetInputEO(true);
@@ -48,7 +54,7 @@ public class AluViewModelTests
     public void OutputE_ShouldBeNull_WhenEnableIsFalse()
     {
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
 
         objUT.Enable.Should().Be(false);
         objUT.OutputE.Should().BeNull();
@@ -58,7 +64,7 @@ public class AluViewModelTests
     public void OutputE_ShouldBeProbe_WhenEnableIsTrue()
     {
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
 
         objUT.Enable = true;
         objUT.OutputE.Should().BeEquivalentTo(objUT.Probe);
@@ -70,15 +76,21 @@ public class AluViewModelTests
         var binary42 = new BitArray((byte)42);
         var aluMock = CreateAluMock();
         aluMock.ProbeState().Returns(binary42);
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
+        objUT.SetInputA(binary42);
         objUT.Probe.Should().BeEquivalentTo(binary42.AsReadOnlyList<bool>());
+
+        var binary43 = new BitArray((byte)43);
+        aluMock.ProbeState().Returns(binary43);
+        objUT.SetInputA(binary43);
+        objUT.Probe.Should().BeEquivalentTo(binary43.AsReadOnlyList<bool>());
     }
 
     [Test]
     public void Subtract_ShouldCallSetInputSuOnAlu_WhenSet()
     {
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
 
         objUT.Subtract = true;
         aluMock.Received(1).SetInputSu(true);
@@ -91,20 +103,22 @@ public class AluViewModelTests
     public void SetInputA_ShouldCallSetInputAOnAlu_WhenCalled()
     {
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         var bitArray = new BitArray(length: 8);
         objUT.SetInputA(bitArray);
-        aluMock.Received(1).SetInputA(bitArray);
+        var expectedArg = CreateExpectedBitArrayArg(bitArray);
+        aluMock.Received(1).SetInputA(expectedArg);
     }
 
     [Test]
     public void SetInputB_ShouldCallSetInputBOnAlu_WhenCalled()
     {
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         var bitArray = new BitArray(length: 8);
         objUT.SetInputB(bitArray);
-        aluMock.Received(1).SetInputB(bitArray);
+        var expectedArg = CreateExpectedBitArrayArg(bitArray);
+        aluMock.Received(1).SetInputB(expectedArg);
     }
 
     [Test]
@@ -112,7 +126,7 @@ public class AluViewModelTests
     {
         bool raised = false;
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Enable);
         objUT.Enable = true;
         raised.Should().Be(true);
@@ -123,7 +137,7 @@ public class AluViewModelTests
     {
         bool raised = false;
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Subtract);
         objUT.Subtract = true;
         raised.Should().Be(true);
@@ -134,7 +148,7 @@ public class AluViewModelTests
     {
         bool raised = false;
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Probe);
         objUT.SetInputA(new BitArray(length: 8));
         raised.Should().Be(true);
@@ -145,7 +159,7 @@ public class AluViewModelTests
     {
         bool raised = false;
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Probe);
         objUT.SetInputB(new BitArray(length: 8));
         raised.Should().Be(true);
@@ -156,7 +170,7 @@ public class AluViewModelTests
     {
         bool raised = false;
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
         objUT.Enable = true;
         objUT.SetInputA(new BitArray(length: 8));
@@ -168,7 +182,7 @@ public class AluViewModelTests
     {
         bool raised = false;
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
         objUT.Enable = false;
         objUT.SetInputA(new BitArray(length: 8));
@@ -180,7 +194,7 @@ public class AluViewModelTests
     {
         bool raised = false;
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
         objUT.Enable = true;
         objUT.SetInputB(new BitArray(length: 8));
@@ -192,10 +206,42 @@ public class AluViewModelTests
     {
         bool raised = false;
         var aluMock = CreateAluMock();
-        var objUT = new AluViewModel(aluMock);
+        var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
         objUT.Enable = false;
         objUT.SetInputB(new BitArray(length: 8));
         raised.Should().Be(false);
+    }
+
+    [Test]
+    public void PropertyChanged_ShouldBeRaisedForOutputE_WhenEnableIsChanged()
+    {
+        bool raised = false;
+        var aluMock = CreateAluMock();
+        var objUT = new EightBitAluViewModel(aluMock);
+        objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
+
+        objUT.Enable = true;
+        raised.Should().Be(true);
+
+        raised = false;
+        objUT.Enable = false;
+        raised.Should().Be(true);
+    }
+
+    [Test]
+    public void EnableChanged_ShouldBeRaised_WhenEnablePropertyIsChanged()
+    {
+        bool raised = false;
+        var aluMock = CreateAluMock();
+        var objUT = new EightBitAluViewModel(aluMock);
+        objUT.EnableChanged += (s, e) => raised = true;
+
+        objUT.Enable = true;
+        raised.Should().Be(true);
+
+        raised = false;
+        objUT.Enable = false;
+        raised.Should().Be(true);
     }
 }

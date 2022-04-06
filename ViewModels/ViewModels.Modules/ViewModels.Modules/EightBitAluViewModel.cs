@@ -3,11 +3,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.ALUs;
+using DigitalElectronics.Utilities;
 using DigitalElectronics.ViewModels.Modules.Annotations;
 
 namespace DigitalElectronics.ViewModels.Modules
 {
-    public class AluViewModel : IAluViewModel
+    public class EightBitAluViewModel : IAluViewModel
     {
         private const int _NumberOfBits = 8;
 
@@ -16,16 +17,20 @@ namespace DigitalElectronics.ViewModels.Modules
         private bool _subtract;
         private ObservableCollection<bool> _probe;
 
-        public AluViewModel()
+        public EightBitAluViewModel()
             : this(new ArithmeticLogicUnit(_NumberOfBits))
         {
         }
 
-        public AluViewModel(IArithmeticLogicUnit alu)
+        public EightBitAluViewModel(IArithmeticLogicUnit alu)
         {
             _alu = alu ?? throw new ArgumentNullException(nameof(alu));
             _probe = new ObservableCollection<bool>(_alu.ProbeState());
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? EnableChanged;
+        public int NumberOfBits => _NumberOfBits;
 
         public bool Enable
         {
@@ -37,12 +42,16 @@ namespace DigitalElectronics.ViewModels.Modules
                     _enable = value;
                     _alu.SetInputEO(_enable);
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(OutputE));
+                    EnableChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
         public ReadOnlyObservableCollection<bool>? OutputE =>
             Enable ? new ReadOnlyObservableCollection<bool>(_probe) : null;
+
+        IReadOnlyList<bool>? IAluViewModel.OutputE => OutputE;
 
         public bool Subtract
         {
@@ -60,21 +69,26 @@ namespace DigitalElectronics.ViewModels.Modules
 
         public ReadOnlyObservableCollection<bool> Probe => new(_probe);
 
-        public void SetInputA(BitArray value)
+        IReadOnlyList<bool> IAluViewModel.Probe => Probe;
+
+        public void SetInputA(IEnumerable<bool> value)
         {
-            _alu.SetInputA(value);
+            _alu.SetInputA(new BitArray(value));
+            Sync();
+        }
+
+        public void SetInputB(IEnumerable<bool> value)
+        {
+            _alu.SetInputB(new BitArray(value));
+            Sync();
+        }
+
+        private void Sync()
+        {
+            _probe = new ObservableCollection<bool>(_alu.ProbeState());
             RaisePropertyChanged(nameof(Probe));
             if (Enable) RaisePropertyChanged(nameof(OutputE));
         }
-
-        public void SetInputB(BitArray value)
-        {
-            _alu.SetInputB(value);
-            RaisePropertyChanged(nameof(Probe));
-            if (Enable) RaisePropertyChanged(nameof(OutputE));
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
