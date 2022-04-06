@@ -268,6 +268,14 @@ namespace DigitalElectronics.Concepts
             return null;
         }
 
+        /// <summary>
+        /// Returns this <see cref="BitArray"/> as an list of the given type
+        /// </summary>
+        /// <typeparam name="T">The type of the list, which can be <see cref="bool"/> or <see cref="Bit"/></typeparam>
+        /// <returns>Returns an <see cref="IEnumerable{T}"/> of bools or Bits;
+        /// returns null if <typeparamref name="T"/> is any other type</returns>
+        public IList<T> ToList<T>() => AsEnumerable<T>()?.ToList();
+
         #region IList<bool>, ICollection<bool> implementation
 
         int IList<bool>.IndexOf(bool item)

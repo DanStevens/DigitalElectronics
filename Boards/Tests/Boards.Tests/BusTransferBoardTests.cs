@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
@@ -59,7 +60,7 @@ namespace DigitalElectronics.Boards.Tests
             using var objUT = new BusTransferBoard(registerAMock, registerBMock);
             registerAMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerAMock.Output.Returns(binary42.ToList<bool>());
+            registerAMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
             objUT.BusState.Should().BeNull();
 
             registerAMock.Enable = true;
@@ -79,7 +80,7 @@ namespace DigitalElectronics.Boards.Tests
             using var objUT = new BusTransferBoard(registerAMock, registerBMock);
             registerBMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerBMock.Output.Returns(binary42.ToList<bool>());
+            registerBMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
             objUT.BusState.Should().BeNull();
 
             registerBMock.Enable = true;
@@ -102,7 +103,7 @@ namespace DigitalElectronics.Boards.Tests
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.BusState);
             registerAMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerAMock.Output.Returns(binary42.ToList<bool>());
+            registerAMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
             objUT.BusState.Should().BeNull();
 
             registerAMock.Enable = true;

@@ -24,10 +24,16 @@ public class AluBoardTests
         return Arg.Is<BitArray>(arg => _baComparer.Compare(arg, expectedValue) == 0);
     }
 
-    private static IEnumerable<T> CreateExpectedEnumerableArg<T>(IReadOnlyList<T> expectedValue)
+    private static IEnumerable<T> CreateExpectedEnumerableArg<T>(IEnumerable<T> expectedValue)
     {
         return Arg.Is<IEnumerable<T>>(p => p.SequenceEqual(expectedValue));
     }
+
+    private static IList<T> CreateExpectedListArg<T>(IList<T> expectedValue)
+    {
+        return Arg.Is<IList<T>>(p => p.SequenceEqual(expectedValue));
+    }
+
 
     [Test]
     public void InitialState()
@@ -61,7 +67,7 @@ public class AluBoardTests
         using var objUT = CreateObjectUnderTest(mocks);
         mocks.registerAVM.Enable.Should().Be(false);
         var binary42 = _bitConverter.GetBits((byte)42);
-        mocks.registerAVM.Output.Returns(binary42.ToList<bool>());
+        mocks.registerAVM.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
         objUT.BusState.Should().BeNull();
 
         mocks.registerAVM.Enable = true;
@@ -80,7 +86,7 @@ public class AluBoardTests
         using var objUT = CreateObjectUnderTest(mocks);
         mocks.registerBVM.Enable.Should().Be(false);
         var binary42 = _bitConverter.GetBits((byte)42);
-        mocks.registerBVM.Output.Returns(binary42.ToList<bool>());
+        mocks.registerBVM.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
         objUT.BusState.Should().BeNull();
 
         mocks.registerBVM.Enable = true;
@@ -100,7 +106,7 @@ public class AluBoardTests
         var binary42 = _bitConverter.GetBits((byte)42);
         objUT.BusState.Should().BeNull();
 
-        mocks.aluVM.OutputE.Returns(binary42.ToList<bool>());
+        mocks.aluVM.OutputE.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
         mocks.aluVM.Enable = true;
         mocks.aluVM.EnableChanged += Raise.Event();
         objUT.BusState.Should().BeEquivalentTo(binary42.ToList<bool>());
@@ -154,7 +160,7 @@ public class AluBoardTests
     }
 
     [Test]
-    public void Clock_ShouldCallSetInputAWithRegisterAProbeStateAsArg_WhenCalled()
+    public void Clock_ShouldSyncInputAOnAluWithRegisterA()
     {
         var mocks = new Mocks();
         using var objUT = CreateObjectUnderTest(mocks);
@@ -168,7 +174,7 @@ public class AluBoardTests
     }
 
     [Test]
-    public void Clock_ShouldCallSetInputBWithRegisterBProbeStateAsArg_WhenCalled()
+    public void Clock_ShouldSyncInputBOnAluWithRegisterB()
     {
         var mocks = new Mocks();
         using var objUT = CreateObjectUnderTest(mocks);
@@ -182,6 +188,21 @@ public class AluBoardTests
     }
 
     [Test]
+    public void Clock_ShouldSyncRegisterAWithAlu_WhenAluOutputIsEnabled_AndRegisterAIsLoading()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.Enable = true;
+        mocks.registerAVM.Load = true;
+
+        objUT.Clock();
+
+        mocks.registerAVM.Received(1).Data = CreateExpectedListArg(binary42.ToList<Bit>());
+    }
+
+    [Test]
     public void PropertyChanged_ShouldBeRaisedForBusState_WhenBusStateChanges()
     {
         bool raised = false;
@@ -190,7 +211,7 @@ public class AluBoardTests
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.BusState);
         mocks.registerAVM.Enable.Should().Be(false);
         var binary42 = _bitConverter.GetBits((byte)42);
-        mocks.registerAVM.Output.Returns(binary42.ToList<bool>());
+        mocks.registerAVM.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
         objUT.BusState.Should().BeNull();
 
         mocks.registerAVM.Enable = true;
