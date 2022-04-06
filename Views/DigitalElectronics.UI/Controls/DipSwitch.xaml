@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DigitalElectronics.UI.Controls"
-             xmlns:utilities="clr-namespace:DigitalElectronics.Utilities;assembly=Utilities"
              xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
              mc:Ignorable="d" d:DesignHeight="15" d:DesignWidth="150">
     <Grid x:Name="_layoutRoot">
