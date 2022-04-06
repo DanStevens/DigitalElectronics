@@ -39,7 +39,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
         private static ObservableCollection<Bit> CreateObservableBitCollection(byte value)
         {
-            return new ObservableCollection<Bit>(BitConverter.GetBits(value));
+            return new ObservableCollection<Bit>(BitConverter.GetBits(value).Select(b => new Bit(b)).ToList());
         }
 
         private static ObservableCollection<bool> CreateObservableBoolCollection(byte value)
@@ -357,24 +357,6 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             raised = false;
             objUT.Data = CreateObservableBitCollection(255);
-            raised.Should().Be(true);
-        }
-
-        [Test]
-        public void DataChanged_ShouldBeRaised_WhenDataPropertyChanges()
-        {
-            var raised = false;
-            var registerMock = CreateRegisterMock();
-            var objUT = new EightBitRegisterViewModel(registerMock);
-            objUT.DataChanged += (s, e) => raised = true;
-
-            objUT.Data = CreateObservableBitCollection(0);
-
-            raised.Should().Be(true);
-
-            raised = false;
-            objUT.Data[0] = true;
-
             raised.Should().Be(true);
         }
 

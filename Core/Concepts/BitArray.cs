@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DigitalElectronics.Utilities;
 using DotNetBitArray = System.Collections.BitArray;
 
 #if DEBUG
@@ -12,7 +13,6 @@ using DotNetBitArray = System.Collections.BitArray;
 
 namespace DigitalElectronics.Concepts
 {
-
     /// <summary>
     /// Manages a compact array of bit values, which are represented as Booleans, where `true` indicates
     /// that the bit is on (1) and `false` indicates the bit is off (0).
@@ -22,7 +22,7 @@ namespace DigitalElectronics.Concepts
     /// <see cref="IEnumerable{Boolean}"/></note>
     /// <seealso cref="DotNetBitArray"/>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
-    public class BitArray : ICollection, ICloneable, IReadOnlyList<Bit>, IReadOnlyList<bool>
+    public class BitArray : IList<bool>, IList, ICloneable, IReadOnlyList<bool>
     {
         /// <summary>
         /// Casts the <see cref="BitArray"/> to the built-in .NET class <see cref="DotNetBitArray"/>
@@ -43,17 +43,16 @@ namespace DigitalElectronics.Concepts
         public BitArray(int[] values) => bitArray = new DotNetBitArray(values ?? throw new ArgumentNullException(nameof(values)));
         public BitArray(int length, bool defaultValue) => bitArray = new DotNetBitArray(length, defaultValue);
         public BitArray(Bit[] bits) : this(bits.Select(b => b?.Value ?? false).ToArray()) {}
+        public BitArray(IEnumerable<bool> values) => bitArray = new DotNetBitArray(values.ToArray());
 
         /// <summary>
         /// Gets or sets the value of the bit at a specific position in the BitArray.
         /// </summary>
-        public Bit this[int index]
+        public bool this[int index]
         {
-            get => new (bitArray.Get(index));
-            set => bitArray.Set(index, value?.Value ?? false);
+            get => bitArray[index];
+            set => bitArray[index] = value;
         }
-
-        bool IReadOnlyList<bool>.this[int index] => bitArray.Get(index);
 
         /// <summary>
         /// Gets the number of elements contained in the BitArray.
@@ -61,19 +60,33 @@ namespace DigitalElectronics.Concepts
         public int Count => bitArray.Count;
 
         /// <summary>
-        /// Gets a value indicating whether access to the BitArray is synchronized (thread safe).
-        /// </summary>
-        public bool IsSynchronized => bitArray.IsSynchronized;
-
-        /// <summary>
-        /// Gets an object that can be used to synchronize access to the BitArray.
-        /// </summary>
-        public object SyncRoot => bitArray.SyncRoot;
-
-        /// <summary>
         /// Gets or sets the number of elements in the BitArray.
         /// </summary>
-        public int Length => bitArray.Length;
+        /// <exception cref="ArgumentOutOfRangeException">The property is set to a value that is less than zero.</exception>
+        /// <remarks>
+        /// Length and Count return the same value. Length can be set to a specific value,
+        /// but Count is read-only.
+        /// 
+        /// If Length is set to a value that is less than Count, the BitArray is truncated
+        /// and the elements after the index value -1 are deleted.
+        /// 
+        /// If Length is set to a value that is greater than Count, the new elements are set
+        /// to false.
+        /// 
+        /// Retrieving the value of this property is an O(1) operation. Setting this
+        /// property is an O(n) operation.
+        /// </remarks>
+        public int Length
+        {
+            get => bitArray.Length;
+            set => bitArray.Length = value;
+        }
+
+        public bool IsSynchronized => bitArray.IsSynchronized;
+
+        public object SyncRoot => bitArray.SyncRoot;
+
+        public bool IsReadOnly => false;
 
         /// <summary>
         /// Performs the bitwise AND operation between the elements of the current BitArray object
@@ -111,7 +124,7 @@ namespace DigitalElectronics.Concepts
         /// <summary>
         /// Gets the value of the bit at a specific position in the BitArray.
         /// </summary>
-        public void Get(int index) => bitArray.Get(index);
+        public bool Get(int index) => bitArray.Get(index);
 
         /// <summary>
         /// Shifts all the bit values of the current BitArray to the left on <paramref name="count"/> bits.
@@ -154,7 +167,6 @@ namespace DigitalElectronics.Concepts
             return this;
         }
 
-
         public BitArray RightShift(int count)
         {
             bitArray.RightShift(count);  // Mutates bitArray
@@ -167,20 +179,9 @@ namespace DigitalElectronics.Concepts
         public void Set(int index, bool value) => bitArray.Set(index, value);
 
         /// <summary>
-        /// Sets the bit at a specific position in the BitArray to the specified value.
-        /// </summary>
-        public void Set(int index, Bit value) => bitArray.Set(index, value?.Value ?? false);
-
-        /// <summary>
         /// Sets all bits in the BitArray to the specified value.
         /// </summary>
         public void SetAll(bool value) => bitArray.SetAll(value);
-
-        /// <summary>
-        /// Sets all bits in the BitArray to the specified value.
-        /// </summary>
-        /// <param name="value"></param>
-        public void SetAll(Bit value) => bitArray.SetAll(value?.Value ?? false);
 
         /// <summary>
         /// Performs the bitwise exclusive OR operation between the elements of the current BitArray object against the
@@ -253,13 +254,112 @@ namespace DigitalElectronics.Concepts
         }
 
         /// <summary>
-        /// Returns an enumerator that iterates through the BitArray.
+        /// Returns this <see cref="BitArray"/> as an enumerable of the given type
         /// </summary>
-        /// <returns></returns>
-        public IEnumerator GetEnumerator()
+        /// <typeparam name="T">The type of the enumerable, which can be <see cref="bool"/> or <see cref="Bit"/></typeparam>
+        /// <returns>Returns an <see cref="IEnumerable{T}"/> of bools or Bits;
+        /// returns null if <typeparamref name="T"/> is any other type</returns>
+        public IEnumerable<T> AsEnumerable<T>()
         {
-            return bitArray.GetEnumerator();
+            if (typeof(T) == typeof(bool))
+                return (IEnumerable<T>)bitArray.AsEnumerable();
+            if (typeof(T) == typeof(Bit))
+                return (IEnumerable<T>)this.Select(b => new Bit(b));
+            return null;
         }
+
+        #region IList<bool>, ICollection<bool> implementation
+
+        int IList<bool>.IndexOf(bool item)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (this[i] == item) return i;
+            }
+
+            return -1;
+        }
+
+        void IList<bool>.Insert(int index, bool item) => BlockAttemptToAddRemoveOrInsertItems();
+        void IList<bool>.RemoveAt(int index) => BlockAttemptToAddRemoveOrInsertItems();
+        void ICollection<bool>.Add(bool item) => BlockAttemptToAddRemoveOrInsertItems();
+        void ICollection<bool>.Clear() => Length = 0;
+        bool ICollection<bool>.Contains(bool item) => throw new NotSupportedException();
+
+        bool IList<bool>.this[int index]
+        {
+            get => this[index];
+            set => this[index] = value;
+        }
+
+        void ICollection<bool>.CopyTo(bool[] array, int arrayIndex)
+        {
+            bitArray.CopyTo(array, arrayIndex);
+        }
+
+        bool ICollection<bool>.Remove(bool item)
+        {
+            BlockAttemptToAddRemoveOrInsertItems();
+            return false;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new BitArrayAsBooleanEnumerator(bitArray.GetEnumerator());
+        }
+
+
+        #endregion
+
+        #region IList, ICollection implementation
+
+        int IList.Add(object value)
+        {
+            BlockAttemptToAddRemoveOrInsertItems();
+            return default;
+        }
+
+
+        bool IList.Contains(object value)
+        {
+            BlockAttemptToAddRemoveOrInsertItems();
+            return false;
+        }
+
+        int IList.IndexOf(object value) => value is bool b ? ((IList<bool>)this).IndexOf(b) : -1;
+        void IList.Insert(int index, object value) => BlockAttemptToAddRemoveOrInsertItems();
+        void IList.Remove(object value) => BlockAttemptToAddRemoveOrInsertItems();
+        void IList.RemoveAt(int index) => BlockAttemptToAddRemoveOrInsertItems();
+        void IList.Clear() => Length = 0;
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            bitArray.CopyTo(array, index);
+        }
+
+        /// <summary>
+        /// A <see cref="BitArray"/> is not fixed-size, but the same can only be changed by
+        /// changing the <see cref="Length"/> property.
+        /// </summary>
+        bool IList.IsFixedSize => false;
+
+        object IList.this[int index]
+        {
+            get => this[index];
+            set => this[index] = (bool)value;
+        }
+
+        #endregion
+
+
+        private static void BlockAttemptToAddRemoveOrInsertItems()
+        {
+            throw new NotSupportedException(
+                "Adding, removing and inserting of bits is not supported, but the size can be changed " +
+                "by changing the Length property");
+        }
+
+        #region IEnumerable<bool> members
 
         /// <summary>
         /// Returns an enumerator that iterates through the BitArray as <see cref="Boolean"/> values.
@@ -267,11 +367,6 @@ namespace DigitalElectronics.Concepts
         IEnumerator<bool> IEnumerable<bool>.GetEnumerator()
         {
             return new BitArrayAsBooleanEnumerator(bitArray.GetEnumerator());
-        }
-
-        IEnumerator<Bit> IEnumerable<Bit>.GetEnumerator()
-        {
-            return new BitArrayAsBitsEnumerator(bitArray.GetEnumerator());
         }
 
         private class BitArrayAsBooleanEnumerator : IEnumerator<bool>
@@ -297,36 +392,16 @@ namespace DigitalElectronics.Concepts
             }
         }
 
-        private class BitArrayAsBitsEnumerator : IEnumerator<Bit>
-        {
-            private readonly IEnumerator bitArrayEnumerator;
-
-            public BitArrayAsBitsEnumerator(IEnumerator enumerator)
-            {
-                bitArrayEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
-            }
-
-            public bool MoveNext() => bitArrayEnumerator.MoveNext();
-
-            public void Reset() => bitArrayEnumerator.Reset();
-
-            public Bit Current => new ((bool)bitArrayEnumerator.Current);
-
-            object IEnumerator.Current => bitArrayEnumerator.Current;
-
-            public void Dispose()
-            {
-                // Nothing to dispose
-            }
-        }
+        #endregion
 
 #if DEBUG
         internal string DebuggerDisplay =>
-            ToString() + (Length <= sizeof(int) * 8 ? $" ({ToInt32()})" : string.Empty);
+            ToString() + (Count <= sizeof(int) * 8 ? $" ({ToInt32()})" : string.Empty);
 
         internal string AsLsbBinaryString => ToString(NumberFormat.LsbBinary);
 
         internal string AsSignedDecimal => ToString(NumberFormat.SignedDecimal);
+
 #endif
     }
 }

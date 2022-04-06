@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
@@ -131,7 +131,7 @@ namespace DigitalElectronics.Boards.Tests
             void LoadBinary42IntoRegisterA()
             {
                 registerA.Load = true;
-                registerA.Data = new ObservableCollection<Bit>(binary42);
+                registerA.Data = new ObservableCollection<Bit>(binary42.AsEnumerable<Bit>());
                 objUT.Clock();
                 registerA.Probe.Should().BeEquivalentTo(binary42.ToList<bool>());
                 registerA.Load = false;
@@ -151,7 +151,7 @@ namespace DigitalElectronics.Boards.Tests
             {
                 registerA.Load = true;
                 var binary0 = _bitConverter.GetBits((byte) 0);
-                var registerAData = new ObservableCollection<Bit>(binary0);
+                var registerAData = new ObservableCollection<Bit>(binary0.AsEnumerable<Bit>());
                 registerA.Data = registerAData;
                 objUT.Clock();
                 registerA.Load = false;

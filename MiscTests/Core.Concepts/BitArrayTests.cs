@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,20 @@ namespace DigitalElectronics.Concepts.Tests
 {
     public class BitArrayTests
     {
+        [Test]
+        public void BitArray_ShouldImplementListOfBoolean()
+        {
+            var objUT = new BitArray(length: 8);
+            objUT.Should().BeAssignableTo<IList<bool>>();
+        }
+
+        [Test]
+        public void BitArray_ShouldImplementList()
+        {
+            var objUT = new BitArray(length: 8);
+            objUT.Should().BeAssignableTo<IList>();
+        }
+
         [Test]
         public void BitArray_ShouldBeImplicitlyCastableToDotNetBitArray()
         {
@@ -31,7 +46,7 @@ namespace DigitalElectronics.Concepts.Tests
         {
             for (int i = 0; i < 8; i++)
             {
-                var objUT = new BitArray(i);
+                var objUT = new BitArray(length: i);
                 var dnBitArray = (DotNetBitArray)objUT;
                 objUT.Length.Should().Be(dnBitArray.Length);
             }
@@ -96,17 +111,10 @@ namespace DigitalElectronics.Concepts.Tests
             new BitArray(bits);
         }
 
-
         [Test]
         public void BitArray_ShouldBeCreatableFromLiteralArrayOfBools()
         {
             BitArray bitArray = new[] {false, true, false, true};
-        }
-
-        [Test]
-        public void Indexer_ShouldBeOfTypeBit()
-        {
-            new BitArray(1)[0].Should().BeOfType<Bit>();
         }
 
         [Test]
@@ -117,7 +125,7 @@ namespace DigitalElectronics.Concepts.Tests
 
             for (int i = 0; i < bits.Length; i++)
             {
-                objUT[i].Value.Should().Be(bits[i]);
+                objUT[i].Should().Be(bits[i]);
             }
         }
 
@@ -134,16 +142,6 @@ namespace DigitalElectronics.Concepts.Tests
             }
         }
 
-        [Ignore("Due to equality support override between Box<T> and T, this isn't possible to verify")]
-        public void GetIndexer_ShouldBypassCreatingBitObject_WhenCalledViaIReadOnlyListOfBool()
-        {
-            var objUT = new BitArray(false, true, false, false);
-            objUT[1].Should().NotBeSameAs(true);
-
-            var objUTAsList = (IReadOnlyList<bool>)objUT;
-            objUTAsList[1].Should().Be(true);
-        }
-
         [Test]
         public void AsList_OfBool_ShouldReturnReadOnlyListOfBools()
         {
@@ -151,15 +149,6 @@ namespace DigitalElectronics.Concepts.Tests
             var objUT = new BitArray(bits);
             IReadOnlyList<bool> listOfBools = objUT.AsReadOnlyList<bool>();
             listOfBools.Should().Equal(bits);
-        }
-
-        [Test]
-        public void AsList_OfBit_ShouldReturnReadOnlyListOfBits()
-        {
-            Bit[] bits = { false, false, true, false, true, false, true, false };
-            var objUT = new BitArray(bits);
-            IReadOnlyList<Bit> listOfBits = objUT.AsReadOnlyList<Bit>();
-            listOfBits.Should().BeEquivalentTo(bits);
         }
 
         [TestCase(0, "00000000")]
@@ -198,6 +187,39 @@ namespace DigitalElectronics.Concepts.Tests
                 var objUT = bitConverter.GetBits(i);
                 objUT.ToString(NumberFormat.SignedDecimal).Should().Be(i.ToString());
             }
+        }
+
+        [Test]
+        public void IndexOf_ShouldWorkCorrectly()
+        {
+            IList<bool> bitArray1 = new BitArray(false, true, true, false);
+            bitArray1.IndexOf(false).Should().Be(0);
+            bitArray1.IndexOf(true).Should().Be(1);
+
+            IList<bool> bitArray2 = new BitArray((byte)0);
+            bitArray2.IndexOf(false).Should().Be(0);
+            bitArray2.IndexOf(true).Should().Be(-1);
+
+            IList<bool> bitArray3 = new BitArray(byte.MaxValue);
+            bitArray3.IndexOf(false).Should().Be(-1);
+            bitArray3.IndexOf(true).Should().Be(0);
+        }
+
+        [Test]
+        public void AsEnumerable_ReturnsListOfBools_WhenGivenTypeParameterOfBool()
+        {
+            bool[] bools = {false, true, false, true};
+            var objUT = new BitArray(bools);
+            objUT.AsEnumerable<bool>().Should().BeEquivalentTo(bools); 
+        }
+
+        [Test]
+        public void AsEnumerable_ReturnsListOfBits_WhenGivenTypeParameterOfBit()
+        {
+            bool[] bools = { false, true, false, true };
+            var expectedBits = bools.Select(b => new Bit(b));
+            var objUT = new BitArray(bools);
+            objUT.AsEnumerable<Bit>().Should().BeEquivalentTo(expectedBits);
         }
     }
 }

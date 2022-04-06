@@ -8,7 +8,6 @@ namespace DigitalElectronics.ViewModels.Modules;
 public interface IRegisterViewModel
 {
     event EventHandler EnableChanged;
-    event EventHandler DataChanged;
     int NumberOfBits { get; }
     bool Enable { get; set; }
     bool Load { get; set; }

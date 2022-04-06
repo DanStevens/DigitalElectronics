@@ -36,7 +36,6 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
     }
 
     public event EventHandler? EnableChanged;
-    public event EventHandler? DataChanged;
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public int NumberOfBits => _NumberOfBits;
@@ -77,7 +76,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
         set
         {
             if (value is null)
-                value = new ObservableCollection<Bit>(new BitArray(_NumberOfBits));
+                value = new ObservableCollection<Bit>(new BitArray(_NumberOfBits).AsEnumerable<Bit>());
 
             if (!_data.SequenceEqual(value))
             {
@@ -86,7 +85,6 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
                 _data.CollectionChanged += OnDataBitChanged;
                 Sync();
                 RaisePropertyChanged();
-                DataChanged?.Invoke(this, EventArgs.Empty);
                 if (Enable) RaisePropertyChanged(nameof(Output));
             }
         }
@@ -124,7 +122,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
         if (Load) RaisePropertyChanged(nameof(Probe));
     }
 
-    public void SetData(BitArray value) => Data = new ObservableCollection<Bit>(value);
+    public void SetData(BitArray value) => Data = new ObservableCollection<Bit>(value.AsEnumerable<Bit>());
 
     [NotifyPropertyChangedInvocator]
     private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
@@ -137,6 +135,5 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
         Sync();
         RaisePropertyChanged(nameof(Data));
         RaisePropertyChanged(nameof(Probe));
-        DataChanged?.Invoke(this, EventArgs.Empty);
     }
 }
