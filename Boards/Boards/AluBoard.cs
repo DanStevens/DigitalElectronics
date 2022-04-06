@@ -59,11 +59,16 @@ public sealed class AluBoard : INotifyPropertyChanged, IDisposable
         CheckForBusContention();
 
         if (RegisterB.Enable) SyncRegisterWithBus(RegisterA);
-        RegisterA.Clock();
-        ALU.SetInputA(RegisterA.Probe);
         if (RegisterA.Enable) SyncRegisterWithBus(RegisterB);
+        if (ALU.Enable) SyncRegisterWithBus(RegisterA);
+        if (ALU.Enable) SyncRegisterWithBus(RegisterB);
+
+        RegisterA.Clock();
         RegisterB.Clock();
+
+        ALU.SetInputA(RegisterA.Probe);
         ALU.SetInputB(RegisterB.Probe);
+        SyncBusWithAlu();
     }
 
     public void Dispose()
@@ -79,11 +84,9 @@ public sealed class AluBoard : INotifyPropertyChanged, IDisposable
 
     private void OnAluEnableChanged(object? sender, EventArgs e)
     {
-        BusState = ALU.Enable ?
-            new ReadOnlyObservableCollection<bool>(
-                new ObservableCollection<bool>(ALU.OutputE!)) :
-            null;
+        SyncBusWithAlu();
     }
+
 
     private static ReadOnlyObservableCollection<bool>? GetRegisterState(IRegisterViewModel register)
     {
@@ -109,6 +112,14 @@ public sealed class AluBoard : INotifyPropertyChanged, IDisposable
                 register.Data[i] = BusState?[i] ?? false;
             }
         }
+    }
+
+    private void SyncBusWithAlu()
+    {
+        BusState = ALU.Enable
+            ? new ReadOnlyObservableCollection<bool>(
+                new ObservableCollection<bool>(ALU.OutputE!))
+            : null;
     }
 
     [NotifyPropertyChangedInvocator]

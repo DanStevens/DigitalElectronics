@@ -195,11 +195,82 @@ public class AluBoardTests
         var binary42 = _bitConverter.GetBits((byte)42);
         mocks.aluVM.OutputE.Returns(binary42);
         mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
         mocks.registerAVM.Load = true;
 
         objUT.Clock();
 
-        mocks.registerAVM.Received(1).Data = CreateExpectedListArg(binary42.ToList<Bit>());
+        mocks.registerAVM.Data.Should().BeEquivalentTo(binary42);
+    }
+
+    [Test]
+    public void Clock_ShouldTriggerBusTransferFromRegisterAtoAluShould_WhenAluOutputIsEnabled_AndRegisterAIsNotLoading()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var current = mocks.registerAVM.Data;
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.registerAVM.Load = false;
+
+        objUT.Clock();
+
+        mocks.registerAVM.Data.Should().BeSameAs(current);
+    }
+
+    [Test]
+    public void Clock_ShouldTriggerBusTransferFromRegisterBToAlu_WhenAluOutputIsEnabled_AndRegisterBIsLoading()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.registerBVM.Data = Substitute.For<IList<Bit>>();
+        mocks.registerBVM.Data.Count.Returns(8);
+        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.registerBVM.Load = true;
+
+        objUT.Clock();
+
+        for (int i = 0; i < binary42.Length; i++)
+        {
+            mocks.registerBVM.Data.Received(1)[i] = binary42[i];
+        }
+    }
+
+    [Test]
+    public void Clock_ShouldNotTriggerBusTransferFromRegisterBToAlu_WhenAluOutputIsEnabled_AndRegisterBIsNotLoading()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var current = mocks.registerBVM.Data;
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.registerBVM.Load = false;
+
+        objUT.Clock();
+
+        mocks.registerBVM.Data.Should().BeSameAs(current);
+    }
+
+    [Test]
+    public void Clock_ShouldSyncBusWithAlu_WhenALUIsEnabled()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary1 = _bitConverter.GetBits((byte)1);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.aluVM.OutputE.Returns(binary1);
+
+        objUT.Clock();
+
+        objUT.BusState.Should().BeEquivalentTo(binary1);
     }
 
     [Test]
@@ -281,6 +352,10 @@ public class AluBoardTests
 
         public Mocks()
         {
+            var zero = Enumerable.Repeat(new Bit(), 8);
+            registerAVM.Data = zero.ToList();
+            registerBVM.Data = zero.ToList();
+
             registerAVM.Probe.Returns(_ => new ReadOnlyCollection<bool>(registerAVM.Data.Select(bit => bit.Value).ToList()));
             registerBVM.Probe.Returns(_ => new ReadOnlyCollection<bool>(registerBVM.Data.Select(bit => bit.Value).ToList()));
         }
