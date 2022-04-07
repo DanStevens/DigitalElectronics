@@ -22,11 +22,11 @@ namespace DigitalElectronics.Demos.Boards
             }
             catch (BusContentionException ex)
             {
-                MessageBox.Show(ex.Message, "Bus Collision", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, Properties.Resources.BusContention, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
