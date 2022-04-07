@@ -7,7 +7,10 @@
              xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
              mc:Ignorable="d" d:DesignHeight="15" d:DesignWidth="150">
     <Grid x:Name="_layoutRoot">
-        <ItemsControl ItemsSource="{Binding Lines}">
+        <Grid.Resources>
+            <RelativeSource x:Key="This" Mode="FindAncestor" AncestorType="{x:Type local:DipSwitch}" />
+        </Grid.Resources>
+        <ItemsControl ItemsSource="{Binding Lines}" AlternationCount="{Binding Lines.Count}" d:AlternationCount="8">
             <d:ItemsControl.Items>
                 <concepts:Bit Value="false" />
                 <concepts:Bit Value="false" />
@@ -20,12 +23,22 @@
             </d:ItemsControl.Items>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" />
+                    <DockPanel LastChildFill="false" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="DockPanel.Dock" Value="{Binding Dock, RelativeSource={StaticResource This}}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox IsChecked="{Binding Value, Mode=TwoWay}" />
+                <DataTemplate DataType="{x:Type local:DipSwitch}">
+                    <CheckBox x:Name="switch" IsChecked="{Binding Value, Mode=TwoWay}" />
+                    <DataTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter TargetName="switch" Property="Background" Value="Gold" />
+                        </Trigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

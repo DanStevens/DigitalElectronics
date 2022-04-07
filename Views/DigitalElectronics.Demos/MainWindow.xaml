@@ -19,6 +19,8 @@
                         <Setter Property="Margin" Value="2.5" />
                     </Style>
                 </StackPanel.Resources>
+                <Button Content="LED Strip Demo" Click="Button_Click" Tag="Components.LedStripDemo" />
+                <Button Content="DIP Switch Demo" Click="Button_Click" Tag="Components.DipSwitchDemo" />
                 <Button Content="S-R Latch Demo" Click="Button_Click" Tag="Components.SRLatchDemo" />
                 <Button Content="Gated S-R Latch Demo" Click="Button_Click" Tag="Components.GatedSRLatchDemo"/>
                 <Button Content="Gated D Latch Demo" Click="Button_Click" Tag="Components.GatedDLatchDemo" />

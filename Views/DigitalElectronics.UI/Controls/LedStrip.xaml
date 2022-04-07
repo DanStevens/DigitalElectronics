@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DigitalElectronics.UI.Controls"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             mc:Ignorable="d" d:DesignHeight="25" d:DesignWidth="170">
+             mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="200">
     <Grid x:Name="_layoutRoot">
         <Grid.Resources>
-            <RelativeSource x:Key="ThisRelativeSource" Mode="FindAncestor" AncestorType="{x:Type local:LedStrip}" />
+            <RelativeSource x:Key="This" Mode="FindAncestor" AncestorType="{x:Type local:LedStrip}" />
         </Grid.Resources>
         <ItemsControl ItemsSource="{Binding Lines}" AlternationCount="{Binding Lines.Count}" d:AlternationCount="8">
             <d:ItemsControl.Items>
@@ -23,16 +23,21 @@
             </d:ItemsControl.Items>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="{Binding Orientation}" d:Orientation="Horizontal" />
+                    <DockPanel LastChildFill="false" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="DockPanel.Dock" Value="{Binding Dock, RelativeSource={StaticResource This}}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:LedStrip}">
                     <local:LED x:Name="led" IsLit="{Binding}"
-                               Width="{Binding LedSize, RelativeSource={StaticResource ThisRelativeSource}}" d:Width="20"
-                               Height="{Binding LedSize, RelativeSource={StaticResource ThisRelativeSource}}" d:Height="20"
-                               Margin="{Binding Spacing, RelativeSource={StaticResource ThisRelativeSource}}" d:Margin="0.5"
-                               OnColor="{Binding LedColorWhenLit, RelativeSource={StaticResource ThisRelativeSource}}" />
+                               Width="{Binding LedSize, RelativeSource={StaticResource This}}" d:Width="20"
+                               Height="{Binding LedSize, RelativeSource={StaticResource This}}" d:Height="20"
+                               Margin="{Binding Spacing, RelativeSource={StaticResource This}}" d:Margin="0.5"
+                               OnColor="{Binding LedColorWhenLit, RelativeSource={StaticResource This}}" />
                     <DataTemplate.Triggers>
                         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
                             <Setter TargetName="led" Property="Text" Value="•" />

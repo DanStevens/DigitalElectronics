@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.UI.Controls
@@ -37,11 +38,43 @@ namespace DigitalElectronics.UI.Controls
         }
 
         public static readonly DependencyProperty OrientationProperty =
-            DependencyProperty.Register("Orientation", typeof(Orientation), typeof(LedStrip), new PropertyMetadata(default));
+            DependencyProperty.Register("Orientation", typeof(Orientation), typeof(LedStrip),
+                new PropertyMetadata(
+                    Orientation.Horizontal,
+                    UpdateDock));
 
         #endregion
 
-        #region LEDs dependency property
+        #region BitOrder dependency property
+
+        public BitOrder BitOrder
+        {
+            get { return (BitOrder)GetValue(BitOrderProperty); }
+            set { SetValue(BitOrderProperty, value); }
+        }
+
+        public static readonly DependencyProperty BitOrderProperty =
+            DependencyProperty.Register("BitOrder", typeof(BitOrder), typeof(LedStrip),
+                new PropertyMetadata(BitOrder.MsbFirst, UpdateDock));
+
+        #endregion
+
+        #region Dock private read-only dependency property
+
+        private Dock Dock
+        {
+            get { return (Dock)GetValue(DockProperty); }
+            set { SetValue(DockPropertyKey, value); }
+        }
+
+        private static DependencyPropertyKey DockPropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(Dock), typeof(Dock), typeof(LedStrip), new PropertyMetadata(Dock.Left));
+
+        public static DependencyProperty DockProperty = DockPropertyKey.DependencyProperty;
+
+        #endregion
+
+        #region Lines dependency property
 
         public ICollection<bool> Lines
         {
@@ -93,20 +126,23 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
-        #region MarkLsb dependency property
-
-        /// <summary>
-        /// Marks the LED for the least-significant bit with a spot.
-        /// </summary>
-        public bool MarkLsb
+        private static void UpdateDock(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get { return (bool)GetValue(MarkLsbProperty); }
-            set { SetValue(MarkLsbProperty, value); }
+            ((LedStrip)d).Dock = ((LedStrip)d).GetDock();
         }
 
-        public static readonly DependencyProperty MarkLsbProperty =
-            DependencyProperty.Register("MarkLsb", typeof(bool), typeof(LedStrip), new PropertyMetadata(true));
+        private Dock GetDock()
+        {
+            if (Orientation == Orientation.Vertical)
+            {
+                if (BitOrder == BitOrder.LsbFirst)
+                    return Dock.Bottom;
+                return Dock.Top;
+            }
 
-        #endregion
+            if (BitOrder == BitOrder.LsbFirst)
+                return Dock.Right;
+            return Dock.Left;
+        }
     }
 }
