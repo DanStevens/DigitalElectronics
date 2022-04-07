@@ -21,6 +21,7 @@
                 </Style>
             </Ellipse.Style>
         </Ellipse>
-        <TextBlock Padding="1" Text="{Binding Text}" TextAlignment="Center" />
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
+                   Text="{Binding Text}"  d:Text="•" Padding="0,0,0,2" />
     </Grid>
 </UserControl>
