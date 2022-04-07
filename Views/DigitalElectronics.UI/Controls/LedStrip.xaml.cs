@@ -36,7 +36,6 @@ namespace DigitalElectronics.UI.Controls
             set { SetValue(OrientationProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for orientation.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OrientationProperty =
             DependencyProperty.Register("Orientation", typeof(Orientation), typeof(LedStrip), new PropertyMetadata(default));
 
@@ -50,7 +49,6 @@ namespace DigitalElectronics.UI.Controls
             set { SetValue(LinesProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LinesProperty =
             DependencyProperty.Register("Lines", typeof(ICollection<bool>), typeof(LedStrip), new PropertyMetadata(null));
 
@@ -64,7 +62,6 @@ namespace DigitalElectronics.UI.Controls
             set { SetValue(SpacingProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Spacing.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SpacingProperty =
             DependencyProperty.Register("Spacing", typeof(Thickness), typeof(LedStrip), new PropertyMetadata(new Thickness(0.5)));
 
@@ -78,11 +75,12 @@ namespace DigitalElectronics.UI.Controls
             set { SetValue(LedSizeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for LedSize.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LedSizeProperty =
             DependencyProperty.Register("LedSize", typeof(double), typeof(LedStrip), new PropertyMetadata(20d));
 
+        #endregion
 
+        #region LedColorWhenLit dependency property
 
         public Color LedColorWhenLit
         {
@@ -90,11 +88,24 @@ namespace DigitalElectronics.UI.Controls
             set { SetValue(LedColorWhenLitProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for LedColorWhenLit.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LedColorWhenLitProperty =
             DependencyProperty.Register("LedColorWhenLit", typeof(Color), typeof(LedStrip), new PropertyMetadata(Colors.OrangeRed));
 
+        #endregion
 
+        #region MarkLsb dependency property
+
+        /// <summary>
+        /// Marks the LED for the least-significant bit with a spot.
+        /// </summary>
+        public bool MarkLsb
+        {
+            get { return (bool)GetValue(MarkLsbProperty); }
+            set { SetValue(MarkLsbProperty, value); }
+        }
+
+        public static readonly DependencyProperty MarkLsbProperty =
+            DependencyProperty.Register("MarkLsb", typeof(bool), typeof(LedStrip), new PropertyMetadata(true));
 
         #endregion
     }
