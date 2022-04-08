@@ -63,6 +63,7 @@ namespace DigitalElectronics.ViewModels.Modules
                     _subtract = value;
                     _alu.SetInputSu(_subtract);
                     RaisePropertyChanged();
+                    Sync();
                 }
             }
         }
