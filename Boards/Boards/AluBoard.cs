@@ -68,7 +68,7 @@ public sealed class AluBoard : INotifyPropertyChanged, IDisposable
 
         ALU.SetInputA(RegisterA.Probe);
         ALU.SetInputB(RegisterB.Probe);
-        SyncBusWithAlu();
+        if (ALU.Enable) SyncBusWithAlu();
     }
 
     public void Dispose()
@@ -79,12 +79,38 @@ public sealed class AluBoard : INotifyPropertyChanged, IDisposable
 
     private void OnRegisterEnableChanged(object? sender, EventArgs e)
     {
-        BusState = GetRegisterState((IRegisterViewModel)sender);
+        var register = (IRegisterViewModel)sender!;
+        try
+        {
+            CheckForBusContention();
+            //if (register.Enable) BusState = GetRegisterState(register);
+            BusState = GetRegisterState(register);
+        }
+        catch (BusContentionException)
+        {
+            // Undo the enabling of this register
+            // Set register.Enable to false without retriggering this method
+            register.EnableChanged -= OnRegisterEnableChanged;
+            register.Enable = false;
+            register.EnableChanged += OnRegisterEnableChanged;
+        }
     }
 
     private void OnAluEnableChanged(object? sender, EventArgs e)
     {
-        SyncBusWithAlu();
+        try
+        {
+            CheckForBusContention();
+            SyncBusWithAlu();
+        }
+        catch (BusContentionException)
+        {
+            // Undo the enabling of the ALU
+            // Set ALU.Enable to false without retriggering this method
+            ALU.EnableChanged -= OnAluEnableChanged;
+            ALU.Enable = false;
+            ALU.EnableChanged += OnAluEnableChanged;
+        }
     }
 
 
