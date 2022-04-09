@@ -16,7 +16,7 @@
         <Border BorderBrush="Black" BorderThickness="1" Width="60" Height="80" Canvas.Top="25" Canvas.Left="100" HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center">Gated D Latch</TextBlock>
         </Border>
-        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="25" IsLit="{Binding OutputQ}" OnColor="Lime" Text="Q" />
-        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="85" IsLit="{Binding OutputNQ}" OnColor="Lime" Text="Q̅" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="25" IsLit="{Binding OutputQ}" LitColor="Lime" Text="Q" />
+        <controls:LED Height="20" Width="20" Canvas.Left="200" Canvas.Top="85" IsLit="{Binding OutputNQ}" LitColor="Lime" Text="Q̅" />
     </Canvas>
 </Window>

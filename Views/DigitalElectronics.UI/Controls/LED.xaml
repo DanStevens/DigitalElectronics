@@ -6,8 +6,8 @@
              mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="20">
     <Grid x:Name="_layoutRoot">
         <Grid.Resources>
-            <SolidColorBrush x:Key="OnBrush" Color="{Binding OnColor}" />
-            <SolidColorBrush x:Key="OffBrush" Color="{Binding OffColor}" />
+            <SolidColorBrush x:Key="OnBrush" Color="{Binding LitColor}" />
+            <SolidColorBrush x:Key="OffBrush" Color="{Binding UnlitColor}" />
         </Grid.Resources>
         <Ellipse Stroke="{Binding Stroke}" d:Stroke="Black">
             <Ellipse.Style>
