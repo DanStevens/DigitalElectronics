@@ -10,21 +10,21 @@
         Title="LED Strip Demo" Height="250" Width="500">
     <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
         <StackPanel.Resources>
-            <x:Array Type="{x:Type sys:Boolean}" x:Key="Binary5">
+            <x:Array Type="{x:Type sys:Boolean}" x:Key="BinaryNegative42">
+                <sys:Boolean>False</sys:Boolean>
+                <sys:Boolean>True</sys:Boolean>
                 <sys:Boolean>True</sys:Boolean>
                 <sys:Boolean>False</sys:Boolean>
                 <sys:Boolean>True</sys:Boolean>
                 <sys:Boolean>False</sys:Boolean>
-                <sys:Boolean>False</sys:Boolean>
-                <sys:Boolean>False</sys:Boolean>
-                <sys:Boolean>False</sys:Boolean>
-                <sys:Boolean>False</sys:Boolean>
+                <sys:Boolean>True</sys:Boolean>
+                <sys:Boolean>True</sys:Boolean>
             </x:Array>
         </StackPanel.Resources>
-        
-        <controls:LedStrip Margin="10" Lines="{StaticResource Binary5}" />
-        <controls:LedStrip Margin="10" Lines="{StaticResource Binary5}" BitOrder="LsbFirst" />
-        <controls:LedStrip Margin="10" Lines="{StaticResource Binary5}" Orientation="Vertical" />
-        <controls:LedStrip Margin="10" Lines="{StaticResource Binary5}" Orientation="Vertical" BitOrder="LsbFirst" />
+
+        <controls:LedStrip Margin="10" Lines="{StaticResource BinaryNegative42}" />
+        <controls:LedStrip Margin="10" Lines="{StaticResource BinaryNegative42}" BitOrder="LsbFirst" />
+        <controls:LedStrip Margin="10" Lines="{StaticResource BinaryNegative42}" Orientation="Vertical" />
+        <controls:LedStrip Margin="10" Lines="{StaticResource BinaryNegative42}" Orientation="Vertical" BitOrder="LsbFirst" />
     </StackPanel>
 </Window>

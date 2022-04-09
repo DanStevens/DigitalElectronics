@@ -23,7 +23,10 @@
             </d:ItemsControl.Items>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <DockPanel LastChildFill="false" />
+                    <ItemsPanelTemplate.Resources>
+                        <ResourceDictionary Source="..\Common.xaml" />
+                    </ItemsPanelTemplate.Resources>
+                    <DockPanel LastChildFill="false" ToolTip="{Binding Value}" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>
@@ -37,7 +40,7 @@
                                Width="{Binding LedSize, RelativeSource={StaticResource This}}" d:Width="20"
                                Height="{Binding LedSize, RelativeSource={StaticResource This}}" d:Height="20"
                                Margin="{Binding Spacing, RelativeSource={StaticResource This}}" d:Margin="0.5"
-                               OnColor="{Binding LedColorWhenLit, RelativeSource={StaticResource This}}" />
+                               LitColor="{Binding LitLedColor, RelativeSource={StaticResource This}}" />
                     <DataTemplate.Triggers>
                         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
                             <Setter TargetName="led" Property="Text" Value="•" />

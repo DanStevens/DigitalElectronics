@@ -42,7 +42,7 @@
             <TextBlock TextAlignment="Center" MinWidth="170" Text="[Z state (high impedance)]"
                        Visibility="{Binding BusState, Converter={converters:NullToVisibilityConverter NullVisibility=Visible, NonNullVisibility=Collapsed}}" />
             <controls:LedStrip Visibility="{Binding BusState, Converter={converters:NullToVisibilityConverter}}"
-                               Lines="{Binding BusState}" LedSize="20" LedColorWhenLit="Gold" BitOrder="LsbFirst"/>
+                               Lines="{Binding BusState}" LedSize="20" LitLedColor="Gold" BitOrder="LsbFirst"/>
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,30,0,0">
             <CheckBox Margin="7.5" Content="Enable" IsChecked="{Binding RegisterB.Enable}"/>

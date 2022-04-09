@@ -23,7 +23,14 @@
             </d:ItemsControl.Items>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <DockPanel LastChildFill="false" />
+                    <ItemsPanelTemplate.Resources>
+                        <ResourceDictionary Source="..\Common.xaml" />
+                    </ItemsPanelTemplate.Resources>
+                    <DockPanel LastChildFill="false">
+                        <DockPanel.ToolTip>
+                            <ToolTip Content="{Binding Value}" StaysOpen="True" MouseLeftButtonDown="ToolTip_MouseLeftButtonDown" />
+                        </DockPanel.ToolTip>
+                    </DockPanel>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>

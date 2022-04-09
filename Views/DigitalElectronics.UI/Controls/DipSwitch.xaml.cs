@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,9 +40,8 @@ namespace DigitalElectronics.UI.Controls
 
         public static readonly DependencyProperty OrientationProperty =
             DependencyProperty.Register("Orientation", typeof(Orientation), typeof(DipSwitch),
-                new FrameworkPropertyMetadata(
+                new PropertyMetadata(
                     Orientation.Horizontal,
-                    FrameworkPropertyMetadataOptions.AffectsRender,
                     UpdateDock));
 
         #endregion
@@ -75,15 +75,67 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
+        #region Lines read-only dependency property
+
         public ObservableCollection<Bit> Lines
         {
             get { return (ObservableCollection<Bit>)GetValue(LinesProperty); }
             set { SetValue(LinesProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LinesProperty =
-            DependencyProperty.Register("Lines", typeof(ObservableCollection<Bit>), typeof(DipSwitch), new PropertyMetadata(null));
+            DependencyProperty.Register("Lines", typeof(ObservableCollection<Bit>), typeof(DipSwitch),
+                new PropertyMetadata(null, OnLinesPropertyChanged));
+
+        private static void OnLinesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is IEnumerable<Bit> newValue)
+            {
+                var @this = ((DipSwitch)d);
+
+                var oldValue = (e.OldValue as IEnumerable<Bit>) ?? Enumerable.Empty<Bit>();
+                foreach (var item in oldValue)
+                {
+                    item.PropertyChanged += OnLineBitChanged;
+                }
+
+                foreach (var item in newValue)
+                {
+                    item.PropertyChanged += OnLineBitChanged;
+                }
+
+                @this.SetValue(newValue);
+
+                void OnLineBitChanged(object? sender, PropertyChangedEventArgs _e)
+                {
+                    if (_e.PropertyName == nameof(Bit.Value))
+                        @this.SetValue(newValue);
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region Value dependency property
+
+        public BitArray Value
+        {
+            get { return (BitArray)GetValue(ValueProperty); }
+            private set { SetValue(ValuePropertyKey, value); }
+        }
+
+        private static DependencyPropertyKey ValuePropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(Value), typeof(BitArray), typeof(DipSwitch), new PropertyMetadata());
+
+        public static DependencyProperty ValueProperty = ValuePropertyKey.DependencyProperty;
+
+        private void SetValue(IEnumerable<Bit> newValue)
+        {
+            Value = new BitArray(newValue.Select(bit => bit.Value));
+        }
+
+        #endregion
 
         private static void UpdateDock(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -102,6 +154,11 @@ namespace DigitalElectronics.UI.Controls
             if (BitOrder == BitOrder.LsbFirst)
                 return Dock.Right;
             return Dock.Left;
+        }
+
+        private void ToolTip_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

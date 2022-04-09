@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -83,7 +86,16 @@ namespace DigitalElectronics.UI.Controls
         }
 
         public static readonly DependencyProperty LinesProperty =
-            DependencyProperty.Register("Lines", typeof(ICollection<bool>), typeof(LedStrip), new PropertyMetadata(null));
+            DependencyProperty.Register("Lines", typeof(ICollection<bool>), typeof(LedStrip),
+                new PropertyMetadata(null, OnLinesPropertyChanged));
+
+        private static void OnLinesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is IEnumerable<bool> newValue)
+            {
+                ((LedStrip)d).Value = new BitArray(newValue);
+            }
+        }
 
         #endregion
 
@@ -109,20 +121,35 @@ namespace DigitalElectronics.UI.Controls
         }
 
         public static readonly DependencyProperty LedSizeProperty =
-            DependencyProperty.Register("LedSize", typeof(double), typeof(LedStrip), new PropertyMetadata(20d));
+            DependencyProperty.Register("LedSize    ", typeof(double), typeof(LedStrip), new PropertyMetadata(20d));
 
         #endregion
 
-        #region LedColorWhenLit dependency property
+        #region LitLedColor dependency property
 
-        public Color LedColorWhenLit
+        public Color LitLedColor
         {
-            get { return (Color)GetValue(LedColorWhenLitProperty); }
-            set { SetValue(LedColorWhenLitProperty, value); }
+            get { return (Color)GetValue(LitLedColorProperty); }
+            set { SetValue(LitLedColorProperty, value); }
         }
 
-        public static readonly DependencyProperty LedColorWhenLitProperty =
-            DependencyProperty.Register("LedColorWhenLit", typeof(Color), typeof(LedStrip), new PropertyMetadata(Colors.OrangeRed));
+        public static readonly DependencyProperty LitLedColorProperty =
+            DependencyProperty.Register("LitLedColor", typeof(Color), typeof(LedStrip), new PropertyMetadata(Colors.OrangeRed));
+
+        #endregion
+
+        #region Value dependency property
+
+        public BitArray Value
+        {
+            get { return (BitArray)GetValue(ValueProperty); }
+            private set { SetValue(ValuePropertyKey, value); }
+        }
+
+        private static DependencyPropertyKey ValuePropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(Value), typeof(BitArray), typeof(LedStrip), new PropertyMetadata());
+
+        public static DependencyProperty ValueProperty = ValuePropertyKey.DependencyProperty;
 
         #endregion
 
