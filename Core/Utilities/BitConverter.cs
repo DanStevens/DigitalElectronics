@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Utilities
@@ -19,12 +21,14 @@ namespace DigitalElectronics.Utilities
 
         public Endianness Endianness => _byteConverter.Endianness;
 
+        #region Constructors
+
         /// <summary>
         /// Creates new instance of `BitConverter` configured to use the system's endianness
         /// </summary>
         /// <seealso cref="System.BitConverter.IsLittleEndian"/>
         public BitConverter()
-            : this (Endianness.System)
+            : this(Endianness.System)
         {
         }
 
@@ -37,16 +41,42 @@ namespace DigitalElectronics.Utilities
             _byteConverter = new ByteConverter(endianness);
         }
 
+        #endregion
+        
+        #region GetBits method overloads
+
         /// <summary>
-        /// Returns the specified 32-bit signed integer value as a <see cref="BitArray"/>.
+        /// Returns the specified 8-bit unsigned integer value as a <see cref="BitArray"/>.
         /// </summary>
         /// <param name="value">The number to convert.</param>
-        /// <returns>A `BitArray` with length 32, that represents the given integer with the endianness
-        /// specified by <see cref="Endianness"/>.</returns>
-        /// <seealso cref="ByteConverter.GetBytes(int)"/>
-        public BitArray GetBits(int value)
+        /// <returns>A `BitArray` with length 8, that represents the given integer.</returns>
+        public BitArray GetBits(byte value)
         {
-            return new BitArray(_byteConverter.GetBytes(value));
+            return new BitArray(value);
+        }
+
+        /// <summary>
+        /// Returns the specified 8-bit signed integer value as a <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="value">The number to convert.</param>
+        /// <returns>A `BitArray` with length 8, that represents the given integer>.</returns>
+        public BitArray GetBits(sbyte value)
+        {
+            var bitArray = new BitArray((byte)value);
+            bitArray.Length = sizeof(sbyte) * 8;
+            return bitArray;
+        }
+
+        /// <summary>
+        /// Returns the specified 16-bit unsigned integer value as a <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="value">The number to convert.</param>
+        /// <returns>A `BitArray` with length 16, that represents the given integer>.</returns>
+        public BitArray GetBits(ushort value)
+        {
+            var bitArray = new BitArray(new int[] {value});
+            bitArray.Length = sizeof(ushort) * 8;
+            return bitArray;
         }
 
         /// <summary>
@@ -62,14 +92,15 @@ namespace DigitalElectronics.Utilities
         }
 
         /// <summary>
-        /// Returns the specified 8-bit signed integer value as a <see cref="BitArray"/>.
+        /// Returns the specified 32-bit signed integer value as a <see cref="BitArray"/>.
         /// </summary>
         /// <param name="value">The number to convert.</param>
-        /// <returns>A `BitArray` with length 8, that represents the given integer with the endianness
+        /// <returns>A `BitArray` with length 32, that represents the given integer with the endianness
         /// specified by <see cref="Endianness"/>.</returns>
-        public BitArray GetBits(byte value)
+        /// <seealso cref="ByteConverter.GetBytes(int)"/>
+        public BitArray GetBits(int value)
         {
-            return new BitArray(value);
+            return new BitArray(_byteConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -132,29 +163,165 @@ namespace DigitalElectronics.Utilities
             return CreateBitArrayOfLengthAndPopulate(length, GetBits(value));
         }
 
+        #endregion
+
+        #region Integer conversion methods
+
         /// <summary>
         /// Returns a 32-bit signed integer converted from the <see cref="BitArray"/>.
         /// </summary>
         /// <param name="value">A `BitArray` that includes the four bytes to convert.</param>
-        /// <param name="startIndex">The starting position within `value`.</param>
-        /// <returns>A 32-bit signed integer formed by four bytes beginning at `startIndex`.</returns>
-        /// <exception cref="ArgumentException">`startIndex` is greater than or equal to the length
-        /// of `value` minus 3, and is less than or equal to the length of `value` minus 1.</exception>
         /// <exception cref="ArgumentNullException">`value` is `null`</exception>
-        /// <exception cref="ArgumentOutOfRangeException">startIndex is less than zero or greater than
-        /// the length of value minus 1.</exception>
-        public int ToInt32(BitArray[] value)
+        public int ToInt32(BitArray value)
         {
-            throw new NotImplementedException();
-            //return _byteConverter.ToInt32(Normalize(value), 0);
+            return (int)BitArrayToInteger(value, sizeof(int) * 8);
         }
 
-        // TODO: Add methods to mirror BitConverter methods
+        /// <summary>
+        /// Returns a 16-bit signed integer converted from the <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="value">A `BitArray` that includes the four bytes to convert.</param>
+        /// <exception cref="ArgumentNullException">`value` is `null`</exception>
+        public short ToInt16(BitArray value)
+        {
+            return (short)BitArrayToInteger(value, sizeof(short) * 8);
+        }
+
+        /// <summary>
+        /// Returns an 8-bit signed integer converted from the <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="value">A `BitArray` that includes the four bytes to convert.</param>
+        /// <exception cref="ArgumentNullException">`value` is `null`</exception>
+        public sbyte ToSByte(BitArray value)
+        {
+            return (sbyte)BitArrayToInteger(value, sizeof(sbyte) * 8);
+        }
+
+        /// <summary>
+        /// Returns a 16-bit unsigned integer converted from the <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="value">A `BitArray` that includes the four bytes to convert.</param>
+        /// <exception cref="ArgumentNullException">`value` is `null`</exception>
+        public ushort ToUInt16(BitArray value)
+        {
+            return (ushort)BitArrayToInteger(value, sizeof(ushort) * 8);
+        }
+
+        /// <summary>
+        /// Returns an 8-bit unsigned integer converted from the <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="value">A `BitArray` that includes the four bytes to convert.</param>
+        /// <exception cref="ArgumentNullException">`value` is `null`</exception>
+        public byte ToByte(BitArray value)
+        {
+            return (byte)BitArrayToInteger(value, sizeof(byte) * 8);
+        }
+
+        #endregion
+
+        public string ToString(BitArray value, NumberFormat format)
+        {
+            _ = value ?? throw new ArgumentNullException(nameof(value));
+
+            var binaryString = MaybeToBinary();
+            if (binaryString != null)
+            {
+                return binaryString;
+            }
+
+            bool isSigned = format is NumberFormat.SignedHexadecimal or NumberFormat.SignedDecimal;
+            int toBase = GetBaseForFormat(format);
+            return AdjustToFormat(ToStringRaw());
+
+            string ToStringRaw()
+            {
+                if (value.Length <= 8)
+                    return isSigned ? Convert.ToString(ToSByte(value), toBase) : Convert.ToString(ToByte(value), toBase);
+                if (value.Length <= 16)
+                    return isSigned ? Convert.ToString(ToInt16(value), toBase) : Convert.ToString(ToUInt16(value), toBase);
+                if (value.Length <= 32)
+                    return isSigned
+                        ? Convert.ToString(ToInt32(value), toBase) :
+                        //Convert.ToString(ToUInt32(value), toBase);
+                        throw new NotImplementedException();
+                //if (length <= 64)
+                //    return isSigned ?
+                //        Convert.ToString(ToUInt64(value), toBase) :
+                //        Convert.ToString(ToUInt32(value), toBase);
+                throw new NotImplementedException();
+            }
+
+            string AdjustToFormat(string s)
+            {
+                if (format is NumberFormat.SignedHexadecimal or NumberFormat.UnsignedHexadecimal)
+                {
+                    return s.ToUpperInvariant();
+                }
+
+                return s;
+            }
+
+            string MaybeToBinary()
+            {
+                if (format is NumberFormat.MsbBinary)
+                {
+                    return string.Join(string.Empty, value.AsEnumerable<bool>().Select(b => b ? "1" : "0"));
+                }
+
+                if (format is NumberFormat.LsbBinary)
+                {
+                    return string.Join(string.Empty, value.AsEnumerable<bool>().Reverse().Select(b => b ? "1" : "0"));
+                }
+
+                return null;
+            }
+        }
+
+        private static int GetBaseForFormat(NumberFormat format)
+        {
+            return format switch
+            {
+                NumberFormat.SignedDecimal => 10,
+                NumberFormat.UnsignedDecimal => 10,
+                NumberFormat.SignedHexadecimal => 16,
+                NumberFormat.UnsignedHexadecimal => 16,
+                _ => throw new ArgumentException($"Cannot determine base for format {format}", nameof(format))
+            };
+        }
+
+        private static Type InferIntTypeFromLength(int length, bool isSigned)
+        {
+            if (length <= 8)
+                return isSigned ? typeof(sbyte) : typeof(byte);
+            if (length <= 16)
+                return isSigned ? typeof(short) : typeof(ushort);
+            if (length <= 32)
+                return isSigned ? typeof(int) : typeof(uint);
+            if (length <= 64)
+                return isSigned ? typeof(long) : typeof(ulong);
+            throw new NotImplementedException();
+        }
 
         private static BitArray CreateBitArrayOfLengthAndPopulate(int length, BitArray ba)
         {
             var result = new BitArray(length);
             for (int x = 0; x < length; x++) result.Set(x, ba[x]);
+            return result;
+        }
+
+        private static ulong BitArrayToInteger(BitArray value, int length)
+        {
+            _ = value ?? throw new ArgumentNullException(nameof(value));
+
+            ulong result = 0;
+            for (int i = 0; i < Math.Min(value.Count, length); i++)
+            {
+                if (value[i])
+                {
+                    result |= 1UL << i;
+                }
+            }
+
             return result;
         }
     }

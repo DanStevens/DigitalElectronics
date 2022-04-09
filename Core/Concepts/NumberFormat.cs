@@ -4,9 +4,9 @@
     {
         MsbBinary,
         LsbBinary,
-        Octal,
         SignedDecimal,
         UnsignedDecimal,
-        Hexadecimal,
+        SignedHexadecimal,
+        UnsignedHexadecimal,
     }
 }
