@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Utilities;
+using BitConverter = DigitalElectronics.Utilities.BitConverter;
 using DotNetBitArray = System.Collections.BitArray;
 
 #if DEBUG
@@ -19,7 +20,7 @@ namespace DigitalElectronics.Concepts
     /// </summary>
     /// <note>This class is a wrapper for the built-in .NET class <see cref="DotNetBitArray"/>, extending it
     /// in such a way as to add features like <see cref="IReadOnlyList{Boolean}"/> and
-    /// <see cref="IEnumerable{Boolean}"/></note>
+    /// <see cref="IEnumerable{Boolean}"/>.</note>
     /// <seealso cref="DotNetBitArray"/>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class BitArray : IList<bool>, IList, ICloneable, IReadOnlyList<bool>
@@ -34,7 +35,6 @@ namespace DigitalElectronics.Concepts
         
         private readonly DotNetBitArray bitArray;
 
-        // Duplicate the constructors for .NET BitArray
         public BitArray(DotNetBitArray bitArray) => this.bitArray = bitArray ?? throw new ArgumentNullException(nameof(bitArray));
         public BitArray(params bool[] values) => bitArray = new DotNetBitArray(values ?? throw new ArgumentNullException(nameof(values)));
         public BitArray(params byte[] bytes) => bitArray = new DotNetBitArray(bytes ?? throw new ArgumentNullException(nameof(bytes)));
@@ -241,16 +241,56 @@ namespace DigitalElectronics.Concepts
 
         public string ToString(NumberFormat format)
         {
-            switch (format)
-            {
-                case NumberFormat.LsbBinary:
-                    return string.Join(string.Empty, this.AsEnumerable<bool>().Reverse().Select(b => b ? "1" : "0"));
-                case NumberFormat.SignedDecimal:
-                    return ToInt32().ToString();
-                case NumberFormat.MsbBinary:
-                default:
-                    return string.Join(string.Empty, this.AsEnumerable<bool>().Select(b => b ? "1" : "0"));
-            }
+            return new BitConverter().ToString(this, format);
+        }
+
+        /// <summary>
+        /// Removes 'leading' zeros from the <see cref="BitArray"/>. The current BitArray object
+        /// will be modified to store the result of the Trim operation.
+        /// </summary>
+        /// <returns>A <see cref="BitArray"/> representing the same value but with the leading
+        /// zeros removed. A BitArray representing zero is always trimmed to <see cref="Length"/>
+        /// of 1, never 0.</returns>
+        /// <remarks>From a positional notation perspective, the <see cref="Trim"/> method removes
+        /// any 'leading' zero digits from binary number represented by the <see cref="BitArray"/>.
+        /// For example, a BitArray of <see cref="Length"/> 8 representing the decimal 11
+        /// (which would be `00001011` in binary representation) will be 'trimmed' to a Length
+        /// of 4 (i.e. `1011`).
+        ///
+        /// From a technical perspective, since the BitArray orders bits from most-significant to
+        /// least significant, the method actually trims trailing bits. So with our previous
+        /// example, the decimal 11 would be represented internally with an array of 8 bools
+        /// <c>{true, true, false, true, false, false, false, false}</c>. The method would
+        /// mutate the BitArray to the array <c>{true, true, false, true}</c>
+        ///
+        /// The length of the BitArray modified by assigning a new length to the
+        /// <see cref="Length"/> property</remarks>
+        public BitArray Trim()
+        {
+            return Trim(1);
+        }
+
+        /// <summary>
+        /// Like <see cref="Trim()"/> method but only reduces the length of the <see cref="BitArray"/>
+        /// at most down to the given <paramref name="targetLength"/>.
+        /// </summary>
+        /// <param name="targetLength">The desired length for the BitArray</param>
+        /// <returns>A <see cref="BitArray"/> of either <see cref="Length"/>
+        /// <paramref name="targetLength"/>targetLength</returns> or the longest length that can represent
+        /// the same value. For example, calling <c>Trim(8)</c> on a BitArray representing decimal 11
+        /// of length 32 will reduce the <see cref="Length"/> to 8, while the same call on a BitARray
+        /// representing decimal 645 will be reduce the Length to 10, since this many bits is needed
+        /// to fully represent the decimal value 645.
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="targetLength"/> is less than one</exception>
+        public BitArray Trim(int targetLength)
+        {
+            if (targetLength < 0)
+                throw new ArgumentOutOfRangeException(nameof(targetLength), "Argument must be non-negative");
+
+            var leadingZerosCount = AsEnumerable<bool>().Reverse().TakeWhile(b => !b).Count();
+            var newLength = Math.Max(targetLength, Length - leadingZerosCount);
+            Length = Math.Max(1, newLength);
+            return this;
         }
 
         /// <summary>
@@ -316,7 +356,6 @@ namespace DigitalElectronics.Concepts
             return new BitArrayAsBooleanEnumerator(bitArray.GetEnumerator());
         }
 
-
         #endregion
 
         #region IList, ICollection implementation
@@ -326,7 +365,6 @@ namespace DigitalElectronics.Concepts
             BlockAttemptToAddRemoveOrInsertItems();
             return default;
         }
-
 
         bool IList.Contains(object value)
         {

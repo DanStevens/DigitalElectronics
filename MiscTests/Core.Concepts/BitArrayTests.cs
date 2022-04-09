@@ -1,12 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using DigitalElectronics.Concepts;
-using DigitalElectronics.Utilities;
 using FluentAssertions;
+using BitConverter = DigitalElectronics.Utilities.BitConverter;
 using DotNetBitArray = System.Collections.BitArray;
 
 namespace DigitalElectronics.Concepts.Tests
@@ -220,6 +221,122 @@ namespace DigitalElectronics.Concepts.Tests
             var expectedBits = bools.Select(b => new Bit(b));
             var objUT = new BitArray(bools);
             objUT.AsEnumerable<Bit>().Should().BeEquivalentTo(expectedBits);
+        }
+
+        [Test]
+        public void Count_ShouldCorrespondWithSizeOfIntUsedToCreateBitArray()
+        {
+            new BitArray(length: 0).Count.Should().Be(0);
+            new BitArray(length: 8).Count.Should().Be(8);
+            new BitArray(length: 9).Count.Should().Be(9);
+            new BitArray(length: 16).Count.Should().Be(16);
+
+            new BitArray(true).Count.Should().Be(1);
+            new BitArray(true, false).Count.Should().Be(2);
+            new BitArray(new Bit()).Count.Should().Be(1);
+            new BitArray(new Bit(true), new Bit(false)).Count.Should().Be(2);
+
+            new BitArray(new DotNetBitArray(length: 32)).Count.Should().Be(32);
+            new BitArray(new [] { 0 }).Count.Should().Be(sizeof(int) * 8);
+            new BitArray(new [] { 0, 0 }).Count.Should().Be(sizeof(int) * 8 * 2);
+            new BitArray((byte)0).Count.Should().Be(sizeof(byte) * 8);
+
+            var bitConverter = new BitConverter();
+            bitConverter.GetBits((sbyte)0).Count.Should().Be(sizeof(sbyte) * 8);
+            bitConverter.GetBits((ushort)0).Count.Should().Be(sizeof(ushort) * 8);
+            bitConverter.GetBits((short)0).Count.Should().Be(sizeof(short) * 8);
+            bitConverter.GetBits(0).Count.Should().Be(sizeof(int) * 8);
+        }
+
+        [TestCase(-1, sizeof(int) * 8)]
+        [TestCase(0, 1)] // Trim should never reduce length of BitArray below 1
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 2)]
+        [TestCase(4, 3)]
+        [TestCase(7, 3)]
+        [TestCase(255, 8)]
+        [TestCase(int.MinValue, sizeof(int) * 8)]
+        [TestCase(int.MinValue + 1, sizeof(int) * 8)]
+        [TestCase(int.MinValue + 1024, sizeof(int) * 8)]
+        public void Trim_WhenGivenBitArrayOfLength32_TrimsToSmallestLengthPossible_WhenGivenNoArgs(int value, int expectedLength)
+        {
+            var bitConverter = new BitConverter();
+            var bitArray = bitConverter.GetBits((int)value);
+            bitArray.Length.Should().Be(sizeof(int) * 8);
+            bitArray.Trim().Should().BeSameAs(bitArray);
+            bitArray.Length.Should().Be(expectedLength);
+            bitArray.Count.Should().Be(expectedLength);
+            bitConverter.ToInt32(bitArray).Should().Be(value);
+        }
+
+        [TestCase(0, 1)] // Trim should never reduce length of BitArray below 1
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 2)]
+        [TestCase(4, 3)]
+        [TestCase(7, 3)]
+        [TestCase(255, 8)]
+        [TestCase(ushort.MinValue, 1)]
+        [TestCase(ushort.MinValue + 1, 1)]
+        [TestCase(ushort.MinValue + 1024, 11)]
+        public void Trim_WhenGivenBitArrayOfLength16_TrimsToSmallestLengthPossible_WhenGivenNoArgs(int value, int expectedLength)
+        {
+            var bitConverter = new BitConverter();
+            var bitArray = bitConverter.GetBits((ushort)value);
+            bitArray.Length.Should().Be(sizeof(ushort) * 8);
+            bitArray.Trim().Should().BeSameAs(bitArray);
+            bitArray.Length.Should().Be(expectedLength);
+            bitArray.Count.Should().Be(expectedLength);
+            bitConverter.ToUInt16(bitArray).Should().Be((ushort)value);
+        }
+
+        [TestCase(0, 1)] // Trim should never reduce length of BitArray below 1
+        [TestCase(1, 1)]
+        [TestCase(2, 2)]
+        [TestCase(3, 2)]
+        [TestCase(4, 3)]
+        [TestCase(7, 3)]
+        [TestCase(11, 4)]
+        [TestCase(byte.MaxValue, 8)]
+        public void Trim_WhenGivenBitArrayOfLength8_TrimsToSmallestLengthPossible_WhenGivenNoArgs(int value, int expectedLength)
+        {
+            var bitConverter = new BitConverter();
+            var bitArray = bitConverter.GetBits((byte)value);
+            bitArray.Length.Should().Be(sizeof(byte) * 8);
+            bitArray.Trim().Should().BeSameAs(bitArray);
+            bitArray.Length.Should().Be(expectedLength);
+            bitArray.Count.Should().Be(expectedLength);
+            bitConverter.ToByte(bitArray).Should().Be((byte)value);
+        }
+
+        [TestCase(-1, 1, sizeof(int) * 8)]
+        [TestCase(0, 0, 1)] // Trim should never reduce length of BitArray below 1
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 1, 2)]
+        [TestCase(3, 1, 2)]
+        [TestCase(4, 1, 3)]
+        [TestCase(7, 1, 3)]
+        [TestCase(11, 8, 8)]
+        [TestCase(42, 8, 8)]
+        [TestCase(645, 8, 10)]
+        public void Trim_WhenGivenBitArrayOfLength32_TriesToTrimToGivenLength(int value, int targetLength, int expectedLength)
+        {
+            var bitConverter = new BitConverter();
+            var bitArray = bitConverter.GetBits((int)value);
+            bitArray.Length.Should().Be(sizeof(int) * 8);
+            bitArray.Trim(targetLength).Should().BeSameAs(bitArray);
+            bitArray.Length.Should().Be(expectedLength);
+            bitArray.Count.Should().Be(expectedLength);
+            bitConverter.ToInt32(bitArray).Should().Be(value);
+        }
+
+        [Test]
+        public void Trim_ThrowsArgumentOutOfRangeException_WhenTargetLengthIsNegative()
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new BitArray(length: 8).Trim(-1));
+            ex.Message.Should().StartWithEquivalentOf("Argument must be non-negative");
+            ex.ParamName.Should().Be("targetLength");
         }
     }
 }
