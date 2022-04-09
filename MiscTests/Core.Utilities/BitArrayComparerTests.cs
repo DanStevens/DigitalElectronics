@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using FluentAssertions;
 using NUnit.Framework;
 using DigitalElectronics.Concepts;
@@ -42,9 +43,9 @@ namespace DigitalElectronics.Utilities.Tests
             {
                 for (byte y = 0; y < 255; y++)
                 {
-                    var bitArrayX = new BitArray(x);
-                    var bitArrayY = new BitArray(y);
-                    var expected = x.CompareTo(y);
+                    var bitArrayX = new BitArray((byte)x);
+                    var bitArrayY = new BitArray((byte)y);
+                    var expected = Math.Clamp(x.CompareTo(y), -1, 1);
 
                     var result = comparer.Compare(bitArrayX, bitArrayY);
                     result.Should().Be(expected);

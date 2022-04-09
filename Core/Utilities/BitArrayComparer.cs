@@ -6,6 +6,8 @@ namespace DigitalElectronics.Utilities
 {
     public class BitArrayComparer : IComparer<BitArray>
     {
+        private BitConverter _bitConverter = new BitConverter();
+
         public int Compare(BitArray x, BitArray y)
         {
             if (ReferenceEquals(x, y))
@@ -23,7 +25,7 @@ namespace DigitalElectronics.Utilities
                 return -1;
             }
 
-            return x.ToByte().CompareTo(y.ToByte());
+            return _bitConverter.ToInt32(x).CompareTo(_bitConverter.ToInt32(y));
         }
     }
 }
