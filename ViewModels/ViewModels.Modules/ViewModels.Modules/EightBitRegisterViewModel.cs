@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Components.Memory;
@@ -31,7 +30,6 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 
         var bits = _register.ProbeState().ToArray<bool>();
         _data = new ObservableCollection<Bit>(bits.Select(b => new Bit(b)));
-        _data.CollectionChanged += OnDataBitChanged;
         _output = new ObservableCollection<bool>(bits);
     }
 
@@ -75,14 +73,9 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
         get => _data;
         set
         {
-            if (value is null)
-                value = new ObservableCollection<Bit>(new BitArray(_NumberOfBits).AsEnumerable<Bit>());
-
             if (!_data.SequenceEqual(value))
             {
-                _data.CollectionChanged -= OnDataBitChanged;
                 _data = value;
-                _data.CollectionChanged += OnDataBitChanged;
                 Sync();
                 RaisePropertyChanged();
                 if (Enable) RaisePropertyChanged(nameof(Output));
@@ -92,9 +85,8 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 
     private void Sync()
     {
-        var bits = _data.ToBitArray();
-        _register.SetInputD(new BitArray(bits));
-        _output = new ObservableCollection<bool>(bits);
+        _register.SetInputD(_data.ToBitArray());
+        _output = new ObservableCollection<bool>(_data.ToBitArray());
     }
 
     public ReadOnlyObservableCollection<bool> Probe =>
@@ -128,12 +120,5 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
     private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    private void OnDataBitChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        Sync();
-        RaisePropertyChanged(nameof(Data));
-        RaisePropertyChanged(nameof(Probe));
     }
 }
