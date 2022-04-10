@@ -1,4 +1,5 @@
-﻿using DigitalElectronics.Concepts;
+﻿using System.Linq;
+using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
 using DigitalElectronics.Utilities;
@@ -29,10 +30,13 @@ namespace DigitalElectronics.Modules.Memory.Tests
         [Test]
         public void TestWriteAndReadEveryByteOfMemory()
         {
+            BitArray[] testData = Enumerable.Range(0, 16).Select(a => _bitConverter.GetBits(32 + a, 8)).ToArray();
+            
             _16ByteRAM.Output.Should().BeNull();
 
             WriteUniqueDataToEachMemoryLocation();
             ReadBackDataFromEachMemoryLocation();
+            _16ByteRAM.ProbeState().Should().BeEquivalentTo(testData);
             WriteZeroToEachMemoryLocation();
             ReadBackTheZerosFromEachMemoryLocation();
 
@@ -44,7 +48,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
                 for (int address = 0; address < 16; address++)
                 {
                     var addressBits = _bitConverter.GetBits(address, 4);
-                    var data = _bitConverter.GetBits(32 + address, 8);
+                    var data = testData[address];
                     WriteToMemoryLocation(addressBits, data);
                 }
             }
@@ -54,7 +58,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
                 for (int address = 0; address < 16; address++)
                 {
                     var addressBits = _bitConverter.GetBits(address, 4);
-                    var expectedData = _bitConverter.GetBits(32 + address, 8);
+                    var expectedData = testData[address];
                     VerifyMemoryLocation(addressBits, expectedData);
                 }
             }
@@ -84,7 +88,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
         {
             _16ByteRAM.SetInputA(addressBits);
             _16ByteRAM.SetInputE(true);
-            _16ByteRAM.Output.Should().BeEquivalentTo(expectedData.AsReadOnlyList<bool>());
+            _16ByteRAM.Output.Should().BeEquivalentTo(expectedData);
         }
 
         private void WriteToMemoryLocation(BitArray addressBits, BitArray data)
@@ -94,9 +98,10 @@ namespace DigitalElectronics.Modules.Memory.Tests
             _16ByteRAM.SetInputD(data);
             _16ByteRAM.Clock();
             _16ByteRAM.SetInputE(true);
-            _16ByteRAM.Output.Should().BeEquivalentTo(data.AsReadOnlyList<bool>());
+            _16ByteRAM.Output.Should().BeEquivalentTo(data);
             _16ByteRAM.SetInputE(false);
             _16ByteRAM.Output.Should().BeNull();
+            _16ByteRAM.ProbeState(addressBits).Should().BeEquivalentTo(data);
         }
     }
 }

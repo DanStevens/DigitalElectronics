@@ -1,4 +1,7 @@
-﻿using DigitalElectronics.Concepts;
+﻿using System.Collections.Generic;
+using DigitalElectronics.Concepts;
+
+#nullable enable
 
 namespace DigitalElectronics.Modules.Memory
 {
@@ -68,6 +71,25 @@ namespace DigitalElectronics.Modules.Memory
         /// determined by the most recent call to <see cref="SetInputA(BitArray)"/>,
         /// unless <see cref="SetInputE(bool)">'Enable' input</see> has been set
         /// to `false`, in which case `null` is output.</remarks>
-        BitArray Output { get; }
+        BitArray? Output { get; }
+
+        /// <summary>
+        /// Returns the entire internal state of the RAM
+        /// </summary>
+        /// <returns>A list of <seealso cref="BitArray"/> objects representing the
+        /// internal state of the memory.</returns>
+        ///  <remarks>Consumers can use this to get the register's output without have to set
+        /// the 'enable' signal (<see cref="Register.SetInputE"/>) to `true`.</remarks>
+        IList<BitArray> ProbeState();
+
+        /// <summary>
+        /// Returns the internal state of the RAM at the given address
+        /// </summary>
+        /// <param name="address">The address to get</param>
+        /// <returns>A <seealso cref="BitArray"/> objects representing the
+        /// internal state of the memory at the given address.</returns>
+        ///  <remarks>Consumers can use this to get the register's output without have to set
+        /// the 'enable' signal (<see cref="Register.SetInputE"/>) to `true`.</remarks>
+        BitArray ProbeState(BitArray address);
     }
 }

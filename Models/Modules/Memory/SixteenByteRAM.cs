@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
+
+#nullable enable
 
 namespace DigitalElectronics.Modules.Memory
 {
@@ -121,8 +124,18 @@ namespace DigitalElectronics.Modules.Memory
         /// determined by the most recent call to <see cref="SetInputA(BitArray)"/>,
         /// unless <see cref="SetInputE(bool)">'Enable' input</see> has been set
         /// to `false`, in which case `null` is output.</remarks>
-        public BitArray Output =>
+        public BitArray? Output =>
             _8BitRegisters.FirstOrDefault(_ => _.Output != null)?.Output;
+
+        public IList<BitArray> ProbeState()
+        {
+            return _8BitRegisters.Select(r => new BitArray(r.ProbeState())).ToArray();
+        }
+
+        public BitArray ProbeState(BitArray address)
+        {
+            return _8BitRegisters[address.ToByte()].ProbeState();
+        }
 
         int IRAM.WordSize => WordSize;
 
