@@ -9,10 +9,10 @@ namespace DigitalElectronics.Modules.Memory
     /// <summary>
     /// 16 byte Random Access Memory module with 8-bit word length and a 4-bit address
     /// </summary>
-    public class SixteenByteRAM
+    public class SixteenByteRAM : IRAM
     {
-        private const int WordLength = 8; // Bits
-        private const int Capacity = 16;  // Bytes
+        private const int WordSize = 8; // Bits
+        private const int Capacity = 16;  // Words/Bytes
 
         private FourBitAddressDecoder _addressDecoder;
         private AndGate[] _andL;
@@ -34,7 +34,7 @@ namespace DigitalElectronics.Modules.Memory
             { 
                 _andL[x] = new AndGate();
                 _andE[x] = new AndGate();
-                _8BitRegisters[x] = new Register(WordLength);
+                _8BitRegisters[x] = new Register(WordSize);
             }
 
             SetInputA(new BitArray(4));
@@ -123,6 +123,10 @@ namespace DigitalElectronics.Modules.Memory
         /// to `false`, in which case `null` is output.</remarks>
         public BitArray Output =>
             _8BitRegisters.FirstOrDefault(_ => _.Output != null)?.Output;
+
+        int IRAM.WordSize => WordSize;
+
+        int IRAM.Capacity => Capacity;
 
         private void Sync()
         {
