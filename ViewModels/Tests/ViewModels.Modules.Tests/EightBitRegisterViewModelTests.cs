@@ -45,6 +45,12 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
         }
 
+        private void AssertSetInputDWasCalled(IRegister registerMock, BitArray bitArray)
+        {
+            var expectedArg = CreateExpectedBitArrayArg(bitArray);
+            registerMock.Received(1).SetInputD(expectedArg);
+        }
+
         #endregion
 
         [Test]
@@ -68,17 +74,11 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             // Set to zero
             objUT.Data = CreateObservableBitCollection(0);
-            AssertSetInputDWasCalled(minByte);
+            AssertSetInputDWasCalled(registerMock, minByte);
 
             // Set to 255
             objUT.Data = CreateObservableBitCollection(255);
-            AssertSetInputDWasCalled(maxByte);
-
-            void AssertSetInputDWasCalled(BitArray bitArray)
-            {
-                var expectedArg = CreateExpectedBitArrayArg(bitArray);
-                registerMock.Received(1).SetInputD(expectedArg);
-            }
+            AssertSetInputDWasCalled(registerMock, maxByte);
         }
 
         [Test]
@@ -94,6 +94,21 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             // Set to false;
             objUT.Load = false;
             registerMock.Received(1).SetInputL(false);
+        }
+
+        [Test]
+        public void Enable_ShouldCallSetInputLMethodOnRegister_WhenSet()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+
+            // Set to true
+            objUT.Enable = true;
+            registerMock.Received(1).SetInputE(true);
+
+            // Set to false;
+            objUT.Enable = false;
+            registerMock.Received(1).SetInputE(false);
         }
 
         [Test]
@@ -113,30 +128,45 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var objUT = new EightBitRegisterViewModel(registerMock);
 
             objUT.Enable = true;
+            objUT.Output.Should().NotBeNull();
             objUT.Output.Should().BeEquivalentTo(objUT.Probe);
         }
-
-        [Test]
-        public void Enable_ShouldCallSetInputLMethodOnRegister_WhenSet()
-        {
-            var registerMock = CreateRegisterMock();
-            var objUT = new EightBitRegisterViewModel(registerMock);
-
-            // Set to true
-            objUT.Enable = true;
-            registerMock.Received(1).SetInputE(true);
-
-            // Set to false;
-            objUT.Enable = false;
-            registerMock.Received(1).SetInputE(false);
-        }
-
+        
         [Test]
         public void Clock_ShouldCallClockOnRegister_WhenCalled()
         {
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
             objUT.Clock();
+            registerMock.Received(1).Clock();
+        }
+
+        [Test]
+        public void Clock_ShouldCallSetInputDOnRegister_WhenCalled()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+            objUT.Clock();
+            AssertSetInputDWasCalled(registerMock, maxByte);
+        }
+
+        [Test]
+        public void Output_ShouldUpdateToMatchData_WhenClockIsCalledAndLoadIsTrue()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+
+            objUT.Enable = true;
+            objUT.Output.Should().BeEquivalentTo(BoolCollectionFor255);
+            objUT.Enable = false;
+
+            objUT.Data = CreateObservableBitCollection(42);
+            objUT.Load = true;
+            objUT.Clock();
+            objUT.Load = false;
+
+            objUT.Enable = true;
+            objUT.Output.Should().BeEquivalentTo(CreateObservableBoolCollection(42));
         }
 
         [Test]

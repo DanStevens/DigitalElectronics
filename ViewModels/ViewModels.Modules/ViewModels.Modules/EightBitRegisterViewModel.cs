@@ -92,7 +92,8 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
     public ReadOnlyObservableCollection<bool> Probe =>
         new(new ObservableCollection<bool>(_register.ProbeState()));
 
-    public ReadOnlyObservableCollection<bool>? Output => Enable ? new ReadOnlyObservableCollection<bool>(_output) : null;
+    public ReadOnlyObservableCollection<bool>? Output =>
+        Enable ? new ReadOnlyObservableCollection<bool>(_output) : null;
 
     IList<Bit> IRegisterViewModel.Data
     {

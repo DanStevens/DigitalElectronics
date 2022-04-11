@@ -102,7 +102,7 @@ namespace DigitalElectronics.Components.Memory
             {
                 return !_registers[0].OutputQ.HasValue ?
                     null :
-                    new BitArray(_registers.Select(_ => _.OutputQ.Value).ToArray());
+                    new BitArray(_registers.Select(_ => _.OutputQ.Value));
             }
         }
 
@@ -113,7 +113,7 @@ namespace DigitalElectronics.Components.Memory
         /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState()
         {
-            return new BitArray(_registers.Select(_ => _.ProbeState()).ToArray());
+            return new BitArray(_registers.Select(_ => _.ProbeState()));
         }
     }
 }
