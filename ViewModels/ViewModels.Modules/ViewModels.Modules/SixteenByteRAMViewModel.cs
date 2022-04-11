@@ -23,18 +23,23 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         : this(new SixteenByteRAM())
     { }
 
-    public SixteenByteRAMViewModel(IRAM ram)
+    public SixteenByteRAMViewModel(int initialAddress = 0)
+        : this(new SixteenByteRAM(), initialAddress)
+    { }
+
+    public SixteenByteRAMViewModel(IRAM ram, int initialAddress = 0)
     {
         _ram = ram ?? throw new ArgumentNullException(nameof(ram));
+        initialAddress = Math.Clamp(initialAddress, 0, ram.Capacity - 1);
 
         _data = CreateBitObservableCollection(_ram.WordSize, true);
 
-        var initialAddress = new BitArray(new[] { _ram.Capacity - 1 }).Trim();
-        _ram.SetInputA(initialAddress);
-        _address = CreateBitObservableCollection(initialAddress.Count);
+        var initialAddressBitArray = new BitArray(new [] { initialAddress }).Trim(4);
+        _ram.SetInputA(initialAddressBitArray);
+        _address = CreateBitObservableCollection(initialAddressBitArray.Count);
 
         _probe = new ObservableCollection<BitArray>(_ram.ProbeState());
-        _output = new ObservableCollection<bool>(_ram.ProbeState(initialAddress));
+        _output = new ObservableCollection<bool>(_ram.ProbeState(initialAddressBitArray));
     }
 
     private static ObservableCollection<Bit> CreateBitObservableCollection(int length, bool bitState = false)

@@ -26,9 +26,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return new ObservableCollection<Bit>(BitConverter.GetBits(value).Select(b => new Bit(b)).ToList());
         }
 
-        private static ObservableCollection<Bit> CreateObservableBitCollection(int length)
+        private static ObservableCollection<Bit> CreateObservableBitCollection(int length, bool value = false)
         {
-            return new ObservableCollection<Bit>(Enumerable.Range(0, length).Select(b => new Bit()));
+            return new ObservableCollection<Bit>(Enumerable.Range(0, length).Select(b => new Bit(value)));
         }
 
         private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
@@ -73,18 +73,46 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
+        public void Ctor_CallsSetInputAMethodPassingInitialAddressArgument()
+        {
+            var initialAddress = 6;
+            var ramMock = CreateRamMock();
+           _ = new SixteenByteRAMViewModel(ramMock, initialAddress);
+            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray((byte)initialAddress).Trim(4)));
+        }
+
+        [Test]
+        public void Ctor_ClassSetInputAMethodPassingZero_WhenInitialAddressArgumentIsNegative()
+        {
+            var ramMock = CreateRamMock();
+            _ = new SixteenByteRAMViewModel(ramMock, -1);
+            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray((byte)0).Trim(4)));
+        }
+
+        [Test]
+        public void Ctor_ClassSetInputAMethodPassingCapacityOfRamMinus1_WhenInitialAddressArgumentIsGreaterThanOrEqualToCapacity()
+        {
+            var ramMock = CreateRamMock();
+            _ = new SixteenByteRAMViewModel(ramMock, 16);
+            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray((byte)15).Trim(4)));
+            ramMock.ClearReceivedCalls();
+            _ = new SixteenByteRAMViewModel(ramMock, 17);
+            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray((byte)15).Trim(4)));
+        }
+
+        [Test]
         public void Address_ShouldCallSetInputAMethodOnRam_WhenSet()
         {
             var ramMock = CreateRamMock();
             var objUT = new SixteenByteRAMViewModel(ramMock);
 
-            // Set to zero
-            objUT.Address = CreateObservableBitCollection((byte)0);
-            AssertSetInputDWasCalled(new BitArray((byte)0));
-
             // Set to 15
             objUT.Address = CreateObservableBitCollection((byte)15);
             AssertSetInputDWasCalled(new BitArray((byte)15));
+
+            // Set to zero
+            objUT.Address = CreateObservableBitCollection((byte)0);
+            AssertSetInputDWasCalled(new BitArray((byte)0));
 
             void AssertSetInputDWasCalled(BitArray bitArray)
             {
