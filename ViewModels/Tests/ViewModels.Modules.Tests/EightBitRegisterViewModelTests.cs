@@ -71,6 +71,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         {
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
+            registerMock.ClearReceivedCalls();
 
             // Set to zero
             objUT.Data = CreateObservableBitCollection(0);
@@ -127,6 +128,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
 
+            registerMock.Output.Returns(maxByte);
             objUT.Enable = true;
             objUT.Output.Should().NotBeNull();
             objUT.Output.Should().BeEquivalentTo(objUT.Probe);
@@ -146,6 +148,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         {
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
+            registerMock.ClearReceivedCalls();
             objUT.Clock();
             AssertSetInputDWasCalled(registerMock, maxByte);
         }
@@ -156,6 +159,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
 
+            registerMock.Output.Returns(maxByte);
             objUT.Enable = true;
             objUT.Output.Should().BeEquivalentTo(BoolCollectionFor255);
             objUT.Enable = false;
@@ -165,6 +169,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             objUT.Clock();
             objUT.Load = false;
 
+            registerMock.Output.Returns(new BitArray((byte)42));
             objUT.Enable = true;
             objUT.Output.Should().BeEquivalentTo(CreateObservableBoolCollection(42));
         }

@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.ViewModels.Modules.Annotations;
 using DigitalElectronics.Utilities;
-using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.ViewModels.Modules;
 
@@ -16,7 +14,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 
     private readonly IRegister _register;
     private ObservableCollection<Bit> _data;
-    private ObservableCollection<bool> _output;
+    private ObservableCollection<bool>? _output;
     private bool _load;
     private bool _enable;
 
@@ -30,7 +28,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 
         var bits = _register.ProbeState().ToArray<bool>();
         _data = new ObservableCollection<Bit>(bits.Select(b => new Bit(b)));
-        _output = new ObservableCollection<bool>(bits);
+        Sync();
     }
 
     public event EventHandler? EnableChanged;
@@ -47,6 +45,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
             {
                 _enable = value;
                 _register.SetInputE(value);
+                Sync();
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Output));
                 EnableChanged?.Invoke(this, EventArgs.Empty);
@@ -83,17 +82,12 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
         }
     }
 
-    private void Sync()
-    {
-        _register.SetInputD(_data.ToBitArray());
-        _output = new ObservableCollection<bool>(_data.ToBitArray());
-    }
 
     public ReadOnlyObservableCollection<bool> Probe =>
         new(new ObservableCollection<bool>(_register.ProbeState()));
 
     public ReadOnlyObservableCollection<bool>? Output =>
-        Enable ? new ReadOnlyObservableCollection<bool>(_output) : null;
+        _output != null ? new ReadOnlyObservableCollection<bool>(_output) : null;
 
     IList<Bit> IRegisterViewModel.Data
     {
@@ -115,11 +109,15 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
         if (Load) RaisePropertyChanged(nameof(Probe));
     }
 
-    public void SetData(BitArray value) => Data = new ObservableCollection<Bit>(value.AsEnumerable<Bit>());
-
     [NotifyPropertyChangedInvocator]
     private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private void Sync()
+    {
+        _register.SetInputD(_data.ToBitArray());
+        _output = _register.Output != null ? new ObservableCollection<bool>(_register.Output) : null;
     }
 }
