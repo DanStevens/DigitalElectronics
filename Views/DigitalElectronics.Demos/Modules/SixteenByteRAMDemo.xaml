@@ -10,14 +10,14 @@
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
-        Title="16 Byte RAM Demo" Height="240" Width="500">
+        Title="16 Byte RAM Demo" Height="240" Width="600">
     <Window.DataContext>
         <modules:SixteenByteRAMViewModel x:Name="_viewModel" />
     </Window.DataContext>
     <Grid VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="300" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" Margin="0,10,0,0" Orientation="Vertical">
@@ -28,43 +28,22 @@
             <Button Content="Clock" Width="50" Height="25" Margin="0,20,0,0" Click="ClockButton_Click"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Vertical">
-            <Border BorderBrush="Black" BorderThickness="1" Height="150" Margin="10" Padding="5">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">16 Byte RAM</TextBlock>
-                    <!--<Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
-                        <ColumnDefinition Width="120" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
-                    </StackPanel>
-                </Grid>-->
+            <Border BorderBrush="Black" BorderThickness="1" Height="130" Margin="10" Padding="5">
+                <DockPanel HorizontalAlignment="Center">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">16 Byte RAM</TextBlock>
                     <ItemsControl ItemsSource="{Binding ProbeAll}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type concepts:BitArray}">
-                                <controls:LedStrip Lines="{Binding}" LedSize="10" BitOrder="LsbFirst" />
+                                <controls:LedStrip Lines="{Binding}" LedSize="10" BitOrder="LsbFirst" Margin="5,0, 5, 0" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </StackPanel>
+                </DockPanel>
             </Border>
             <controls:DipSwitch Lines="{Binding Data}" HorizontalAlignment="Center" BitOrder="LsbFirst"/>
         </StackPanel>
