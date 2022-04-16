@@ -110,16 +110,18 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         {
             if (_address?.SequenceEqual(value) != true)
             {
+                var newAddress = value.ToBitArray().Trim(AddressLength);
+                SyncAddress(newAddress);
                 if (_address != null) _address.ItemPropertyChanged -= OnAddressBitChanged;
-                _address = value;
+                _address = new FullyObservableCollection<Bit>(CreateBits(newAddress));
                 _address.ItemPropertyChanged += OnAddressBitChanged;
-                SyncAddress();
                 RaisePropertyChanged();
             }
         }
     }
 
-    private void OnAddressBitChanged(object? sender, ItemPropertyChangedEventArgs e) => SyncAddress();
+    private void OnAddressBitChanged(object? sender, ItemPropertyChangedEventArgs e) =>
+        SyncAddress(_address.ToBitArray().Trim(AddressLength));
 
 
     public ReadOnlyObservableCollection<bool>? Output => _output != null ? new(_output) : null;
@@ -150,9 +152,9 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private void SyncAddress()
+    private void SyncAddress(BitArray address)
     {
-        _ram.SetInputA(_address.ToBitArray().Trim(AddressLength));
+        _ram.SetInputA(address);
         SyncOutput();
     }
 

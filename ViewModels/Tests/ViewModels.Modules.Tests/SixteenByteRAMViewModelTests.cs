@@ -204,16 +204,41 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             objUT.Output.Should().BeEquivalentTo(new BitArray((byte)1));
         }
 
-        [Ignore("TODO")]
-        public void Address_ShouldAlwaysBeLength4_WhenAssignedCollectionGreaterThan4()
+        [Test]
+        public void Address_ShouldAlwaysBeLength4_WhenAssignedCollectionWithLength8()
         {
-
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
+            objUT.Address.Count.Should().Be(4);
+            var newAddress = CreateFullyObservableBitCollection((byte)0);
+            newAddress.Count.Should().Be(8);
+            objUT.Address = newAddress;
+            objUT.Address.Count.Should().Be(4);
         }
 
-        [Ignore("TODO")]
-        public void Address_ShouldAlwaysBeLength4_WhenAssignedCollectionLessThan4()
+        [Test]
+        public void Address_ShouldAlwaysBeLength4_WhenAssignedCollectionWithLength5()
         {
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
+            objUT.Address.Count.Should().Be(4);
+            var newAddress = CreateFullyObservableBitCollection(length: 5);
+            newAddress.Count.Should().Be(5);
+            objUT.Address = newAddress;
+            objUT.Address.Count.Should().Be(4);
+        }
 
+
+        [Test]
+        public void Address_ShouldAlwaysBeLength4_WhenAssignedCollectionWithLength3()
+        {
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
+            objUT.Address.Count.Should().Be(4);
+            var newAddress = CreateFullyObservableBitCollection(length: 3);
+            newAddress.Count.Should().Be(3);
+            objUT.Address = newAddress;
+            objUT.Address.Count.Should().Be(4);
         }
 
         [Test]
