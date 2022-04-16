@@ -1,10 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Utilities;
+using DigitalElectronics.ViewModels.Utilities;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
@@ -15,20 +17,45 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
     {
         private static readonly BitConverter BitConverter = new();
         private static readonly BitArrayComparer BitArrayComparer = new();
-        private static readonly BitArray minByte = BitConverter.GetBits(byte.MinValue);
+        private static readonly BitArray zeroByte = BitConverter.GetBits((byte)0);
         private static readonly BitArray maxByte = BitConverter.GetBits(byte.MaxValue);
         private static readonly BitArray[] initialRamState = Enumerable.Range(0, 16).Select(_ => new BitArray(byte.MaxValue)).ToArray();
+        private static readonly ReadOnlyObservableCollection<bool> BoolCollectionFor255 = new(CreateObservableBoolCollection(byte.MaxValue));
+        private static readonly ReadOnlyObservableCollection<bool> BoolCollectionFor0 = new(CreateObservableBoolCollection(0));
 
         #region Helper methods
 
-        private static ObservableCollection<Bit> CreateObservableBitCollection(byte value)
+        private static IEnumerable<Bit> CreateBits(byte value)
         {
-            return new ObservableCollection<Bit>(BitConverter.GetBits(value).Select(b => new Bit(b)).ToList());
+            return BitConverter.GetBits(value).Select(b => new Bit(b));
         }
 
-        private static ObservableCollection<Bit> CreateObservableBitCollection(int length, bool value = false)
+        private static IEnumerable<Bit> CreateBits(int length, bool value)
         {
-            return new ObservableCollection<Bit>(Enumerable.Range(0, length).Select(b => new Bit(value)));
+            return Enumerable.Range(0, length).Select(b => new Bit(value));
+        }
+
+        private static ObservableCollection<Bit> CreateObservableBitCollection(byte value)
+        {
+            return new ObservableCollection<Bit>(CreateBits(value));
+        }
+        private static ObservableCollection<Bit> CreateObservableBitCollection(int length, bool value)
+        {
+            return new ObservableCollection<Bit>(CreateBits(length, value));
+        }
+
+        private static FullyObservableCollection<Bit> CreateFullyObservableBitCollection(byte value)
+        {
+            return new FullyObservableCollection<Bit>(CreateBits(value));
+        }
+        private static FullyObservableCollection<Bit> CreateFullyObservableBitCollection(int length, bool value = false)
+        {
+            return new FullyObservableCollection<Bit>(CreateBits(length, value));
+        }
+
+        private static ObservableCollection<bool> CreateObservableBoolCollection(byte value)
+        {
+            return new ObservableCollection<bool>(BitConverter.GetBits(value));
         }
 
         private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
@@ -54,17 +81,25 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return ramMock;
         }
 
+        private void AssertSetInputAWasCalled(IRAM ramMock, BitArray bitArray)
+        {
+            var expectedArg = CreateExpectedBitArrayArg(bitArray);
+            ramMock.Received(1).SetInputA(expectedArg);
+            ramMock.ClearReceivedCalls();
+        }
+
         #endregion
 
         [Test]
         public void InitialState()
         {
+            // Use real `SixteenByteRAM` object
             var objUT = new SixteenByteRAMViewModel();
             objUT.Enable.Should().Be(false);
             objUT.Load.Should().Be(false);
 
             objUT.Data.Should().BeEquivalentTo(CreateObservableBitCollection((byte)255));
-            objUT.Address.Should().BeEquivalentTo(CreateObservableBitCollection(length: 4));
+            objUT.Address.Should().BeEquivalentTo(CreateObservableBitCollection(length: 4, false));
 
             var expectedProbe = new ObservableCollection<BitArray>(
                 Enumerable.Range(0, 16).Select(_ => new BitArray((byte)255)));
@@ -107,19 +142,23 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var objUT = new SixteenByteRAMViewModel(ramMock);
 
             // Set to 15
-            objUT.Address = CreateObservableBitCollection((byte)15);
-            AssertSetInputDWasCalled(new BitArray((byte)15));
+            objUT.Address = CreateFullyObservableBitCollection((byte)15);
+            AssertSetInputAWasCalled(ramMock, new BitArray((byte)15));
 
             // Set to zero
-            objUT.Address = CreateObservableBitCollection((byte)0);
-            AssertSetInputDWasCalled(new BitArray((byte)0));
+            objUT.Address = CreateFullyObservableBitCollection((byte)0);
+            AssertSetInputAWasCalled(ramMock, new BitArray((byte)0));
+        }
 
-            void AssertSetInputDWasCalled(BitArray bitArray)
-            {
-                var expectedArg = CreateExpectedBitArrayArg(bitArray);
-                ramMock.Received(1).SetInputA(expectedArg);
-                ramMock.ClearReceivedCalls();
-            }
+        [Test]
+        public void Address_ShouldCalSetInputAMethodOnRam_WhenIndividualBitIsSet()
+        {
+            var ramMock = CreateRamMock();
+            var objUT = new SixteenByteRAMViewModel(ramMock);
+
+            objUT.Address[0].Value = true;
+
+            AssertSetInputAWasCalled(ramMock, new BitArray((byte)1));
         }
 
         [Test]
@@ -128,15 +167,60 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var ramMock = CreateRamMock();
             var objUT = new SixteenByteRAMViewModel(ramMock);
 
-            Assert.Throws<System.ArgumentOutOfRangeException>(() => objUT.Address = CreateObservableBitCollection((byte)16));
-            Assert.Throws<System.ArgumentOutOfRangeException>(() => objUT.Address = CreateObservableBitCollection((byte)255));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => objUT.Address = CreateFullyObservableBitCollection((byte)16));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => objUT.Address = CreateFullyObservableBitCollection((byte)255));
+        }
+
+        [Test]
+        public void Address_ShouldUpdateOutput_WhenChangedAndEnableIsTrue()
+        {
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
+
+            // Set address 0 to 0
+            objUT.Address = CreateFullyObservableBitCollection((byte)0);
+            objUT.Load = true;
+            objUT.Data = CreateObservableBitCollection((byte)0);
+            objUT.Clock();
+            objUT.ProbeAll[0].Should().BeEquivalentTo(zeroByte);
+
+            // set address 1 to 1
+            objUT.Address = CreateFullyObservableBitCollection((byte)1);
+            objUT.Data = CreateObservableBitCollection((byte)1);
+            objUT.Clock();
+            objUT.ProbeAll[1].Should().BeEquivalentTo(new BitArray((byte)1));
+            objUT.Load = false;
+
+            // Output current address 1
+            objUT.Enable = true;
+            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)1));
+
+            // Switch address to 0
+            objUT.Address = CreateFullyObservableBitCollection((byte)0);
+            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)0));
+
+            // Switch address to 1 by modifying `Address` property (rather than replacing)
+            objUT.Address[0].Value = true;
+            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)1));
+        }
+
+        [Ignore("TODO")]
+        public void Address_ShouldAlwaysBeLength4_WhenAssignedCollectionGreaterThan4()
+        {
+
+        }
+
+        [Ignore("TODO")]
+        public void Address_ShouldAlwaysBeLength4_WhenAssignedCollectionLessThan4()
+        {
+
         }
 
         [Test]
         public void ProbeAll_ShouldBeEntireMemory()
         {
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock);
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
             objUT.ProbeAll.Should().BeOfType<ReadOnlyObservableCollection<BitArray>>();
             objUT.ProbeAll.Should().BeEquivalentTo(initialRamState);
         }
@@ -158,7 +242,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             // Set to zero
             objUT.Data = CreateObservableBitCollection((byte)0);
-            AssertSetInputDWasCalled(minByte);
+            AssertSetInputDWasCalled(zeroByte);
 
             // Set to 255
             objUT.Data = CreateObservableBitCollection((byte)255);
@@ -187,7 +271,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
-        public void Enable_ShouldCallSetInputLMethodOnRegister_WhenSet()
+        public void Enable_ShouldCallSetInputEMethodOnRegister_WhenSet()
         {
             var ramMock = CreateRamMock();
             var objUT = new SixteenByteRAMViewModel(ramMock);
@@ -205,8 +289,8 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         [Test]
         public void Output_ShouldBeNull_WhenEnableIsFalse()
         {
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock);
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
 
             objUT.Enable.Should().Be(false);
             objUT.Output.Should().BeNull();
@@ -215,8 +299,8 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         [Test]
         public void Output_ShouldBeFirstMemoryLocation_WhenEnableIsTrue()
         {
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock);
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
 
             objUT.Enable = true;
             objUT.Output.Should().NotBeNull();
@@ -233,6 +317,71 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
+        public void Clock_ShouldUpdateProbeAll_WhenCalledAndLoadIsTrue()
+        {
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
+            objUT.ProbeAll[6].ToByte().Should().Be(byte.MaxValue);
+            
+            objUT.Address = CreateFullyObservableBitCollection((byte)6);
+            objUT.Data = CreateObservableBitCollection((byte)42);
+            objUT.Load = true;
+
+            objUT.Clock();
+
+            objUT.ProbeAll[6].ToByte().Should().Be(42);
+        }
+
+        [Test]
+        public void Clock_ShouldNotUpdateProbeAll_WhenCalledAndLoadIsFalse()
+        {
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
+            objUT.ProbeAll[6].ToByte().Should().Be(byte.MaxValue);
+
+            objUT.Address = CreateFullyObservableBitCollection(6);
+            objUT.Data = CreateObservableBitCollection((byte)42);
+            objUT.Load = false;
+
+            objUT.Clock();
+
+            objUT.ProbeAll[6].ToByte().Should().Be(byte.MaxValue);
+        }
+
+        [Test]
+        public void Clock_ShouldCallSetInputDMethodOnRam_WhenCalled()
+        {
+            var ramMock = CreateRamMock();
+            var objUT = new SixteenByteRAMViewModel(ramMock);
+            objUT.Data[0].Value = false;
+
+            objUT.Clock();
+
+            var expectedArg = CreateExpectedBitArrayArg(new BitArray((byte)254));
+            ramMock.Received(1).SetInputD(expectedArg);
+        }
+
+
+        [Test]
+        public void Output_ShouldUpdateToMatchAddressedMemoryLocation_WhenClockIsCalledAndLoadIsTrue()
+        {
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
+
+            objUT.Enable = true;
+            objUT.Output.Should().BeEquivalentTo(BoolCollectionFor255);
+            objUT.Enable = false;
+
+            objUT.Data = CreateObservableBitCollection(42);
+            objUT.Load = true;
+            objUT.Clock();
+            objUT.Load = false;
+
+            objUT.Enable = true;
+            objUT.Output.Should().BeEquivalentTo(CreateObservableBoolCollection(42));
+        }
+
+        [Test]
         public void Clock_ThrowsInvalidOperationException_WhenLoadAndEnableAreTrue()
         {
             var objUT = new SixteenByteRAMViewModel { Enable = true, Load = true };
@@ -244,27 +393,28 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeRaisedForAddressProperty_WhenAddressPropertyIsChanged()
         {
             bool raised = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock);
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Address);
 
             // Set to 15
-            objUT.Address = new ObservableCollection<Bit>(new Bit[] { new(true), new(true), new(true), new(true) });
+            objUT.Address = new FullyObservableCollection<Bit>(new Bit[] { new(true), new(true), new(true), new(true) });
             raised.Should().Be(true);
             raised = false;
 
             // Set to 0 again (using different `BitArray` object representing the same value)
-            objUT.Address = new ObservableCollection<Bit>(new Bit[] { new(true), new(true), new(true), new(true) });
+            objUT.Address = new FullyObservableCollection<Bit>(new Bit[] { new(true), new(true), new(true), new(true) });
             raised.Should().Be(false);
             raised = false;
 
             // Set to 0
-            objUT.Address = new ObservableCollection<Bit>(new Bit[] { new(), new(), new(), new() });
+            objUT.Address = new FullyObservableCollection<Bit>(new Bit[] { new(), new(), new(), new() });
             raised.Should().Be(true);
             raised = false;
 
             // Set to 0 again (using different `BitArray` object representing the same value)
-            objUT.Address = new ObservableCollection<Bit>(new Bit[] { new(), new(), new(), new() });
+            objUT.Address = new FullyObservableCollection<Bit>(new Bit[] { new(), new(), new(), new() });
             raised.Should().Be(false);
         }
 
@@ -272,8 +422,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeRaisedForDataProperty_WhenDataPropertyIsChanged()
         {
             bool raised = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock);
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Data);
 
             objUT.Data = CreateObservableBitCollection((byte)0);
@@ -299,8 +450,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeRaisedForLoadProperty_WhenLoadPropertyIsSet()
         {
             bool raised = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock);
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Load);
 
             // Set to true
@@ -326,8 +478,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeRaisedForEnableProperty_WhenEnablePropertyIsSet()
         {
             bool raised = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock);
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Enable);
 
             // Set to true
@@ -353,8 +506,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeRaisedForProbeAllProperty_UponClockCalled_WhenLoadIsTrue()
         {
             bool raisedForProbe = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock) { Load = true };
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel() { Load = true };
             objUT.PropertyChanged += (s, e) => raisedForProbe |= e.PropertyName == nameof(objUT.ProbeAll);
 
             objUT.Data.Should().BeEquivalentTo(CreateObservableBitCollection((byte)255));
@@ -372,8 +526,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeRaisedForProbeAllProperty_UponClockCalled_WhenLoadIsFalse()
         {
             bool raisedForProbe = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock) { Load = false };
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel() { Load = false };
             objUT.PropertyChanged += (s, e) => raisedForProbe |= e.PropertyName == nameof(objUT.ProbeAll);
 
             objUT.Data.Should().BeEquivalentTo(CreateObservableBitCollection((byte)255));
@@ -391,8 +546,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeRaisedForOutput_WhenEnableIsChanged()
         {
             bool raised = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock);
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel();
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
             objUT.Enable = true;
@@ -407,8 +563,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeNotRaisedForOutput_WhenDataIsChangedAndEnableIsFalse()
         {
             bool raised = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock) { Enable = false };
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel() { Enable = false };
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
             objUT.Data = CreateObservableBitCollection((byte)0);
@@ -423,8 +580,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         public void PropertyChanged_ShouldBeRaisedForOutput_WhenDataIsChangedAndEnableIsTrue()
         {
             bool raised = false;
-            var ramMock = CreateRamMock();
-            var objUT = new SixteenByteRAMViewModel(ramMock) { Enable = true };
+
+            // Use real `SixteenByteRAM` object
+            var objUT = new SixteenByteRAMViewModel() { Enable = true };
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
             objUT.Data = CreateObservableBitCollection((byte)0);

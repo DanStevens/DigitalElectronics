@@ -6,16 +6,18 @@ using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Utilities;
 using DigitalElectronics.ViewModels.Modules.Annotations;
+using DigitalElectronics.ViewModels.Utilities;
 
 namespace DigitalElectronics.ViewModels.Modules;
 
 public class SixteenByteRAMViewModel : INotifyPropertyChanged
 {
+    private const int AddressLength = 4;
     private readonly IRAM _ram;
     private ObservableCollection<Bit> _data;
-    private ObservableCollection<Bit> _address;
+    private FullyObservableCollection<Bit>? _address;
     private ObservableCollection<BitArray> _probe;
-    private ObservableCollection<bool> _output;
+    private ObservableCollection<bool>? _output;
     private bool _load;
     private bool _enable;
 
@@ -32,20 +34,22 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         _ram = ram ?? throw new ArgumentNullException(nameof(ram));
         initialAddress = Math.Clamp(initialAddress, 0, ram.Capacity - 1);
 
-        _data = CreateBitObservableCollection(_ram.WordSize, true);
+        _data = new ObservableCollection<Bit>(CreateBits(_ram.WordSize, true));
 
-        var initialAddressBitArray = new BitArray(new [] { initialAddress }).Trim(4);
-        _ram.SetInputA(initialAddressBitArray);
-        _address = CreateBitObservableCollection(initialAddressBitArray.Count);
+        var initialAddressBitArray = new BitArray(new [] { initialAddress }).Trim(AddressLength);
+        Address = new FullyObservableCollection<Bit>(CreateBits(initialAddressBitArray));
 
         _probe = new ObservableCollection<BitArray>(_ram.ProbeState());
-        _output = new ObservableCollection<bool>(_ram.ProbeState(initialAddressBitArray));
+        _output = _ram.Output != null ? new ObservableCollection<bool>(_ram.Output) : null;
     }
 
-    private static ObservableCollection<Bit> CreateBitObservableCollection(int length, bool bitState = false)
+    private IEnumerable<Bit> CreateBits(BitArray bitArray)
     {
-        var bits = Enumerable.Range(0, length).Select(b => new Bit(bitState));
-        return new ObservableCollection<Bit>(bits);
+        return bitArray.Select(b => new Bit(b));
+    }
+    private static IEnumerable<Bit> CreateBits(int length, bool bitState)
+    {
+        return Enumerable.Range(0, length).Select(_ => new Bit(bitState));
     }
 
     public bool Enable
@@ -57,6 +61,13 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
             {
                 _enable = value;
                 _ram.SetInputE(value);
+
+                // Assertion may fail when using mock IRAM
+                //System.Diagnostics.Debug.Assert(value ? _ram.Output != null : _ram.Output == null,
+                //    $"{nameof(_ram)}.{nameof(_ram.Output)} was {(value ? "not null" : "null")} " +
+                //     "when not as expected.");
+                
+                SyncOutput();
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Output));
             }
@@ -92,21 +103,26 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         }
     }
 
-    public ObservableCollection<Bit> Address
+    public FullyObservableCollection<Bit> Address
     {
         get => _address;
         set
         {
-            if (!_address.SequenceEqual(value))
+            if (_address?.SequenceEqual(value) != true)
             {
+                if (_address != null) _address.ItemPropertyChanged -= OnAddressBitChanged;
                 _address = value;
-                _ram.SetInputA(_address.ToBitArray().Trim(4));
+                _address.ItemPropertyChanged += OnAddressBitChanged;
+                SyncAddress();
                 RaisePropertyChanged();
             }
         }
     }
 
-    public ReadOnlyObservableCollection<bool>? Output => Enable ? new(_output) : null;
+    private void OnAddressBitChanged(object? sender, ItemPropertyChangedEventArgs e) => SyncAddress();
+
+
+    public ReadOnlyObservableCollection<bool>? Output => _output != null ? new(_output) : null;
 
     public ReadOnlyObservableCollection<BitArray> ProbeAll => new(_probe);
 
@@ -115,8 +131,15 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         if (Load && Enable)
             throw new InvalidOperationException("Load and Enable should not both be set high at the same time");
 
+        _ram.SetInputD(_data.ToBitArray());
+        SyncOutput();
         _ram.Clock();
-        if (Load) RaisePropertyChanged(nameof(ProbeAll));
+
+        if (Load)
+        {
+            _probe = new ObservableCollection<BitArray>(_ram.ProbeState());
+            RaisePropertyChanged(nameof(ProbeAll));
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -127,4 +150,15 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    private void SyncAddress()
+    {
+        _ram.SetInputA(_address.ToBitArray().Trim(AddressLength));
+        SyncOutput();
+    }
+
+    private void SyncOutput()
+    {
+        _output = _ram.Output != null ? new ObservableCollection<bool>(_ram.Output) : null;
+        RaisePropertyChanged(nameof(Output));
+    }
 }

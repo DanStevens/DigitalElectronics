@@ -37,9 +37,9 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:LedStrip}">
                     <local:LED x:Name="led" IsLit="{Binding}"
-                               Width="{Binding LedSize, RelativeSource={StaticResource This}}" d:Width="20"
-                               Height="{Binding LedSize, RelativeSource={StaticResource This}}" d:Height="20"
-                               Margin="{Binding Spacing, RelativeSource={StaticResource This}}" d:Margin="0.5"
+                               Width="{Binding LedSize, RelativeSource={StaticResource This}, FallbackValue=20}"
+                               Height="{Binding LedSize, RelativeSource={StaticResource This}, FallbackValue=20}"
+                               Margin="{Binding Spacing, RelativeSource={StaticResource This}, FallbackValue=0.5}"
                                LitColor="{Binding LitLedColor, RelativeSource={StaticResource This}}" />
                     <DataTemplate.Triggers>
                         <Trigger Property="ItemsControl.AlternationIndex" Value="0">

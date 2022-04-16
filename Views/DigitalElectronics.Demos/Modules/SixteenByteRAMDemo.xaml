@@ -1,0 +1,79 @@
+﻿<Window x:Class="DigitalElectronics.Demos.Modules.SixteenByteRAMDemo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigitalElectronics.Demos.Modules"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        xmlns:modules="clr-namespace:DigitalElectronics.ViewModels.Modules;assembly=ViewModels.Modules"
+        xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
+        mc:Ignorable="d"
+        Title="16 Byte RAM Demo" Height="240" Width="500">
+    <Window.DataContext>
+        <modules:SixteenByteRAMViewModel x:Name="_viewModel" />
+    </Window.DataContext>
+    <Grid VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,10,0,0" Orientation="Vertical">
+            <CheckBox Margin="7.5" Content="Enable" IsChecked="{Binding Enable}"/>
+            <CheckBox Margin="7.5" Content="Load" IsChecked="{Binding Load}" />
+            <Label Margin="5,0,0,0" Content="Address:" />
+            <controls:DipSwitch Margin="10,0,0,0" Lines="{Binding Address}" BitOrder="LsbFirst" HorizontalAlignment="Left"/>
+            <Button Content="Clock" Width="50" Height="25" Margin="0,20,0,0" Click="ClockButton_Click"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+            <Border BorderBrush="Black" BorderThickness="1" Height="150" Margin="10" Padding="5">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">16 Byte RAM</TextBlock>
+                    <!--<Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="120" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                        <controls:LedStrip Lines="{Binding Probe}" LedSize="10" BitOrder="LsbFirst" />
+                    </StackPanel>
+                </Grid>-->
+                    <ItemsControl ItemsSource="{Binding ProbeAll}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type concepts:BitArray}">
+                                <controls:LedStrip Lines="{Binding}" LedSize="10" BitOrder="LsbFirst" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+            <controls:DipSwitch Lines="{Binding Data}" HorizontalAlignment="Center" BitOrder="LsbFirst"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Output" TextAlignment="Center" Margin="0,0,0,5"/>
+            <TextBlock TextAlignment="Center" MinWidth="170" Text="[Z state (high impedance)]"
+                       Visibility="{Binding Output, Converter={converters:NullToVisibilityConverter NullVisibility=Visible, NonNullVisibility=Collapsed}}" />
+            <controls:LedStrip Visibility="{Binding Output, Converter={converters:NullToVisibilityConverter}}"
+                               Lines="{Binding Output}" LedSize="20" LitLedColor="Lime" BitOrder="LsbFirst" />
+        </StackPanel>
+    </Grid>
+</Window>
