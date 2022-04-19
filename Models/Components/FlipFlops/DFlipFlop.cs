@@ -9,7 +9,7 @@ namespace DigitalElectronics.Components.FlipFlops
     [DebuggerDisplay("D Flip-flop: Q = {OutputQ}; Q̅ = {OutputNQ}")]
     public class DFlipFlop : IDFlipFlop
     {
-        private GatedDLatch _gatedDLatch;
+        private readonly GatedDLatch _gatedDLatch;
 
         public DFlipFlop()
         {

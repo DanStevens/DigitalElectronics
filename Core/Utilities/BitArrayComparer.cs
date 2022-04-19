@@ -6,7 +6,7 @@ namespace DigitalElectronics.Utilities
 {
     public class BitArrayComparer : IComparer<BitArray>
     {
-        private BitConverter _bitConverter = new BitConverter();
+        private readonly BitConverter _bitConverter = new();
 
         public int Compare(BitArray x, BitArray y)
         {

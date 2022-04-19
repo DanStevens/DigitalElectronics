@@ -21,7 +21,7 @@ namespace DigitalElectronics.Demos
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly string s_CurrentNamespace = typeof(MainWindow).Namespace;
+        private static readonly string s_CurrentNamespace = typeof(MainWindow).Namespace!;
 
         public MainWindow()
         {

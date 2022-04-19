@@ -17,23 +17,11 @@ namespace DigitalElectronics.Boards.Tests;
 public class AluBoardTests
 {
     private static readonly BitConverter _bitConverter = new ();
-    private static readonly BitArrayComparer _baComparer = new();
-
-    private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
-    {
-        return Arg.Is<BitArray>(arg => _baComparer.Compare(arg, expectedValue) == 0);
-    }
 
     private static IEnumerable<T> CreateExpectedEnumerableArg<T>(IEnumerable<T> expectedValue)
     {
         return Arg.Is<IEnumerable<T>>(p => p.SequenceEqual(expectedValue));
     }
-
-    private static IList<T> CreateExpectedListArg<T>(IList<T> expectedValue)
-    {
-        return Arg.Is<IList<T>>(p => p.SequenceEqual(expectedValue));
-    }
-
 
     [Test]
     public void InitialState()
@@ -151,7 +139,7 @@ public class AluBoardTests
         if (busCollisionExpected)
         {
             var ex = Assert.Throws<BusContentionException>(() => objUT.Clock());
-            ex.Message.Should().Be(BusContentionException.DefaultMessage);
+            ex!.Message.Should().Be(BusContentionException.DefaultMessage);
         }
         else
         {

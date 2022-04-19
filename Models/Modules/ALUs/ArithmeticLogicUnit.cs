@@ -14,7 +14,7 @@ namespace DigitalElectronics.Modules.ALUs
     public class ArithmeticLogicUnit : IArithmeticLogicUnit
     {
         private readonly FullAdder[] _adders;
-        private readonly TriStateBuffer[] _3Sbuffers;
+        private readonly TriStateBuffer[] _3SBuffers;
         private readonly XorGate[] _xorGates;
 
         public ArithmeticLogicUnit(int numberOfBits)
@@ -23,13 +23,13 @@ namespace DigitalElectronics.Modules.ALUs
                 throw new ArgumentOutOfRangeException(nameof(numberOfBits), "Argument must be greater than 0");
             
             _adders = new FullAdder[numberOfBits];
-            _3Sbuffers = new TriStateBuffer[numberOfBits];
+            _3SBuffers = new TriStateBuffer[numberOfBits];
             _xorGates = new XorGate[numberOfBits];
 
             for (int x = 0; x < BitCount; x++)
             {
                 _adders[x] = new FullAdder();
-                _3Sbuffers[x] = new TriStateBuffer();
+                _3SBuffers[x] = new TriStateBuffer();
                 _xorGates[x] = new XorGate();
             }
 
@@ -77,7 +77,7 @@ namespace DigitalElectronics.Modules.ALUs
         {
             for (int x = 0; x < BitCount; x++)
             {
-                _3Sbuffers[x].SetInputB(value);
+                _3SBuffers[x].SetInputB(value);
                 SyncBit(x);
             }
         }
@@ -106,11 +106,11 @@ namespace DigitalElectronics.Modules.ALUs
         {
             get
             {
-                if (!_3Sbuffers[0].OutputC.HasValue)
+                if (!_3SBuffers[0].OutputC.HasValue)
                     return null;
                 
                 var result = new BitArray(BitCount);
-                for (int x = 0; x < BitCount; x++) result[x] = _3Sbuffers[x].OutputC.Value;
+                for (int x = 0; x < BitCount; x++) result[x] = _3SBuffers[x].OutputC!.Value;
                 return result;
             }
         }
@@ -129,7 +129,7 @@ namespace DigitalElectronics.Modules.ALUs
         {
             _adders[x].SetInputB(_xorGates[x].OutputQ);
             if (x < BitCount - 1) _adders[x + 1].SetInputC(_adders[x].OutputC);
-            _3Sbuffers[x].SetInputA(_adders[x].OutputE);
+            _3SBuffers[x].SetInputA(_adders[x].OutputE);
         }
     }
 }

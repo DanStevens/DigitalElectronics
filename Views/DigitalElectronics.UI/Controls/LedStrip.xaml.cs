@@ -70,7 +70,7 @@ namespace DigitalElectronics.UI.Controls
             set { SetValue(DockPropertyKey, value); }
         }
 
-        private static DependencyPropertyKey DockPropertyKey =
+        private static readonly DependencyPropertyKey DockPropertyKey =
             DependencyProperty.RegisterReadOnly(nameof(Dock), typeof(Dock), typeof(LedStrip), new PropertyMetadata(Dock.Left));
 
         public static DependencyProperty DockProperty = DockPropertyKey.DependencyProperty;
@@ -146,7 +146,7 @@ namespace DigitalElectronics.UI.Controls
             private set { SetValue(ValuePropertyKey, value); }
         }
 
-        private static DependencyPropertyKey ValuePropertyKey =
+        private static readonly DependencyPropertyKey ValuePropertyKey =
             DependencyProperty.RegisterReadOnly(nameof(Value), typeof(BitArray), typeof(LedStrip), new PropertyMetadata());
 
         public static DependencyProperty ValueProperty = ValuePropertyKey.DependencyProperty;

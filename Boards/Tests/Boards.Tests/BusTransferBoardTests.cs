@@ -12,7 +12,7 @@ namespace DigitalElectronics.Boards.Tests
 {
     public class BusTransferBoardTests
     {
-        private readonly BitConverter _bitConverter = new BitConverter();
+        private readonly BitConverter _bitConverter = new();
 
         [Test]
         public void InitialState()
@@ -49,7 +49,7 @@ namespace DigitalElectronics.Boards.Tests
             registerBMock.Enable = true;
 
             var ex = Assert.Throws<BusContentionException>(() => objUT.Clock());
-            ex.Message.Should().Be("Register A and Register B should not be enabled at the same time.");
+            ex!.Message.Should().Be("Register A and Register B should not be enabled at the same time.");
         }
 
         [Test]

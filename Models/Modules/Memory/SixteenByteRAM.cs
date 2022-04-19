@@ -17,10 +17,10 @@ namespace DigitalElectronics.Modules.Memory
         private const int WordSize = 8; // Bits
         private const int Capacity = 16;  // Words/Bytes
 
-        private FourBitAddressDecoder _addressDecoder;
-        private AndGate[] _andL;
-        private AndGate[] _andE;
-        private Register[] _8BitRegisters;
+        private readonly FourBitAddressDecoder _addressDecoder;
+        private readonly AndGate[] _andL;
+        private readonly AndGate[] _andE;
+        private readonly Register[] _8BitRegisters;
 
         /// <summary>
         /// Constructs a 16 byte RAM module with the address set to 0

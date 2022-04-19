@@ -8,9 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
+#nullable disable
+
 namespace DigitalElectronics.ViewModels.Utilities.Tests
 {
     [TestFixture]
+    [Obsolete("Legacy test code that inherits obsolete class `AssertionHelper`")]
     public class FullyObservableCollectionTests : AssertionHelper
     {
         public class NotifyingTestClass : INotifyPropertyChanged
@@ -47,9 +50,9 @@ namespace DigitalElectronics.ViewModels.Utilities.Tests
                 }
             }
 
-            public event PropertyChangedEventHandler? PropertyChanged;
+            public event PropertyChangedEventHandler PropertyChanged;
 
-            protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
+            protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
@@ -70,8 +73,8 @@ namespace DigitalElectronics.ViewModels.Utilities.Tests
             TestCollection = new FullyObservableCollection<NotifyingTestClass>()
                 {
                     Fred,
-                    new NotifyingTestClass() {Id = 2, Name = "Barney" },
-                    new NotifyingTestClass() {Id = 3, Name = "Wilma" }
+                    new() {Id = 2, Name = "Barney" },
+                    new() {Id = 3, Name = "Wilma" }
                 };
 
             CollectionEventList = new List<NotifyCollectionChangedEventArgs>();

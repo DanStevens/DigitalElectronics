@@ -12,7 +12,7 @@ namespace DigitalElectronics.Components.Memory
     public class Register : IRegister
     {
 
-        private RegisterBit[] _registers;
+        private readonly RegisterBit[] _registers;
 
         /// <summary>
         /// Constructs a multi-bit register with the given number of bits

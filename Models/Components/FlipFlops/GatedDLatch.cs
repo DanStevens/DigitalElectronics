@@ -6,8 +6,8 @@ namespace DigitalElectronics.Components.FlipFlops
     [DebuggerDisplay("D Latch: Q = {OutputQ}; Q̅ = {OutputNQ}")]
     public class GatedDLatch : IGatedDLatch
     {
-        private GatedSRLatch _gatedSRLatch;
-        private Inverter _inverter;
+        private readonly GatedSRLatch _gatedSRLatch;
+        private readonly Inverter _inverter;
 
         public GatedDLatch()
         {

@@ -1,4 +1,6 @@
-﻿namespace DigitalElectronics.Concepts
+﻿#nullable enable
+
+namespace DigitalElectronics.Concepts
 {
     
     /// <summary>

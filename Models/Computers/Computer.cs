@@ -6,9 +6,9 @@ namespace DigitalElectronics.Computers
 {
     public class Computer
     {
-        private Register _registerA;
-        private Register _registerB;
-        private ArithmeticLogicUnit _alu;
+        private readonly Register _registerA;
+        private readonly Register _registerB;
+        private readonly ArithmeticLogicUnit _alu;
 
         public Computer(Register registerA, Register registerB, ArithmeticLogicUnit alu)
         {

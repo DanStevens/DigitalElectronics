@@ -14,7 +14,7 @@ public class EightBitAluViewModelTests
     private static readonly BitArrayComparer BitArrayComparer = new();
     private static readonly ObservableCollection<bool> BoolCollectionFor0 = new (BitConverter.GetBits((byte)0));
 
-    private BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
+    private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
     {
         return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
     }

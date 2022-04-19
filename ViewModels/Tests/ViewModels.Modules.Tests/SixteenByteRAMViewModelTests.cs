@@ -21,7 +21,6 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         private static readonly BitArray maxByte = BitConverter.GetBits(byte.MaxValue);
         private static readonly BitArray[] initialRamState = Enumerable.Range(0, 16).Select(_ => new BitArray(byte.MaxValue)).ToArray();
         private static readonly ReadOnlyObservableCollection<bool> BoolCollectionFor255 = new(CreateObservableBoolCollection(byte.MaxValue));
-        private static readonly ReadOnlyObservableCollection<bool> BoolCollectionFor0 = new(CreateObservableBoolCollection(0));
 
         #region Helper methods
 
@@ -81,7 +80,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return ramMock;
         }
 
-        private void AssertSetInputAWasCalled(IRAM ramMock, BitArray bitArray)
+        private static void AssertSetInputAWasCalled(IRAM ramMock, BitArray bitArray)
         {
             var expectedArg = CreateExpectedBitArrayArg(bitArray);
             ramMock.Received(1).SetInputA(expectedArg);
@@ -411,7 +410,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         {
             var objUT = new SixteenByteRAMViewModel { Enable = true, Load = true };
             var ex = Assert.Throws<System.InvalidOperationException>(() => objUT.Clock());
-            ex.Message.Should().Be("Load and Enable should not both be set high at the same time");
+            ex!.Message.Should().Be("Load and Enable should not both be set high at the same time");
         }
 
         [Test]
