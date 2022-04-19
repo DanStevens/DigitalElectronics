@@ -9,4 +9,8 @@
     <Compile Remove="Element.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Switching\" />
+  </ItemGroup>
+
 </Project>

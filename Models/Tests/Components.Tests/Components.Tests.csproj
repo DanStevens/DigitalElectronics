@@ -24,4 +24,8 @@
     <ProjectReference Include="..\..\Components\Components.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Switching\" />
+  </ItemGroup>
+
 </Project>

@@ -6,8 +6,6 @@
         xmlns:local="clr-namespace:DigitalElectronics.Demos.Modules"
         xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
         xmlns:modules="clr-namespace:DigitalElectronics.ViewModels.Modules;assembly=ViewModels.Modules"
-        xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
-        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
         Title="16 Byte RAM Demo" Height="240" Width="600">
