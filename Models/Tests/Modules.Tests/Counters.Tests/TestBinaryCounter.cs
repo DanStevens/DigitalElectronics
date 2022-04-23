@@ -35,7 +35,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
 
             foreach (int i in Enumerable.Range(0, 16))
             {
-                fourBitBinaryCounter.Clock();
+                fourBitBinaryCounter.Inc();
                 fourBitBinaryCounter.Output.ToByte().Should().Be((byte)i);
                 fourBitBinaryCounter.Output.Length.Should().Be(4);
             }
@@ -48,7 +48,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
 
             foreach (int i in Enumerable.Range(0, 256))
             {
-                fourBitBinaryCounter.Clock();
+                fourBitBinaryCounter.Inc();
                 fourBitBinaryCounter.Output.ToByte().Should().Be((byte)i);
                 fourBitBinaryCounter.Output.Length.Should().Be(8);
             }

@@ -49,9 +49,9 @@ namespace DigitalElectronics.Modules.Counters
         public BitArray Output => new (_jkFlipFlops.Select(_ => _.OutputQ));
 
         /// <summary>
-        /// Simulates the receipt of a clock pulse
+        /// Increments the binary counter by 1
         /// </summary>
-        public void Clock()
+        public void Inc()
         {
             for (int i = 0; i < NumberOfBits; i++)
             {
