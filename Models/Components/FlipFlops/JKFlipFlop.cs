@@ -35,7 +35,7 @@ namespace DigitalElectronics.Components.FlipFlops
         }
 
         /// <summary>
-        /// Sets the value for 'J' input
+        /// Sets the value for 'J' (set) input
         /// </summary>
         /// <param name="value"></param>
         public void SetInputJ(bool value)
@@ -44,7 +44,7 @@ namespace DigitalElectronics.Components.FlipFlops
         }
 
         /// <summary>
-        /// Sets the value for 'K' input
+        /// Sets the value for 'K' (reset) input
         /// </summary>
         /// <param name="value"></param>
         public void SetInputK(bool value)

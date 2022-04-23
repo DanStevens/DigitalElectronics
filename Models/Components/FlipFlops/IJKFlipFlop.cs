@@ -8,13 +8,13 @@
         void Clock();
 
         /// <summary>
-        /// Sets the value for 'J' input
+        /// Sets the value for 'J' (set) input
         /// </summary>
         /// <param name="value"></param>
         void SetInputJ(bool value);
 
         /// <summary>
-        /// Sets the value for 'K' input
+        /// Sets the value for 'K' (reset) input
         /// </summary>
         /// <param name="value"></param>
         void SetInputK(bool value);

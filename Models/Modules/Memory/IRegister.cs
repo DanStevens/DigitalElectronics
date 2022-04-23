@@ -8,7 +8,7 @@ namespace DigitalElectronics.Components.Memory
         /// <summary>
         /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
         /// </summary>
-        /// <param name="inputs">A <see cref="BitArray"/> containing values to set the register to,
+        /// <param name="data">A <see cref="BitArray"/> containing values to set the register to,
         /// starting with the low-order bit. If the BitArray contains less elements than the number
         /// of bits in the register, the higher-order bits remain unchanged. If the BitArray contains
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
