@@ -53,5 +53,39 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
                 fourBitBinaryCounter.Output.Length.Should().Be(8);
             }
         }
+
+        [Test]
+        public void SetAllInputsD_UsingBitArrayOfSizeN()
+        {
+            var binary5 = new BitArray(true, false, true, false);
+            var fourBitBinaryCounter = new BinaryCounter(4);
+            fourBitBinaryCounter.Set(binary5);
+            fourBitBinaryCounter.Output.ToByte().Should().Be(binary5.ToByte());
+            fourBitBinaryCounter.Output.Length.Should().Be(4);
+        }
+
+        [Test]
+        public void SetAllInputsD_UsingBitArrayOfSizeNMinus1()
+        {
+            // Initialize all inputs to false
+            var binary0 = new BitArray(byte.MinValue);
+            var fourBitBinaryCounter = new BinaryCounter(4);
+            fourBitBinaryCounter.Set(binary0);
+            fourBitBinaryCounter.Output.ToByte().Should().Be(binary0.ToByte());
+
+            BitArray binary5 = new BitArray(true, false, true);
+            fourBitBinaryCounter.Set(binary5);
+            fourBitBinaryCounter.Output.ToByte().Should().Be(binary5.ToByte());
+        }
+
+        [Test]
+        public void SetAllInputsD_UsingBitArrayOfSizeNPlus1()
+        {
+            BitArray binary21 = new BitArray(true, false, true, false, true);
+            var fourBitBinaryCounter = new BinaryCounter(4);
+            fourBitBinaryCounter.Set(binary21);
+            fourBitBinaryCounter.Output.ToByte().Should().Be(5);
+        }
+
     }
 }

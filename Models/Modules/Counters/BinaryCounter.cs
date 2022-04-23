@@ -60,5 +60,30 @@ namespace DigitalElectronics.Modules.Counters
                     break;
             }
         }
+
+        /// <summary>
+        /// Sets the binary counter to a specific value
+        /// </summary>
+        /// <param name="value">A <see cref="BitArray"/> containing values to set the register to,
+        /// starting with the low-order bit. If the BitArray contains less elements than the number
+        /// of bits in the register, the higher-order bits remain unchanged. If the BitArray contains
+        /// more elements than the number of bits in the register, the excess elements are unused.</param>
+        public void Set(BitArray value)
+        {
+            if (value == null) return;
+
+            var upper = Math.Min(value.Length, NumberOfBits);
+            for (int x = 0; x < upper; x++)
+                Set(x, value[x]);
+
+            void Set(int i, bool b)
+            {
+                _jkFlipFlops[i].SetInputJ(b);
+                _jkFlipFlops[i].SetInputK(!b);
+                _jkFlipFlops[i].Clock();
+                _jkFlipFlops[i].SetInputJ(true);
+                _jkFlipFlops[i].SetInputK(true);
+            }
+        }
     }
 }
