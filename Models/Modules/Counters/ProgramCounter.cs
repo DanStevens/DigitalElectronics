@@ -11,7 +11,7 @@ namespace DigitalElectronics.Modules.Counters
     /// <summary>
     /// Models a program counter
     /// </summary>
-    public class ProgramCounter
+    public class ProgramCounter : IProgramCounter
     {
         private readonly BinaryCounter _counter;
         private readonly TriStateBuffer[] _triStateBuffers;
@@ -74,12 +74,19 @@ namespace DigitalElectronics.Modules.Counters
         /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState() => _counter.Output;
 
+        /// <summary>
+        /// Sets the program counter to the given value
+        /// </summary>
+        /// <param name="address">The value (or address) to jump to</param>
         public void Jump(BitArray address)
         {
             _counter.Set(address);
             Sync();
         }
 
+        /// <summary>
+        /// Increments the program counter by 1
+        /// </summary>
         public void Inc()
         {
             _counter.Inc();
