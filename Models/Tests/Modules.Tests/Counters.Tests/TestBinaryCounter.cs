@@ -10,6 +10,14 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
     public class TestBinaryCounter
     {
         [Test]
+        public void Ctor_ShouldThrowArgumentOutOfRangeException_WhenSizeInBitsArgIsNegative()
+        {
+            var ex = Assert.Throws<System.ArgumentOutOfRangeException>(() => new BinaryCounter(-1));
+            ex.ParamName.Should().Be("sizeInBits");
+            ex.Message.Should().StartWithEquivalentOf("Argument must be greater than 0");
+        }
+
+        [Test]
         public void InitialState_4Bits()
         {
             var fourBitBinaryCounter = new BinaryCounter(4);
@@ -55,7 +63,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
         }
 
         [Test]
-        public void SetAllInputsD_UsingBitArrayOfSizeN()
+        public void SetAllInputs_UsingBitArrayOfSizeN()
         {
             var binary5 = new BitArray(true, false, true, false);
             var fourBitBinaryCounter = new BinaryCounter(4);
@@ -65,7 +73,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
         }
 
         [Test]
-        public void SetAllInputsD_UsingBitArrayOfSizeNMinus1()
+        public void SetAllInputs_UsingBitArrayOfSizeNMinus1()
         {
             // Initialize all inputs to false
             var binary0 = new BitArray(byte.MinValue);
@@ -79,7 +87,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
         }
 
         [Test]
-        public void SetAllInputsD_UsingBitArrayOfSizeNPlus1()
+        public void SetAllInputs_UsingBitArrayOfSizeNPlus1()
         {
             BitArray binary21 = new BitArray(true, false, true, false, true);
             var fourBitBinaryCounter = new BinaryCounter(4);

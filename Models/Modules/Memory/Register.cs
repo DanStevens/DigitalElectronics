@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using DigitalElectronics.Concepts;
 
+#nullable enable
+
 namespace DigitalElectronics.Components.Memory
 {
     /// <summary>
@@ -15,9 +17,9 @@ namespace DigitalElectronics.Components.Memory
         private readonly RegisterBit[] _registers;
 
         /// <summary>
-        /// Constructs a multi-bit register with the given number of bits
+        /// Constructs a multi-bit register with the given size
         /// </summary>
-        /// <param name="sizeInBits"></param>
+        /// <param name="sizeInBits">The size of the register in bits</param>
         public Register(int sizeInBits)
         {
             if (sizeInBits <= 0)
@@ -94,22 +96,18 @@ namespace DigitalElectronics.Components.Memory
         }
 
         /// <summary>
-        /// The output of the register
+        /// The tri-state output of the register
         /// </summary>
-        public BitArray Output
-        {
-            get
-            {
-                return !_registers[0].OutputQ.HasValue ?
-                    null :
-                    new BitArray(_registers.Select(_ => _.OutputQ.Value));
-            }
-        }
+        /// <returns>If the output is enabled (see <see cref="SetInputE"/>,
+        /// <see cref="BitArray"/> representing the current value; otherwise `null`,
+        /// which represents the Z (high impedance) state</returns>
+        public BitArray? Output => _registers[0].OutputQ.HasValue ?
+                new BitArray(_registers.Select(_ => _.OutputQ.Value)) : null;
 
         /// <summary>
         /// Returns the internal state of the register
         /// </summary>
-        /// <remarks>Consumers can use this to get the register's output without have to set
+        /// <remarks>Consumers can use this to get the register's state without have to set
         /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState()
         {
