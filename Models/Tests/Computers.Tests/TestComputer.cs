@@ -12,7 +12,7 @@ namespace DigitalElectronics.Computers.Tests
 {
     public class TestComputer
     {
-        private const int NumberOfBits = 8;
+        private const int SizeInBits = 8;
 
         private BitConverter _bitConverter;
         private Register _registerA;
@@ -24,19 +24,19 @@ namespace DigitalElectronics.Computers.Tests
         public void SetUp()
         {
             _bitConverter = new BitConverter(Endianness.Little);
-            _registerA = new Register(NumberOfBits);
-            _registerB = new Register(NumberOfBits);
-            _alu = new ArithmeticLogicUnit(NumberOfBits);
+            _registerA = new Register(SizeInBits);
+            _registerB = new Register(SizeInBits);
+            _alu = new ArithmeticLogicUnit(SizeInBits);
             _computer = new Computer(_registerA, _registerB, _alu);
         }
 
         [Test]
         public void TestBusTransferBetweenTwo8bitRegisters()
         {
-            BitArray data = _bitConverter.GetBits(47, NumberOfBits);
+            BitArray data = _bitConverter.GetBits(47, SizeInBits);
 
-            _registerA.ProbeState().Should().BeEquivalentTo(new BitArray(NumberOfBits, true).AsReadOnlyList<bool>());
-            _registerB.ProbeState().Should().BeEquivalentTo(new BitArray(NumberOfBits, true).AsReadOnlyList<bool>());
+            _registerA.ProbeState().Should().BeEquivalentTo(new BitArray(SizeInBits, true).AsReadOnlyList<bool>());
+            _registerB.ProbeState().Should().BeEquivalentTo(new BitArray(SizeInBits, true).AsReadOnlyList<bool>());
 
             // Load data into register A
             _registerA.SetInputL(true);
@@ -60,9 +60,9 @@ namespace DigitalElectronics.Computers.Tests
         [Test]
         public void TestAdding20And23()
         {
-            BitArray binary20 = _bitConverter.GetBits(20, NumberOfBits);
-            BitArray binary23 = _bitConverter.GetBits(23, NumberOfBits);
-            BitArray result1 = _bitConverter.GetBits(20 + 23, NumberOfBits);
+            BitArray binary20 = _bitConverter.GetBits(20, SizeInBits);
+            BitArray binary23 = _bitConverter.GetBits(23, SizeInBits);
+            BitArray result1 = _bitConverter.GetBits(20 + 23, SizeInBits);
 
             // Load 20 into register A
             _registerA.SetInputL(true);
@@ -89,7 +89,7 @@ namespace DigitalElectronics.Computers.Tests
             _registerA.SetInputL(false);
 
             // Verify state of ALU
-            BitArray result2 = _bitConverter.GetBits(20 + 23 + 23, NumberOfBits);
+            BitArray result2 = _bitConverter.GetBits(20 + 23 + 23, SizeInBits);
             _alu.ProbeState().Should().BeEquivalentTo(result2.AsReadOnlyList<bool>());
             _alu.OutputE.Should().BeEquivalentTo(result2.AsReadOnlyList<bool>());
         }

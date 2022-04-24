@@ -17,16 +17,16 @@ namespace DigitalElectronics.Modules.Counters
         /// <summary>
         /// Constructs a multi-bit binary counter with the given number of bits
         /// </summary>
-        /// <param name="numberOfBits">The size of the binary counter in bits</param>
-        public BinaryCounter(int numberOfBits)
+        /// <param name="sizeInBits">The size of the binary counter in bits</param>
+        public BinaryCounter(int sizeInBits)
         {
-            if (numberOfBits <= 0)
-                throw new ArgumentOutOfRangeException(nameof(numberOfBits), "Argument must be greater than 0");
+            if (sizeInBits <= 0)
+                throw new ArgumentOutOfRangeException(nameof(sizeInBits), "Argument must be greater than 0");
 
-            NumberOfBits = numberOfBits;
+            SizeInBits = sizeInBits;
             
-            _jkFlipFlops = new JKFlipFlop[NumberOfBits];
-            for (int i = 0; i < NumberOfBits; i++)
+            _jkFlipFlops = new JKFlipFlop[SizeInBits];
+            for (int i = 0; i < SizeInBits; i++)
                 _jkFlipFlops[i] = CreateJKFlipFlop();
 
             JKFlipFlop CreateJKFlipFlop()
@@ -41,7 +41,7 @@ namespace DigitalElectronics.Modules.Counters
         /// <summary>
         /// The size of (number of bits in) the binary counter
         /// </summary>
-        public int NumberOfBits { get; }
+        public int SizeInBits { get; }
 
         /// <summary>
         /// The output of the binary counter
@@ -53,7 +53,7 @@ namespace DigitalElectronics.Modules.Counters
         /// </summary>
         public void Inc()
         {
-            for (int i = 0; i < NumberOfBits; i++)
+            for (int i = 0; i < SizeInBits; i++)
             {
                 _jkFlipFlops[i].Clock();
                 if (_jkFlipFlops[i].OutputQ)
@@ -72,7 +72,7 @@ namespace DigitalElectronics.Modules.Counters
         {
             if (value == null) return;
 
-            var upper = Math.Min(value.Length, NumberOfBits);
+            var upper = Math.Min(value.Length, SizeInBits);
             for (int x = 0; x < upper; x++)
                 Set(x, value[x]);
 

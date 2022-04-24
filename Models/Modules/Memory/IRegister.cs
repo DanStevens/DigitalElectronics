@@ -17,7 +17,7 @@ namespace DigitalElectronics.Components.Memory
         /// <summary>
         /// The number of bits in the register (N)
         /// </summary>
-        int BitCount { get; }
+        int SizeInBits { get; }
 
         /// <summary>
         /// The output of the register

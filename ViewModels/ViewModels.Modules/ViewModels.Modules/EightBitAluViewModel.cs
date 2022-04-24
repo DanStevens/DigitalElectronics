@@ -10,7 +10,7 @@ namespace DigitalElectronics.ViewModels.Modules
 {
     public class EightBitAluViewModel : IAluViewModel
     {
-        private const int _NumberOfBits = 8;
+        private const int _SizeInBits = 8;
 
         private readonly IArithmeticLogicUnit _alu;
         private bool _enable;
@@ -18,7 +18,7 @@ namespace DigitalElectronics.ViewModels.Modules
         private ObservableCollection<bool> _probe;
 
         public EightBitAluViewModel()
-            : this(new ArithmeticLogicUnit(_NumberOfBits))
+            : this(new ArithmeticLogicUnit(_SizeInBits))
         {
         }
 
@@ -30,7 +30,7 @@ namespace DigitalElectronics.ViewModels.Modules
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? EnableChanged;
-        public int NumberOfBits => _NumberOfBits;
+        public int SizeInBits => _SizeInBits;
 
         public bool Enable
         {

@@ -8,22 +8,22 @@ namespace DigitalElectronics.Components.Memory.Tests
     public class TestRegister
     {
         // Number of bits or 'N'
-        private const int NumberOfBits = 4;
+        private const int SizeInBits = 4;
 
         Register _4bitRegister;
 
         [SetUp]
         public void SetUp()
         {
-            _4bitRegister = new Register(NumberOfBits);
+            _4bitRegister = new Register(SizeInBits);
             AssertOutputIsNull();
             _4bitRegister.SetInputE(true);
         }
 
         [Test]
-        public void BitCount_ShouldBe4()
+        public void SizeInBits_ShouldBe4()
         {
-            _4bitRegister.BitCount.Should().Be(NumberOfBits);
+            _4bitRegister.SizeInBits.Should().Be(SizeInBits);
         }
 
         [Test]

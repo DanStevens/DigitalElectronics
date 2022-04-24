@@ -17,26 +17,26 @@ namespace DigitalElectronics.Modules.ALUs
         private readonly TriStateBuffer[] _3SBuffers;
         private readonly XorGate[] _xorGates;
 
-        public ArithmeticLogicUnit(int numberOfBits)
+        public ArithmeticLogicUnit(int sizeInBits)
         {
-            if (numberOfBits <= 0)
-                throw new ArgumentOutOfRangeException(nameof(numberOfBits), "Argument must be greater than 0");
+            if (sizeInBits <= 0)
+                throw new ArgumentOutOfRangeException(nameof(sizeInBits), "Argument must be greater than 0");
             
-            _adders = new FullAdder[numberOfBits];
-            _3SBuffers = new TriStateBuffer[numberOfBits];
-            _xorGates = new XorGate[numberOfBits];
+            _adders = new FullAdder[sizeInBits];
+            _3SBuffers = new TriStateBuffer[sizeInBits];
+            _xorGates = new XorGate[sizeInBits];
 
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < SizeInBits; x++)
             {
                 _adders[x] = new FullAdder();
                 _3SBuffers[x] = new TriStateBuffer();
                 _xorGates[x] = new XorGate();
             }
 
-            for (int x = 0; x < BitCount; x++) SyncBit(x);
+            for (int x = 0; x < SizeInBits; x++) SyncBit(x);
         }
 
-        public int BitCount => _adders.Length;
+        public int SizeInBits => _adders.Length;
 
         /// <summary>
         /// Sets value for A input
@@ -46,7 +46,7 @@ namespace DigitalElectronics.Modules.ALUs
         {
             if (data == null) return;
             
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < SizeInBits; x++)
             {
                 _adders[x].SetInputA(data[x]);
                 SyncBit(x);
@@ -61,7 +61,7 @@ namespace DigitalElectronics.Modules.ALUs
         {
             if (data == null) return;
 
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < SizeInBits; x++)
             {
                 _xorGates[x].SetInputA(data[x]);
                 SyncBit(x);
@@ -75,7 +75,7 @@ namespace DigitalElectronics.Modules.ALUs
         /// to disable the 'Sum' output</param>
         public void SetInputEO(bool value)
         {
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < SizeInBits; x++)
             {
                 _3SBuffers[x].SetInputB(value);
                 SyncBit(x);
@@ -91,7 +91,7 @@ namespace DigitalElectronics.Modules.ALUs
         {
             _adders[0].SetInputC(value);
             
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < SizeInBits; x++)
             {
                 _xorGates[x].SetInputB(value);
                 SyncBit(x);
@@ -109,8 +109,8 @@ namespace DigitalElectronics.Modules.ALUs
                 if (!_3SBuffers[0].OutputC.HasValue)
                     return null;
                 
-                var result = new BitArray(BitCount);
-                for (int x = 0; x < BitCount; x++) result[x] = _3SBuffers[x].OutputC!.Value;
+                var result = new BitArray(SizeInBits);
+                for (int x = 0; x < SizeInBits; x++) result[x] = _3SBuffers[x].OutputC!.Value;
                 return result;
             }
         }
@@ -128,7 +128,7 @@ namespace DigitalElectronics.Modules.ALUs
         private void SyncBit(int x)
         {
             _adders[x].SetInputB(_xorGates[x].OutputQ);
-            if (x < BitCount - 1) _adders[x + 1].SetInputC(_adders[x].OutputC);
+            if (x < SizeInBits - 1) _adders[x + 1].SetInputC(_adders[x].OutputC);
             _3SBuffers[x].SetInputA(_adders[x].OutputE);
         }
     }

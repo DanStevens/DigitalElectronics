@@ -13,7 +13,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
         public void InitialState_4Bits()
         {
             var fourBitBinaryCounter = new BinaryCounter(4);
-            fourBitBinaryCounter.NumberOfBits.Should().Be(4);
+            fourBitBinaryCounter.SizeInBits.Should().Be(4);
             fourBitBinaryCounter.Output.ToByte().Should().Be(15);
             fourBitBinaryCounter.Output.Length.Should().Be(4);
         }
@@ -22,7 +22,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
         public void InitialState_8Bits()
         {
             var fourBitBinaryCounter = new BinaryCounter(8);
-            fourBitBinaryCounter.NumberOfBits.Should().Be(8);
+            fourBitBinaryCounter.SizeInBits.Should().Be(8);
             fourBitBinaryCounter.Output.ToByte().Should().Be(255);
             fourBitBinaryCounter.Output.Length.Should().Be(8);
         }

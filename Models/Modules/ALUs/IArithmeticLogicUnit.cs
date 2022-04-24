@@ -5,7 +5,7 @@ namespace DigitalElectronics.Modules.ALUs
 {
     public interface IArithmeticLogicUnit
     {
-        int BitCount { get; }
+        int SizeInBits { get; }
 
         /// <summary>
         /// Gets state of 'Sum' (∑) output

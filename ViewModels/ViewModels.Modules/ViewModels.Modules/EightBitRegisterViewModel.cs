@@ -10,7 +10,7 @@ namespace DigitalElectronics.ViewModels.Modules;
 
 public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegisterViewModel
 {
-    private const int _NumberOfBits = 8;
+    private const int _SizeInBits = 8;
 
     private readonly IRegister _register;
     private ObservableCollection<Bit> _data;
@@ -19,7 +19,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
     private bool _enable;
 
     public EightBitRegisterViewModel()
-        : this(new Register(_NumberOfBits))
+        : this(new Register(_SizeInBits))
     { }
 
     public EightBitRegisterViewModel(IRegister register)
@@ -34,7 +34,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
     public event EventHandler? EnableChanged;
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public int NumberOfBits => _NumberOfBits;
+    public int SizeInBits => _SizeInBits;
 
     public bool Enable
     {
