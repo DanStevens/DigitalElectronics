@@ -1,9 +1,10 @@
 ﻿using System.Collections;
+using DigitalElectronics.Modules;
 using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Components.Memory
 {
-    public interface IRegister
+    public interface IRegister : IModule
     {
         /// <summary>
         /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
@@ -18,24 +19,6 @@ namespace DigitalElectronics.Components.Memory
         /// The number of bits in the register (N)
         /// </summary>
         int SizeInBits { get; }
-
-        /// <summary>
-        /// The output of the register
-        /// </summary>
-        BitArray Output { get; }
-
-        /// <summary>
-        /// Sets value for 'Enabled' input
-        /// </summary>
-        /// <param name="value">Set to `true` to enable output and `false` to disable output</param>
-        /// <remarks>
-        /// The `Enabled` input determines whether the register outputs the currently latched value,
-        /// or `null`, which represents the Z (high impedance) state.
-        /// 
-        /// When using a register in a bus configuration, keep 'Enabled' input low except when
-        /// performing a bus transfer.
-        /// </remarks>
-        void SetInputE(bool value);
 
         /// <summary>
         /// Sets value for 'Load' input

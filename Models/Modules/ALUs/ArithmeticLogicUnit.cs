@@ -115,6 +115,7 @@ namespace DigitalElectronics.Modules.ALUs
             }
         }
 
+
         /// <summary>
         /// Returns the internal state of the ALU
         /// </summary>
@@ -131,5 +132,9 @@ namespace DigitalElectronics.Modules.ALUs
             if (x < SizeInBits - 1) _adders[x + 1].SetInputC(_adders[x].OutputC);
             _3SBuffers[x].SetInputA(_adders[x].OutputE);
         }
+
+        BitArray? IModule.Output => OutputE;
+
+        void IModule.SetInputE(bool value) => this.SetInputEO(value);
     }
 }

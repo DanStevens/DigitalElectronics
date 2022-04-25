@@ -5,7 +5,7 @@ using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Modules.Memory
 {
-    public interface IRAM
+    public interface IRAM : IModule
     {
         /// <summary>
         /// The word size in bits, typically 8 bits.
@@ -43,19 +43,6 @@ namespace DigitalElectronics.Modules.Memory
         void SetInputD(BitArray data);
 
         /// <summary>
-        /// Sets value for 'Enabled' input
-        /// </summary>
-        /// <param name="value">Set to `true` to enable output and `false` to disable output</param>
-        /// <remarks>
-        /// The `Enabled` input determines whether the RAM module outputs the addressed memory location,
-        /// or `null`, which represents the Z (high impedance) state.
-        /// 
-        /// When using a RAM module in a bus configuration, keep 'Enabled' input low except when
-        /// performing a bus transfer.
-        /// </remarks>
-        void SetInputE(bool value);
-
-        /// <summary>
         /// Simulates the receipt of a clock pulse
         /// </summary>
         /// <remarks>When <see cref="SixteenByteRAM.Clock"/> method is called, if the
@@ -63,15 +50,6 @@ namespace DigitalElectronics.Modules.Memory
         /// <see cref="SixteenByteRAM.SetInputD"/> is loaded into the memory location specified
         /// by the most recent call to <see cref="SixteenByteRAM.SetInputA"/>.</remarks>
         void Clock();
-
-        /// <summary>
-        /// The output of the RAM module
-        /// </summary>
-        /// <remarks>This property returns the data of one of the 16 memory locations,
-        /// determined by the most recent call to <see cref="SetInputA(BitArray)"/>,
-        /// unless <see cref="SetInputE(bool)">'Enable' input</see> has been set
-        /// to `false`, in which case `null` is output.</remarks>
-        BitArray? Output { get; }
 
         /// <summary>
         /// Returns the entire internal state of the RAM

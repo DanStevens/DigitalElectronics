@@ -263,7 +263,7 @@ namespace DigitalElectronics.Concepts
         /// <c>{true, true, false, true, false, false, false, false}</c>. The method would
         /// mutate the BitArray to the array <c>{true, true, false, true}</c>
         ///
-        /// The length of the BitArray modified by assigning a new length to the
+        /// The length of the BitArray is modified by assigning a new length to the
         /// <see cref="Length"/> property</remarks>
         public BitArray Trim()
         {
@@ -278,7 +278,7 @@ namespace DigitalElectronics.Concepts
         /// <returns>A <see cref="BitArray"/> of either <see cref="Length"/>
         /// <paramref name="targetLength"/>targetLength</returns> or the longest length that can represent
         /// the same value. For example, calling <c>Trim(8)</c> on a BitArray representing decimal 11
-        /// of length 32 will reduce the <see cref="Length"/> to 8, while the same call on a BitARray
+        /// of length 32 will reduce the <see cref="Length"/> to 8, while the same call on a BitArray
         /// representing decimal 645 will be reduce the Length to 10, since this many bits is needed
         /// to fully represent the decimal value 645.
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="targetLength"/> is less than one</exception>

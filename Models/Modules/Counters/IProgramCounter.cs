@@ -4,33 +4,12 @@
 
 namespace DigitalElectronics.Modules.Counters
 {
-    public interface IProgramCounter
+    public interface IProgramCounter : IModule
     {
         /// <summary>
         /// The size of the program counter in bits
         /// </summary>
         int SizeInBits { get; }
-
-        /// <summary>
-        /// The tri-state output of the register
-        /// </summary>
-        /// <returns>If the output is enabled (see <see cref="SetInputE"/>,
-        /// <see cref="BitArray"/> representing the current value; otherwise `null`,
-        /// which represents the Z (high impedance) state</returns>
-        BitArray? Output { get; }
-
-        /// <summary>
-        /// Sets value for 'Enabled' input
-        /// </summary>
-        /// <param name="value">Set to `true` to enable output and `false` to disable output</param>
-        /// <remarks>
-        /// The `Enabled` input determines whether the register outputs the currently latched value,
-        /// or `null`, which represents the Z (high impedance) state.
-        /// 
-        /// When using a register in a bus configuration, keep 'Enabled' input low except when
-        /// performing a bus transfer.
-        /// </remarks>
-        void SetInputE(bool value);
 
         /// <summary>
         /// Returns the internal state of the program counter
