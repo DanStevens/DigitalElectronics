@@ -3,7 +3,7 @@ using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Modules.ALUs
 {
-    public interface IArithmeticLogicUnit : IModule
+    public interface IArithmeticLogicUnit
     {
         int SizeInBits { get; }
 

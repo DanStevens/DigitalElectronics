@@ -11,7 +11,7 @@ namespace DigitalElectronics.Modules.ALUs
 {
     
     [DebuggerDisplay("ALU: {this.ProbeState()}")]
-    public class ArithmeticLogicUnit : IArithmeticLogicUnit
+    public class ArithmeticLogicUnit : IArithmeticLogicUnit, IModule
     {
         private readonly FullAdder[] _adders;
         private readonly TriStateBuffer[] _3SBuffers;
