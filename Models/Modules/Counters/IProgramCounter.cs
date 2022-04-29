@@ -4,7 +4,7 @@
 
 namespace DigitalElectronics.Modules.Counters
 {
-    public interface IProgramCounter : IModule
+    public interface IProgramCounter : IOutputModule
     {
         /// <summary>
         /// The size of the program counter in bits

@@ -11,7 +11,7 @@ namespace DigitalElectronics.Modules.ALUs
 {
     
     [DebuggerDisplay("ALU: {this.ProbeState()}")]
-    public class ArithmeticLogicUnit : IArithmeticLogicUnit, IModule
+    public class ArithmeticLogicUnit : IArithmeticLogicUnit, IOutputModule
     {
         private readonly FullAdder[] _adders;
         private readonly TriStateBuffer[] _3SBuffers;
@@ -133,8 +133,8 @@ namespace DigitalElectronics.Modules.ALUs
             _3SBuffers[x].SetInputA(_adders[x].OutputE);
         }
 
-        BitArray? IModule.Output => OutputE;
+        BitArray? IOutputModule.Output => OutputE;
 
-        void IModule.SetInputE(bool value) => this.SetInputEO(value);
+        void IOutputModule.SetInputE(bool value) => this.SetInputEO(value);
     }
 }

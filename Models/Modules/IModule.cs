@@ -5,9 +5,16 @@
 namespace DigitalElectronics.Modules
 {
     /// <summary>
-    /// Represents a module that can be attached to a bus
+    /// Base interface for types of module
     /// </summary>
     public interface IModule
+    {
+    }
+
+    /// <summary>
+    /// Represents a module that can write values to a bus.
+    /// </summary>
+    public interface IOutputModule : IModule
     {
         /// <summary>
         /// The tri-state output of the module

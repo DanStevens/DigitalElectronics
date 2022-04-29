@@ -18,14 +18,19 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         }
 
         [Test]
+        public void Constructor_AcceptsAnOutputModuleAsArgument()
+        {
+            new ParallelBus(8, Substitute.For<IOutputModule>());
+        }
+
+        [Test]
         public void Constructor_AcceptsMultipleModulesAsArguments()
         {
             new ParallelBus(8,
                 Substitute.For<IModule>(),
                 Substitute.For<IModule>(),
-                Substitute.For<IModule>());
+                Substitute.For<IOutputModule>());
         }
-
 
         [Test]
         public void Constructor_GivenZeroNumberOfBits_ShouldThrow()
@@ -49,7 +54,7 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         [Test]
         public void Output_ShouldBeNull_WhenModuleIsNotEnabledForOutput()
         {
-            var module = Substitute.For<IModule>();
+            var module = Substitute.For<IOutputModule>();
             module.SetInputE(false);
             module.Output.Should().BeNull();
             var bus = new ParallelBus(8, module);
@@ -59,9 +64,9 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         [Test]
         public void Output_ShouldEqualOutputOfEnabledModule_WhenOnlyOneModuleIsEnabledForOutput()
         {
-            var module1 = Substitute.For<IModule>();
-            var module2 = Substitute.For<IModule>();
-            var module3 = Substitute.For<IModule>();
+            var module1 = Substitute.For<IOutputModule>();
+            var module2 = Substitute.For<IOutputModule>();
+            var module3 = Substitute.For<IOutputModule>();
             var bus = new ParallelBus(8, module1, module2, module3);
             module2.Output.Returns(new BitArray((byte)2));
             bus.Output!.ToByte().Should().Be(2);
@@ -70,9 +75,9 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         [Test]
         public void Output_ShouldThrow_WhenMoreThanOneModuleIsEnabledForOutput()
         {
-            var module1 = Substitute.For<IModule>();
-            var module2 = Substitute.For<IModule>();
-            var module3 = Substitute.For<IModule>();
+            var module1 = Substitute.For<IOutputModule>();
+            var module2 = Substitute.For<IOutputModule>();
+            var module3 = Substitute.For<IOutputModule>();
             var bus = new ParallelBus(8, module1, module2, module3);
             module2.Output.Returns(new BitArray((byte)2));
             module3.Output.Returns(new BitArray((byte)3));
@@ -82,7 +87,7 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         [Test]
         public void Output_ShouldReturnBitArrayOfLengthEqualToNumberOfChannels_WhenModulesOutputIsGreaterThanNumberOfChannels()
         {
-            var module = Substitute.For<IModule>();
+            var module = Substitute.For<IOutputModule>();
             var bus = new ParallelBus(4, module);
             module.Output.Returns(new BitArray((byte)255));
             bus.Output!.Length.Should().Be(4);
@@ -92,7 +97,7 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         [Test]
         public void Output_ShouldReturnBitArrayOfLengthEqualToNumberOfChannels_WhenModulesOutputIsLessThanNumberOfChannels()
         {
-            var module = Substitute.For<IModule>();
+            var module = Substitute.For<IOutputModule>();
             var bus = new ParallelBus(8, module);
             module.Output.Returns(new BitArray(length: 4, true));
             bus.Output!.Length.Should().Be(8);

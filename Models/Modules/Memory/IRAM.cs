@@ -5,7 +5,7 @@ using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Modules.Memory
 {
-    public interface IRAM : IModule
+    public interface IRAM : IOutputModule
     {
         /// <summary>
         /// The word size in bits, typically 8 bits.

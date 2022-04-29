@@ -4,7 +4,7 @@ using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Components.Memory
 {
-    public interface IRegister : IModule
+    public interface IRegister : IOutputModule
     {
         /// <summary>
         /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>

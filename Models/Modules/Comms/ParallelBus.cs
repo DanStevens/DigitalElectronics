@@ -34,7 +34,8 @@ namespace DigitalElectronics.Modules.Comms
             {
                 try
                 {
-                    var singleModuleEnabledForOutput = _modules.SingleOrDefault(m => m.Output != null);
+                    var singleModuleEnabledForOutput =
+                        _modules.OfType<IOutputModule>().SingleOrDefault(m => m.Output != null);
 
                     if (singleModuleEnabledForOutput?.Output == null)
                         return null;
