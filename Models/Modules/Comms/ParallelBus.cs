@@ -23,7 +23,7 @@ namespace DigitalElectronics.Modules.Comms
                 throw new ArgumentOutOfRangeException(nameof(numberOfChannels), "Argument must be greater than 0");
             
             NumberOfChannels = numberOfChannels;
-            _modules = modules;
+            _modules = modules.ToArray();
         }
 
         public int NumberOfChannels { get; }
