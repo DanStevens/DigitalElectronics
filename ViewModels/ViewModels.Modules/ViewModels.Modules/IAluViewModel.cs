@@ -7,7 +7,7 @@ namespace DigitalElectronics.ViewModels.Modules;
 public interface IAluViewModel : INotifyPropertyChanged
 {
     event EventHandler? EnableChanged;
-    int SizeInBits { get; }
+    int WordSize { get; }
     bool Enable { get; set; }
     bool Subtract { get; set; }
     IReadOnlyList<bool> Probe { get; }

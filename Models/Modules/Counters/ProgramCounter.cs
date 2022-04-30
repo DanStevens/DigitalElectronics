@@ -19,27 +19,27 @@ namespace DigitalElectronics.Modules.Counters
         /// <summary>
         /// Constructs a program counter of the given size
         /// </summary>
-        /// <param name="sizeInBits">The size of the program counter in bits</param>
+        /// <param name="wordSize">The word size of the program counter in bits</param>
         /// <exception cref="ArgumentOutOfRangeException">if argument is less than 1</exception>
-        public ProgramCounter(int sizeInBits)
+        public ProgramCounter(int wordSize)
         {
-            if (sizeInBits <= 0)
-                throw new ArgumentOutOfRangeException(nameof(sizeInBits), "Argument must be greater than 0");
+            if (wordSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(wordSize), "Argument must be greater than 0");
 
-            SizeInBits = sizeInBits;
-            _counter = new BinaryCounter(sizeInBits);
+            WordSize = wordSize;
+            _counter = new BinaryCounter(wordSize);
 
-            _triStateBuffers = new TriStateBuffer[SizeInBits];
-            for (int i = 0; i < SizeInBits; i++)
+            _triStateBuffers = new TriStateBuffer[WordSize];
+            for (int i = 0; i < WordSize; i++)
                 _triStateBuffers[i] = new TriStateBuffer();
 
             Sync();
         }
 
         /// <summary>
-        /// The size of the program counter in bits
+        /// The word size of the program counter in bits
         /// </summary>
-        public int SizeInBits { get; }
+        public int WordSize { get; }
 
         /// <summary>
         /// The tri-state output of the register
@@ -95,7 +95,7 @@ namespace DigitalElectronics.Modules.Counters
 
         private void Sync()
         {
-            for (int i = 0; i < SizeInBits; i++)
+            for (int i = 0; i < WordSize; i++)
                 _triStateBuffers[i].SetInputA(_counter.Output[i]);
         }
     }

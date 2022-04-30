@@ -19,14 +19,14 @@ namespace DigitalElectronics.Components.Memory
         /// <summary>
         /// Constructs a multi-bit register with the given size
         /// </summary>
-        /// <param name="sizeInBits">The size of the register in bits</param>
-        public Register(int sizeInBits)
+        /// <param name="wordSize">The word size of the register in bits</param>
+        public Register(int wordSize)
         {
-            if (sizeInBits <= 0)
-                throw new ArgumentOutOfRangeException(nameof(sizeInBits), "Argument must be greater than 0");
+            if (wordSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(wordSize), "Argument must be greater than 0");
 
-            _registers = new RegisterBit[sizeInBits];
-            for (int x = 0; x < sizeInBits; x++) _registers[x] = new RegisterBit();
+            _registers = new RegisterBit[wordSize];
+            for (int x = 0; x < wordSize; x++) _registers[x] = new RegisterBit();
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace DigitalElectronics.Components.Memory
         /// <summary>
         /// The number of bits in the register (N)
         /// </summary>
-        public int SizeInBits => _registers.Length;
+        public int WordSize => _registers.Length;
 
         /// <summary>
         /// Sets value for 'Enabled' input
@@ -62,7 +62,7 @@ namespace DigitalElectronics.Components.Memory
         /// </remarks>
         public void SetInputE(bool value)
         {
-            for (int x = 0; x < SizeInBits; x++) _registers[x].SetInputE(value);
+            for (int x = 0; x < WordSize; x++) _registers[x].SetInputE(value);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace DigitalElectronics.Components.Memory
         /// otherwise loading is disabled</param>
         public void SetInputL(bool value)
         {
-            for (int x = 0; x < SizeInBits; x++) _registers[x].SetInputL(value);
+            for (int x = 0; x < WordSize; x++) _registers[x].SetInputL(value);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace DigitalElectronics.Components.Memory
         /// <see cref="SetInputD(BitArray)"/> is loaded into the registry.</remarks>
         public void Clock()
         {
-            for (int x = 0; x < SizeInBits; x++) _registers[x].Clock();
+            for (int x = 0; x < WordSize; x++) _registers[x].Clock();
         }
 
         /// <summary>

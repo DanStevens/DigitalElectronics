@@ -28,19 +28,19 @@ namespace DigitalElectronics.Computers.Tests
             // Initialize RAM
             InitializeRAM();
 
-            // LDA 0x0: Load the contents of memory address 0x0 (0) in to A Register
+            // Load the contents of memory address 0x0 (0) in to A Register
             LDA(Address0x0);
 
             computer.ARegister.ProbeState().ToByte().Should().Be(30);
             computer.BRegister.ProbeState().ToByte().Should().Be(255);
 
-            // ADD 0x1: Add the contents of memory address 0x1 (1) to the A Register
+            // Add the contents of memory address 0x1 (1) to the A Register
             ADD(Address0x1);
 
             computer.BRegister.ProbeState().ToByte().Should().Be(12);
             computer.ARegister.ProbeState().ToByte().Should().Be(42);
 
-            // OUT   : Put the contents of A Register into the Output Register
+            // Put the contents of A Register into the Output Register
             OUT();
 
             computer.OutRegister.ProbeState().ToByte().Should().Be(42);

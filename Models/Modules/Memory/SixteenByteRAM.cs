@@ -14,8 +14,8 @@ namespace DigitalElectronics.Modules.Memory
     /// </summary>
     public class SixteenByteRAM : IRAM
     {
-        private const int WordSize = 8; // Bits
-        private const int Capacity = 16;  // Words/Bytes
+        private const int _WordSize = 8; // Bits
+        private const int _Capacity = 16;  // Words/Bytes
 
         private readonly FourBitAddressDecoder _addressDecoder;
         private readonly AndGate[] _andL;
@@ -29,11 +29,11 @@ namespace DigitalElectronics.Modules.Memory
         {
             _addressDecoder = new FourBitAddressDecoder();
 
-            _andL = new AndGate[Capacity];
-            _andE = new AndGate[Capacity];
-            _8BitRegisters = new Register[Capacity];
+            _andL = new AndGate[_Capacity];
+            _andE = new AndGate[_Capacity];
+            _8BitRegisters = new Register[_Capacity];
 
-            for (int x = 0; x < Capacity; x++)
+            for (int x = 0; x < _Capacity; x++)
             { 
                 _andL[x] = new AndGate();
                 _andE[x] = new AndGate();
@@ -64,7 +64,7 @@ namespace DigitalElectronics.Modules.Memory
         /// </summary>
         public void SetInputL(bool value)
         {
-            for (int x = 0; x < Capacity; x++)
+            for (int x = 0; x < _Capacity; x++)
                 _andL[x].SetInputB(value);
             Sync();
         }
@@ -80,7 +80,7 @@ namespace DigitalElectronics.Modules.Memory
         /// recent call to <see cref="SetInputA"/>.</remarks>
         public void SetInputD(BitArray data)
         {
-            for (int x = 0; x < Capacity; x++)
+            for (int x = 0; x < _Capacity; x++)
                 _8BitRegisters[x].SetInputD(data);
             Sync();
         }
@@ -98,7 +98,7 @@ namespace DigitalElectronics.Modules.Memory
         /// </remarks>
         public void SetInputE(bool value)
         {
-            for (int x = 0; x < Capacity; x++)
+            for (int x = 0; x < _Capacity; x++)
                 _andE[x].SetInputB(value);
             Sync();
         }
@@ -112,7 +112,7 @@ namespace DigitalElectronics.Modules.Memory
         /// by the most recent call to <see cref="SetInputA(BitArray)"/>.</remarks>
         public void Clock()
         {
-            for (int x = 0; x < Capacity; x++)
+            for (int x = 0; x < _Capacity; x++)
                 _8BitRegisters[x].Clock();
             Sync();
         }
@@ -137,13 +137,11 @@ namespace DigitalElectronics.Modules.Memory
             return _8BitRegisters[address.ToByte()].ProbeState();
         }
 
-        int IRAM.WordSize => WordSize;
-
-        int IRAM.Capacity => Capacity;
+        int IRAM.Capacity => _Capacity;
 
         private void Sync()
         {
-            for (int x = 0; x < Capacity; x++)
+            for (int x = 0; x < _Capacity; x++)
             {
                 _andL[x].SetInputA(_addressDecoder.OutputY[x]);
                 _andE[x].SetInputA(_addressDecoder.OutputY[x]);
@@ -151,5 +149,7 @@ namespace DigitalElectronics.Modules.Memory
                 _8BitRegisters[x].SetInputE(_andE[x].OutputQ);
             }
         }
+
+        public int WordSize => _WordSize;
     }
 }

@@ -16,11 +16,6 @@ namespace DigitalElectronics.Components.Memory
         void SetInputD(BitArray data);
 
         /// <summary>
-        /// The number of bits in the register (N)
-        /// </summary>
-        int SizeInBits { get; }
-
-        /// <summary>
         /// Sets value for 'Load' input
         /// </summary>
         /// <param name="value">Set to `true` to enable loading of a data into the register;

@@ -8,11 +8,6 @@ namespace DigitalElectronics.Modules.Memory
     public interface IRAM : IOutputModule
     {
         /// <summary>
-        /// The word size in bits, typically 8 bits.
-        /// </summary>
-        public int WordSize { get; }
-
-        /// <summary>
         /// The capacity of the RAM in words
         /// </summary>
         public int Capacity { get; }

@@ -32,7 +32,7 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         [Test]
         public void BitCount_ShouldBeN()
         {
-            _4bitAlu.SizeInBits.Should().Be(N);
+            _4bitAlu.WordSize.Should().Be(N);
         }
 
         [Test]

@@ -9,6 +9,10 @@ namespace DigitalElectronics.Modules
     /// </summary>
     public interface IModule
     {
+        /// <summary>
+        /// The word size for data contained in the module, in bits
+        /// </summary>
+        int WordSize { get; }
     }
 
     /// <summary>

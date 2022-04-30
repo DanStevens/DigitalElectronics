@@ -7,11 +7,6 @@ namespace DigitalElectronics.Modules.Counters
     public interface IProgramCounter : IOutputModule
     {
         /// <summary>
-        /// The size of the program counter in bits
-        /// </summary>
-        int SizeInBits { get; }
-
-        /// <summary>
         /// Returns the internal state of the program counter
         /// </summary>
         /// <remarks>Consumers can use this to get the program counter's state without have to set
