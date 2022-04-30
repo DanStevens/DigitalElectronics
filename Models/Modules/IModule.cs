@@ -38,4 +38,12 @@ namespace DigitalElectronics.Modules
         /// </remarks>
         public void SetInputE(bool value);
     }
+
+    /// <summary>
+    /// Represents a module that can receive values from a bus
+    /// </summary>
+    public interface IInputModule : IModule
+    {
+        void SetInputD(BitArray data);
+    }
 }
