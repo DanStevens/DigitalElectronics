@@ -17,6 +17,7 @@ namespace DigitalElectronics.Modules.Comms
         /// Creates a new parallel bus
         /// </summary>
         /// <param name="numberOfChannels">The number of channels (bits)</param>
+        /// <param name="modules">Modules to connect to the bus</param>
         public ParallelBus(int numberOfChannels, params IModule[] modules)
         {
             if (numberOfChannels <= 0)
@@ -47,6 +48,14 @@ namespace DigitalElectronics.Modules.Comms
                     throw new BusContentionException();
                 }
             }
+        }
+
+        public void Write(BitArray data)
+        {
+            _ = data ?? throw new ArgumentNullException(nameof(data));
+
+            foreach (var inputModule in _modules.OfType<IInputModule>())
+                inputModule.SetInputD(data);
         }
     }
 }

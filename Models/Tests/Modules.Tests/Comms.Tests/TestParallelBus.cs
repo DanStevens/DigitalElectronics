@@ -103,5 +103,30 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
             bus.Output!.Length.Should().Be(8);
             bus.Output.ToByte().Should().Be(15);
         }
+
+        [Test]
+        public void Write_ShouldThrowArgumentNullException_WhenDataArgIsNull()
+        {
+            var module = Substitute.For<IModule>();
+            var bus = new ParallelBus(8, module);
+            Assert.Throws<ArgumentNullException>(() => bus.Write(null));
+        }
+
+        [Test]
+        public void Write_ShouldInvokeSetInputDMethodOnAllInputModules()
+        {
+            var module1 = Substitute.For<IInputModule>();
+            var module2 = Substitute.For<IInputModule, IOutputModule>();
+            var module3 = Substitute.For<IInputModule, IOutputModule>();
+            var module4 = Substitute.For<IOutputModule>();
+            var binary42 = new BitArray((byte)42);
+            var bus = new ParallelBus(8, module1, module2, module3, module4);
+
+            bus.Write(binary42);
+
+            module1.Received(1).SetInputD(binary42);
+            module2.Received(1).SetInputD(binary42);
+            module3.Received(1).SetInputD(binary42);
+        }
     }
 }
