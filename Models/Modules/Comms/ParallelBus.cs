@@ -27,8 +27,17 @@ namespace DigitalElectronics.Modules.Comms
             _modules = modules.ToArray();
         }
 
+        /// <summary>
+        /// The number of channels (or bits) the bus has
+        /// </summary>
         public int NumberOfChannels { get; }
 
+        /// <summary>
+        /// The tri-state output of the parallel bus
+        /// </summary>
+        /// <returns>If one and only one attached module is enable for output, the output of that
+        /// module; otherwise null, which represents the Z (high impedance) state.</returns>
+        /// <exception cref="BusContentionException">if more than one module is enable for output.</exception>
         public BitArray? Output
         {
             get
@@ -50,6 +59,13 @@ namespace DigitalElectronics.Modules.Comms
             }
         }
 
+        /// <summary>
+        /// Writes the given data to the bus
+        /// </summary>
+        /// <param name="data">The data to written</param>
+        /// <exception cref="ArgumentNullException">if the <paramref name="data"/> arg is `null`</exception>
+        /// <remarks>This method invokes <see cref="IInputModule.SetInputD"/> method on all input
+        /// modules attached to the bus.</remarks>
         public void Write(BitArray data)
         {
             _ = data ?? throw new ArgumentNullException(nameof(data));
