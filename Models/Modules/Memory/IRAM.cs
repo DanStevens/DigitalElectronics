@@ -5,7 +5,7 @@ using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Modules.Memory
 {
-    public interface IRAM : IOutputModule
+    public interface IRAM : IInputModule, IOutputModule
     {
         /// <summary>
         /// The capacity of the RAM in words
@@ -25,17 +25,6 @@ namespace DigitalElectronics.Modules.Memory
         /// Sets value for the 'Load' input
         /// </summary>
         void SetInputL(bool value);
-
-        /// <summary>
-        /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
-        /// </summary>
-        /// <param name="data">A <see cref="BitArray"/> containing values to set the current memory
-        /// location to, starting with the low-order bit. If the BitArray contains less elements
-        /// than the memory word length, the higher-order bits remain unchanged. If the BitArray contains
-        /// more elements than the  than the memory word length, the excess elements are unused.</param>
-        /// <remarks>This method writes the given data to the memory location specified by the most
-        /// recent call to <see cref="SixteenByteRAM.SetInputA"/>.</remarks>
-        void SetInputD(BitArray data);
 
         /// <summary>
         /// Simulates the receipt of a clock pulse

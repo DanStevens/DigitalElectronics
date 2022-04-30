@@ -44,6 +44,14 @@ namespace DigitalElectronics.Modules
     /// </summary>
     public interface IInputModule : IModule
     {
+        /// <summary>
+        /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
+        /// </summary>
+        /// <param name="data">A <see cref="BitArray"/> containing values to write to the module to,
+        /// starting with the low-order bit. If the BitArray contains less elements than the
+        /// <see cref="IModule.WordSize"/> of the module, the higher-order bits remain unchanged.
+        /// If the BitArray contains more elements than the word size, the excess elements are
+        /// unused.</param>
         void SetInputD(BitArray data);
     }
 }
