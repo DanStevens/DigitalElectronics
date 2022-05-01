@@ -144,7 +144,6 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
             module3.DidNotReceiveWithAnyArgs().SetInputD(default!);
         }
 
-
         private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
         {
             

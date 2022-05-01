@@ -12,6 +12,8 @@ namespace DigitalElectronics.Computers.Tests
     {
         private readonly BitArray Address0x0 = new BitArray((byte)0x0).Trim(4);
         private readonly BitArray Address0x1 = new BitArray((byte)0x1).Trim(4);
+        private readonly BitArray Address0xD = new BitArray((byte)0xD).Trim(4);
+        private readonly BitArray Address0xE = new BitArray((byte)0xE).Trim(4);
 
         [Test]
         public void Create()
@@ -28,14 +30,14 @@ namespace DigitalElectronics.Computers.Tests
             // Initialize RAM
             InitializeRAM();
 
-            // Load the contents of memory address 0x0 (0) in to A Register
-            LDA(Address0x0);
+            // Load the contents of memory address 14 (0xD) in to A Register
+            LDA(Address0xD);
 
             computer.ARegister.ProbeState().ToByte().Should().Be(30);
             computer.BRegister.ProbeState().ToByte().Should().Be(255);
 
-            // Add the contents of memory address 0x1 (1) to the A Register
-            ADD(Address0x1);
+            // Add the contents of memory address 15 (0xE) to the A Register
+            ADD(Address0xE);
 
             computer.BRegister.ProbeState().ToByte().Should().Be(12);
             computer.ARegister.ProbeState().ToByte().Should().Be(42);
@@ -49,17 +51,27 @@ namespace DigitalElectronics.Computers.Tests
             {
                 computer.RAM.SetInputL(true);
 
-                computer.RAM.SetInputA(Address0x0);
-                computer.RAM.SetInputD(new BitArray((byte) 30));
-                computer.Clock();
-                computer.RAM.ProbeState(Address0x0).ToByte().Should().Be(30);
+                // Load the instruction 'LDA 14' (0x1D) int memory address
+                WriteMemoryAddress(Address0x0, 0x1D);
 
-                computer.RAM.SetInputA(Address0x1);
-                computer.RAM.SetInputD(new BitArray((byte) 12));
-                computer.RAM.Clock();
-                computer.RAM.ProbeState(Address0x1).ToByte().Should().Be(12);
+                // Load the instruction 'LDA 15' (0x1E) int memory address
+                WriteMemoryAddress(Address0x1, 0x1E);
+
+                // Load decimal value 30 into address 14
+                WriteMemoryAddress(Address0xD, 30);
+
+                // Load decimal value 12 into address 15
+                WriteMemoryAddress(Address0xE, 12);
 
                 computer.RAM.SetInputL(false);
+
+                void WriteMemoryAddress(BitArray address, byte data)
+                {
+                    computer.RAM.SetInputA(address);
+                    computer.RAM.SetInputD(new BitArray(data));
+                    computer.Clock();
+                    computer.RAM.ProbeState(address).ToByte().Should().Be(data);
+                }
             }
 
             void LDA(BitArray address)
@@ -112,7 +124,5 @@ namespace DigitalElectronics.Computers.Tests
                 computer.ARegister.SetInputE(false);
             }
         }
-
-
     }
 }

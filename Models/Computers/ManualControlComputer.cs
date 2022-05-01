@@ -13,32 +13,37 @@ namespace DigitalElectronics.Computers
     /// </summary>
     public class ManualControlComputer
     {
+        private const int AddressSize = 4;
         private const int WordSize = 8;
 
+        private readonly Register _addressRegister;
+        private readonly SixteenByteRAM _ram;
         private readonly ArithmeticLogicUnit _alu;
         private readonly Register _aRegister;
         private readonly Register _bRegister;
         private readonly Register _outRegister;
+        private readonly ParallelBus _bus;
 
-        public ParallelBus Bus { get; }
+        public IRegister AddressRegister => _addressRegister;
+        public IRAM RAM => _ram;
         public IRegister ARegister => _aRegister;
         public IRegister BRegister => _bRegister;
         public IArithmeticLogicUnit ALU => _alu;
-        public IRAM RAM { get; }
-        ////private IRegister AddressRegister { get; }
         ////private IRegister InstructionRegister { get; }
         public IRegister OutRegister => _outRegister;
+        public ParallelBus Bus => _bus;
 
         public ManualControlComputer()
         {
-            RAM = new SixteenByteRAM();
+            _addressRegister = new Register(AddressSize);
+            _ram = new SixteenByteRAM();
             _aRegister = new Register(WordSize);
             _bRegister = new Register(WordSize);
             _alu = new ArithmeticLogicUnit(WordSize);
             _outRegister = new Register(WordSize);
 
-            Bus = new ParallelBus(WordSize,
-                RAM, _aRegister, _bRegister, _alu, _outRegister);
+            _bus = new ParallelBus(WordSize,
+                _ram, _aRegister, _bRegister, _alu, _outRegister);
         }
 
         public void Clock()
