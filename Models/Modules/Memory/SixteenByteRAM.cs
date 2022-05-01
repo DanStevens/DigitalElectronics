@@ -53,7 +53,8 @@ namespace DigitalElectronics.Modules.Memory
         public void SetInputA(BitArray address)
         {
             if (address.Length > 4)
-                throw new System.ArgumentOutOfRangeException(nameof(address), "Argument length cannot be greater than 4");
+                throw new System.ArgumentOutOfRangeException(nameof(address),
+                    "Argument length cannot be greater than 4");
             
             _addressDecoder.SetInputA(address);
             Sync();
