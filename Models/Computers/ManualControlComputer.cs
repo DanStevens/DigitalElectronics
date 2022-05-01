@@ -43,6 +43,7 @@ namespace DigitalElectronics.Computers
 
         public void Clock()
         {
+            Bus.Transfer();
             RAM.Clock();
             ARegister.Clock();
             BRegister.Clock();

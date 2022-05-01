@@ -1,6 +1,9 @@
 ﻿using System;
+using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.Comms;
+using DigitalElectronics.Modules.Counters;
+using DigitalElectronics.Utilities;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
@@ -105,28 +108,49 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         }
 
         [Test]
-        public void Write_ShouldThrowArgumentNullException_WhenDataArgIsNull()
-        {
-            var module = Substitute.For<IModule>();
-            var bus = new ParallelBus(8, module);
-            Assert.Throws<ArgumentNullException>(() => bus.Write(null));
-        }
-
-        [Test]
-        public void Write_ShouldInvokeSetInputDMethodOnAllInputModules()
+        public void Transfer_ShouldWriteBusOutputToAllInputModules_WhenAboutIsNotNull()
         {
             var module1 = Substitute.For<IInputModule>();
-            var module2 = Substitute.For<IInputModule, IOutputModule>();
-            var module3 = Substitute.For<IInputModule, IOutputModule>();
-            var module4 = Substitute.For<IOutputModule>();
+            var module2 = Substitute.For<IRegister>();
+            var module3 = Substitute.For<IRegister>();
+            var module4 = Substitute.For<IProgramCounter>();
             var binary42 = new BitArray((byte)42);
             var bus = new ParallelBus(8, module1, module2, module3, module4);
 
-            bus.Write(binary42);
+            module3.Output.Returns(binary42);
 
-            module1.Received(1).SetInputD(binary42);
-            module2.Received(1).SetInputD(binary42);
-            module3.Received(1).SetInputD(binary42);
+            bus.Transfer();
+
+            module1.Received(1).SetInputD(CreateExpectedBitArrayArg(binary42));
+            module2.Received(1).SetInputD(CreateExpectedBitArrayArg(binary42));
+            module3.Received(1).SetInputD(CreateExpectedBitArrayArg(binary42));
         }
+
+        [Test]
+        public void Transfer_ShouldWriteBusOutputToAllInputModules_WhenAboutIsNull()
+        {
+            var module1 = Substitute.For<IInputModule>();
+            var module2 = Substitute.For<IRegister>();
+            var module3 = Substitute.For<IRegister>();
+            var module4 = Substitute.For<IProgramCounter>();
+            var bus = new ParallelBus(8, module1, module2, module3, module4);
+
+            module3.Output.Should().BeNull();
+
+            bus.Transfer();
+
+            module1.DidNotReceiveWithAnyArgs().SetInputD(default!);
+            module2.DidNotReceiveWithAnyArgs().SetInputD(default!);
+            module3.DidNotReceiveWithAnyArgs().SetInputD(default!);
+        }
+
+
+        private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
+        {
+            
+            return Arg.Is<BitArray>(arg =>
+                new BitArrayComparer().Compare(arg, new BitArray(expectedValue)) == 0);
+        }
+
     }
 }

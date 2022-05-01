@@ -60,18 +60,16 @@ namespace DigitalElectronics.Modules.Comms
         }
 
         /// <summary>
-        /// Writes the given data to the bus
+        /// Performs a bus transfer
         /// </summary>
-        /// <param name="data">The data to written</param>
-        /// <exception cref="ArgumentNullException">if the <paramref name="data"/> arg is `null`</exception>
-        /// <remarks>This method invokes <see cref="IInputModule.SetInputD"/> method on all input
-        /// modules attached to the bus.</remarks>
-        public void Write(BitArray data)
+        /// <remarks>A 'bus transfer' takes the value of the <see cref="Output"/> property and
+        /// invokes <see cref="IInputModule.SetInputD"/> method on all input
+        /// /// modules attached to the bus.</remarks>
+        public void Transfer()
         {
-            _ = data ?? throw new ArgumentNullException(nameof(data));
-
-            foreach (var inputModule in _modules.OfType<IInputModule>())
-                inputModule.SetInputD(data);
+            if (Output != null)
+                foreach (var inputModule in _modules.OfType<IInputModule>())
+                    inputModule.SetInputD(Output);
         }
     }
 }

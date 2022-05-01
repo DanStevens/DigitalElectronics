@@ -68,7 +68,6 @@ namespace DigitalElectronics.Computers.Tests
                 computer.RAM.SetInputE(true);
                 
                 computer.ARegister.SetInputL(true);
-                computer.ARegister.SetInputD(computer.Bus.Output);
                 computer.Clock();
                 computer.ALU.SetInputA(computer.ARegister.ProbeState());
                 computer.ARegister.SetInputL(false);
@@ -83,7 +82,6 @@ namespace DigitalElectronics.Computers.Tests
                 computer.ALU.SetInputEO(true);
 
                 computer.ARegister.SetInputL(true);
-                computer.ARegister.SetInputD(computer.Bus.Output);
                 computer.Clock();
                 computer.ARegister.SetInputL(false);
 
@@ -96,7 +94,6 @@ namespace DigitalElectronics.Computers.Tests
                 computer.RAM.SetInputE(true);
 
                 computer.BRegister.SetInputL(true);
-                computer.BRegister.SetInputD(computer.Bus.Output);
                 computer.Clock();
                 computer.BRegister.SetInputL(false);
                 computer.ALU.SetInputB(computer.BRegister.ProbeState());
@@ -109,7 +106,6 @@ namespace DigitalElectronics.Computers.Tests
                 computer.ARegister.SetInputE(true);
 
                 computer.OutRegister.SetInputL(true);
-                computer.OutRegister.SetInputD(computer.Bus.Output);
                 computer.Clock();
                 computer.OutRegister.SetInputL(false);
 
