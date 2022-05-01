@@ -21,9 +21,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
         #region Helper methods
 
-        private static IRegister CreateRegisterMock()
+        private static IReadWriteRegister CreateRegisterMock()
         {
-            var registerMock = Substitute.For<IRegister>();
+            var registerMock = Substitute.For<IReadWriteRegister>();
             registerMock.ProbeState().Returns(maxByte);
             return registerMock;
         }
@@ -43,7 +43,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
         }
 
-        private static void AssertSetInputDWasCalled(IRegister registerMock, BitArray bitArray)
+        private static void AssertSetInputDWasCalled(IReadWriteRegister registerMock, BitArray bitArray)
         {
             var expectedArg = CreateExpectedBitArrayArg(bitArray);
             registerMock.Received(1).SetInputD(expectedArg);

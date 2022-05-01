@@ -11,20 +11,20 @@ namespace DigitalElectronics.Components.Memory
     /// Models a multi-bit register of N bits, where each bit has its own input
     /// </summary>
     [DebuggerDisplay("Register: {this.ProbeState()}")]
-    public class Register : IRegister
+    public class Register : IReadWriteRegister
     {
-
         private readonly RegisterBit[] _registers;
 
         /// <summary>
         /// Constructs a multi-bit register with the given size
         /// </summary>
         /// <param name="wordSize">The word size of the register in bits</param>
-        public Register(int wordSize)
+        public Register(int wordSize, RegisterMode mode = RegisterMode.ReadWrite)
         {
             if (wordSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(wordSize), "Argument must be greater than 0");
 
+            Mode = mode;
             _registers = new RegisterBit[wordSize];
             for (int x = 0; x < wordSize; x++) _registers[x] = new RegisterBit();
         }
@@ -44,6 +44,8 @@ namespace DigitalElectronics.Components.Memory
             for (int x = 0; x < upper; x++) SetInputDx(x, data[x]);
         }
 
+        public RegisterMode Mode { get; }
+
         /// <summary>
         /// The number of bits in the register (N)
         /// </summary>
@@ -62,7 +64,9 @@ namespace DigitalElectronics.Components.Memory
         /// </remarks>
         public void SetInputE(bool value)
         {
-            for (int x = 0; x < WordSize; x++) _registers[x].SetInputE(value);
+            if (IsReadable)
+                for (int x = 0; x < WordSize; x++)
+                    _registers[x].SetInputE(value);
         }
 
         /// <summary>
@@ -101,8 +105,8 @@ namespace DigitalElectronics.Components.Memory
         /// <returns>If the output is enabled (see <see cref="SetInputE"/>,
         /// <see cref="BitArray"/> representing the current value; otherwise `null`,
         /// which represents the Z (high impedance) state</returns>
-        public BitArray? Output => _registers[0].OutputQ.HasValue ?
-                new BitArray(_registers.Select(_ => _.OutputQ.Value)) : null;
+        public BitArray? Output => IsReadable && _registers[0].OutputQ.HasValue ?
+                new BitArray(_registers.Select(_ => _.OutputQ!.Value)) : null;
 
         /// <summary>
         /// Returns the internal state of the register
@@ -113,5 +117,15 @@ namespace DigitalElectronics.Components.Memory
         {
             return new BitArray(_registers.Select(_ => _.ProbeState()));
         }
+
+        /// <summary>
+        /// Whether or not the register is readable
+        /// </summary>
+        /// <return>`true` if the register can be read; otherwise `false`</return>
+        /// A register is readable when the <see cref="RegisterMode.Read"/> flag is set.
+        /// When a register is not readable, <see cref="Output"/> will always return
+        /// `null` since setting the <see cref="SetInputE">enable signal></see> to
+        /// `true` has no affect.
+        public bool IsReadable => Mode.HasFlag(RegisterMode.Read);
     }
 }

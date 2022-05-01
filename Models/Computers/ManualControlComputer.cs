@@ -24,13 +24,13 @@ namespace DigitalElectronics.Computers
         private readonly Register _outRegister;
         private readonly ParallelBus _bus;
 
-        public IRegister AddressRegister => _addressRegister;
+        public IWritableRegister AddressRegister => _addressRegister;
         public IRAM RAM => _ram;
-        public IRegister ARegister => _aRegister;
-        public IRegister BRegister => _bRegister;
+        public IReadWriteRegister ARegister => _aRegister;
+        public IReadWriteRegister BRegister => _bRegister;
         public IArithmeticLogicUnit ALU => _alu;
         ////private IRegister InstructionRegister { get; }
-        public IRegister OutRegister => _outRegister;
+        public IWritableRegister OutRegister => _outRegister;
         public ParallelBus Bus => _bus;
 
         public ManualControlComputer()
@@ -49,6 +49,7 @@ namespace DigitalElectronics.Computers
         public void Clock()
         {
             Bus.Transfer();
+            _addressRegister.Clock();
             RAM.Clock();
             ARegister.Clock();
             BRegister.Clock();

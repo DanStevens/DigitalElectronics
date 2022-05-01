@@ -35,7 +35,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         [Test]
         public void SetAllInputsD_UsingBitArrayOfSizeN()
         {
-            BitArray data = new BitArray(new bool[] { true, false, true, false });
+            BitArray data = new BitArray(true, false, true, false);
             PushL();
             _4bitRegister.SetInputD(data);
             Clock();
@@ -46,13 +46,13 @@ namespace DigitalElectronics.Components.Memory.Tests
         public void SetAllInputsD_UsingBitArrayOfSizeNMinus1()
         {
             // Initialize all inputs to false
-            var inputs = new BitArray(new bool[] { false, false, false, false });
+            var inputs = new BitArray(false, false, false, false);
             PushL();
             _4bitRegister.SetInputD(inputs);
             Clock();
             AssertOutputs(false, false, false, false);
 
-            BitArray data = new BitArray(new bool[] { true, false, true });
+            BitArray data = new BitArray(true, false, true);
             PushL();
             _4bitRegister.SetInputD(data);
            Clock();
@@ -62,7 +62,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         [Test]
         public void SetAllInputsD_UsingBitArrayOfSizeNPlus1()
         {
-            BitArray data = new BitArray(new bool[] { true, false, true, false, true });
+            BitArray data = new BitArray(true, false, true, false, true);
             PushL();
             _4bitRegister.SetInputD(data);
             Clock();
@@ -153,7 +153,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         [Test]
         public void Ouput_ShouldReturnBitArray_WhenInputEIsHigh()
         {
-            BitArray data = new BitArray(new bool[] { true, false, true, false });
+            BitArray data = new BitArray(true, false, true, false);
             PushE();
             PushL();
             _4bitRegister.SetInputD(data);
@@ -164,7 +164,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         [Test]
         public void OuputsShouldReturnNull_WhenInputEIsLow()
         {
-            BitArray data = new BitArray(new bool[] { true, false, true, false });
+            BitArray data = new BitArray(true, false, true, false);
             PushE();
             PushL();
             _4bitRegister.SetInputD(data);
@@ -176,7 +176,7 @@ namespace DigitalElectronics.Components.Memory.Tests
         [Test]
         public void ProbeState_ReturnsInternalState()
         {
-            BitArray data = new BitArray(new bool[] { true, false, true, false });
+            BitArray data = new BitArray(true, false, true, false);
             PushE();
             PushL();
             _4bitRegister.SetInputD(data);
@@ -191,10 +191,31 @@ namespace DigitalElectronics.Components.Memory.Tests
         {
             for (byte i = 0; i <= 15; i++)
             {
-                var iBits = new BitArray(new byte[] { i });
+                var iBits = new BitArray(i);
                 SetInputsD(iBits);
                 Clock();
             }
+        }
+
+        [Ignore("Come back to this")]
+        public void ReadOnlyRegister_StateCannotBeChanged()
+        {
+            _4bitRegister = new Register(WordSize, RegisterMode.Read);
+            _4bitRegister.ProbeState().ToByte().Should().Be(15);
+            var data = new BitArray(true, false, true, false);
+            PushL();
+            SetInputsD(data);
+            Clock();
+            _4bitRegister.ProbeState().ToByte().Should().Be(15);
+        }
+
+        [Test]
+        public void WriteOnlyRegister_OutputIsNull_EventWhenEnabled()
+        {
+            _4bitRegister = new Register(WordSize, RegisterMode.Write);
+            _4bitRegister.Output.Should().BeNull();
+            PushE();
+            _4bitRegister.Output.Should().BeNull();
         }
 
         private void AssertOutputs(params bool[] expectedOutputs)

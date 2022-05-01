@@ -12,7 +12,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
 {
     private const int _WordSize = 8;
 
-    private readonly IRegister _register;
+    private readonly IReadWriteRegister _register;
     private ObservableCollection<Bit> _data;
     private ObservableCollection<bool>? _output;
     private bool _load;
@@ -22,7 +22,7 @@ public sealed class EightBitRegisterViewModel : INotifyPropertyChanged, IRegiste
         : this(new Register(_WordSize))
     { }
 
-    public EightBitRegisterViewModel(IRegister register)
+    public EightBitRegisterViewModel(IReadWriteRegister register)
     {
         _register = register ?? throw new ArgumentNullException(nameof(register));
 

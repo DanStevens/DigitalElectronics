@@ -111,8 +111,8 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         public void Transfer_ShouldWriteBusOutputToAllInputModules_WhenAboutIsNotNull()
         {
             var module1 = Substitute.For<IInputModule>();
-            var module2 = Substitute.For<IRegister>();
-            var module3 = Substitute.For<IRegister>();
+            var module2 = Substitute.For<IReadWriteRegister>();
+            var module3 = Substitute.For<IReadWriteRegister>();
             var module4 = Substitute.For<IProgramCounter>();
             var binary42 = new BitArray((byte)42);
             var bus = new ParallelBus(8, module1, module2, module3, module4);
@@ -130,8 +130,8 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         public void Transfer_ShouldWriteBusOutputToAllInputModules_WhenAboutIsNull()
         {
             var module1 = Substitute.For<IInputModule>();
-            var module2 = Substitute.For<IRegister>();
-            var module3 = Substitute.For<IRegister>();
+            var module2 = Substitute.For<IReadWriteRegister>();
+            var module3 = Substitute.For<IReadWriteRegister>();
             var module4 = Substitute.For<IProgramCounter>();
             var bus = new ParallelBus(8, module1, module2, module3, module4);
 

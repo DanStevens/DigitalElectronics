@@ -1,10 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DigitalElectronics.Modules;
 using BitArray = DigitalElectronics.Concepts.BitArray;
 
+#nullable enable
+
 namespace DigitalElectronics.Components.Memory
 {
-    public interface IRegister : IInputModule, IOutputModule
+    [Flags]
+    public enum RegisterMode
+    {
+        None = 0,
+        Read = 1,
+        Write = 2,
+        ReadWrite = 3
+    }
+
+    public interface IReadWriteRegister : IWritableRegister, IReadableRegister { }
+
+    public interface IWritableRegister : IRegister, IInputModule
     {
         /// <summary>
         /// Sets value for 'Load' input
@@ -20,6 +34,16 @@ namespace DigitalElectronics.Components.Memory
         /// <see cref="Register.SetInputL">'Load' input</see> is `true`, the data set via
         /// <see cref="Register.SetInputD"/> is loaded into the registry.</remarks>
         void Clock();
+    }
+
+    public interface IReadableRegister : IRegister, IOutputModule { }
+
+    public interface IRegister : IModule
+    {
+        /// <summary>
+        /// Indicates whether this register supports reading, writing or both
+        /// </summary>
+        RegisterMode Mode { get; }
 
         /// <summary>
         /// Returns the internal state of the register
