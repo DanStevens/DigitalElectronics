@@ -49,7 +49,7 @@ namespace DigitalElectronics.Computers.Tests
 
             void InitializeRAM()
             {
-                computer.RAM.SetInputL(true);
+                computer.RAM.SetInputLD(true);
 
                 // Load the instruction 'LDA 14' (0x1D) int memory address
                 WriteMemoryAddress(Address0x0, 0x1D);
@@ -63,7 +63,7 @@ namespace DigitalElectronics.Computers.Tests
                 // Load decimal value 12 into address 15
                 WriteMemoryAddress(Address0xE, 12);
 
-                computer.RAM.SetInputL(false);
+                computer.RAM.SetInputLD(false);
 
                 void WriteMemoryAddress(BitArray address, byte data)
                 {
@@ -76,7 +76,15 @@ namespace DigitalElectronics.Computers.Tests
 
             void LDA(BitArray address)
             {
-                computer.RAM.SetInputA(address);
+                // Load `address` into address register
+                computer.AddressRegister.SetInputL(true);
+                computer.AddressRegister.SetInputD(address);
+                computer.Clock();
+                computer.AddressRegister.SetInputL(false);
+
+                // Transfer address register's output to RAM
+                computer.RAM.SetInputA(computer.AddressRegister.ProbeState());
+                
                 computer.RAM.SetInputE(true);
                 
                 computer.ARegister.SetInputL(true);

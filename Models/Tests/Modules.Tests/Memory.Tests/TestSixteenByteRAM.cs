@@ -7,13 +7,13 @@ namespace DigitalElectronics.Modules.Memory.Tests
 {
     public class TestSixteenByteRAM
     {
-        private SixteenByteRAM _16ByteRAM;
+        private SixteenByteDARAM _16ByteRAM;
         private RamTester _ramTester;
 
         [SetUp]
         public void SetUp()
         {
-            _16ByteRAM = new SixteenByteRAM();
+            _16ByteRAM = new SixteenByteDARAM();
         }
 
         [Test]

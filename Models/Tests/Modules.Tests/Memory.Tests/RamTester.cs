@@ -13,11 +13,11 @@ namespace DigitalElectronics.Modules.Memory.Tests
     public class RamTester
     {
         private readonly BitConverter _bitConverter;
-        private readonly IRAM _ram;
+        private readonly IDARAM _ram;
         private readonly int _addressSize;
         private BitArray[] _testData;
 
-        public RamTester(IRAM ram, int addressSize)
+        public RamTester(IDARAM ram, int addressSize)
         {
             _ram = ram ?? throw new ArgumentNullException(nameof(ram));
 
@@ -96,7 +96,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
         private void WriteToMemoryLocation(BitArray addressBits, BitArray data)
         {
             _ram.SetInputA(addressBits);
-            _ram.SetInputL(true);
+            _ram.SetInputLD(true);
             _ram.SetInputD(data);
             _ram.Clock();
             _ram.SetInputE(true);

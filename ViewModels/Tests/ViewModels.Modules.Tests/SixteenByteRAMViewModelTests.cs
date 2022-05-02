@@ -62,9 +62,9 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
         }
 
-        private static IRAM CreateRamMock(BitArray? output = null)
+        private static IDARAM CreateRamMock(BitArray? output = null)
         {
-            var ramMock = Substitute.For<IRAM>();
+            var ramMock = Substitute.For<IDARAM>();
             ramMock.WordSize.Returns(8);
             ramMock.Capacity.Returns(16);
             ramMock.ProbeState(Arg.Any<BitArray>()).Returns(new BitArray(byte.MaxValue));
@@ -80,7 +80,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return ramMock;
         }
 
-        private static void AssertSetInputAWasCalled(IRAM ramMock, BitArray bitArray)
+        private static void AssertSetInputAWasCalled(IDARAM ramMock, BitArray bitArray)
         {
             var expectedArg = CreateExpectedBitArrayArg(bitArray);
             ramMock.Received(1).SetInputA(expectedArg);
@@ -287,11 +287,11 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             // Set to true
             objUT.Load = true;
-            ramMock.Received(1).SetInputL(true);
+            ramMock.Received(1).SetInputLD(true);
 
             // Set to false;
             objUT.Load = false;
-            ramMock.Received(1).SetInputL(false);
+            ramMock.Received(1).SetInputLD(false);
         }
 
         [Test]

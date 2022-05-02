@@ -13,7 +13,7 @@ namespace DigitalElectronics.ViewModels.Modules;
 public class SixteenByteRAMViewModel : INotifyPropertyChanged
 {
     private const int AddressLength = 4;
-    private readonly IRAM _ram;
+    private readonly IDARAM _ram;
     private ObservableCollection<Bit> _data;
     private FullyObservableCollection<Bit>? _address;
     private ObservableCollection<BitArray> _probe;
@@ -22,14 +22,14 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
     private bool _enable;
 
     public SixteenByteRAMViewModel()
-        : this(new SixteenByteRAM())
+        : this(new SixteenByteDARAM())
     { }
 
     public SixteenByteRAMViewModel(int initialAddress = 0)
-        : this(new SixteenByteRAM(), initialAddress)
+        : this(new SixteenByteDARAM(), initialAddress)
     { }
 
-    public SixteenByteRAMViewModel(IRAM ram, int initialAddress = 0)
+    public SixteenByteRAMViewModel(IDARAM ram, int initialAddress = 0)
     {
         _ram = ram ?? throw new ArgumentNullException(nameof(ram));
         initialAddress = Math.Clamp(initialAddress, 0, ram.Capacity - 1);
@@ -82,7 +82,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
             if (_load != value)
             {
                 _load = value;
-                _ram.SetInputL(value);
+                _ram.SetInputLD(value);
                 RaisePropertyChanged();
             }
         }

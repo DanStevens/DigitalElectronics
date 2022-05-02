@@ -8,11 +8,16 @@ using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Modules.Memory
 {
-    
+
     /// <summary>
-    /// 16 byte Random Access Memory module with 8-bit word length and a 4-bit address
+    /// 16 byte Directly Addressable Random Access Memory module with 8-bit word length and a
+    /// 4-bit address line
     /// </summary>
-    public class SixteenByteRAM : IRAM
+    /// <seealso cref="IDARAM"/>
+    /// <remarks>'Directly addressable' means the module has a dedicated address input,
+    /// connected to an integrated address bus, with 4 lines (bits),
+    /// which are set via the <see cref="SetInputA"/> method.</remarks>
+    public class SixteenByteDARAM : IDARAM
     {
         private const int _WordSize = 8; // Bits
         private const int _Capacity = 16;  // Words/Bytes
@@ -25,7 +30,7 @@ namespace DigitalElectronics.Modules.Memory
         /// <summary>
         /// Constructs a 16 byte RAM module with the address set to 0
         /// </summary>
-        public SixteenByteRAM()
+        public SixteenByteDARAM()
         {
             _addressDecoder = new FourBitAddressDecoder();
 
@@ -40,8 +45,10 @@ namespace DigitalElectronics.Modules.Memory
                 _8BitRegisters[x] = new Register(WordSize);
             }
 
-            SetInputA(new BitArray(4));
+            SetInputA(new BitArray(AddressSize));
         }
+
+        public int AddressSize => 4;
 
         /// <summary>
         /// Sets the 4-bit value of 'Address' inputs  according to the given <see cref="BitArray"/>
@@ -52,7 +59,7 @@ namespace DigitalElectronics.Modules.Memory
         /// read from.</remarks>
         public void SetInputA(BitArray address)
         {
-            if (address.Length > 4)
+            if (address.Length > AddressSize)
                 throw new System.ArgumentOutOfRangeException(nameof(address),
                     "Argument length cannot be greater than 4");
             
@@ -61,9 +68,9 @@ namespace DigitalElectronics.Modules.Memory
         }
 
         /// <summary>
-        /// Sets value for the 'Load' input
+        /// Sets value for the 'Load Data' input
         /// </summary>
-        public void SetInputL(bool value)
+        public void SetInputLD(bool value)
         {
             for (int x = 0; x < _Capacity; x++)
                 _andL[x].SetInputB(value);
@@ -108,7 +115,7 @@ namespace DigitalElectronics.Modules.Memory
         /// Simulates the receipt of a clock pulse
         /// </summary>
         /// <remarks>When <see cref="Clock"/> method is called, if the
-        /// <see cref="SetInputL(bool)">'Load' input</see> is `true`, the data set via
+        /// <see cref="SetInputLD">'Load' input</see> is `true`, the data set via
         /// <see cref="SetInputD(BitArray)"/> is loaded into the memory location specified
         /// by the most recent call to <see cref="SetInputA(BitArray)"/>.</remarks>
         public void Clock()

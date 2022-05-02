@@ -17,7 +17,7 @@ namespace DigitalElectronics.Computers
         private const int WordSize = 8;
 
         private readonly Register _addressRegister;
-        private readonly SixteenByteRAM _ram;
+        private readonly SixteenByteDARAM _ram;
         private readonly ArithmeticLogicUnit _alu;
         private readonly Register _aRegister;
         private readonly Register _bRegister;
@@ -25,7 +25,7 @@ namespace DigitalElectronics.Computers
         private readonly ParallelBus _bus;
 
         public IWritableRegister AddressRegister => _addressRegister;
-        public IRAM RAM => _ram;
+        public IDARAM RAM => _ram;
         public IReadWriteRegister ARegister => _aRegister;
         public IReadWriteRegister BRegister => _bRegister;
         public IArithmeticLogicUnit ALU => _alu;
@@ -36,7 +36,7 @@ namespace DigitalElectronics.Computers
         public ManualControlComputer()
         {
             _addressRegister = new Register(AddressSize);
-            _ram = new SixteenByteRAM();
+            _ram = new SixteenByteDARAM();
             _aRegister = new Register(WordSize);
             _bRegister = new Register(WordSize);
             _alu = new ArithmeticLogicUnit(WordSize);
