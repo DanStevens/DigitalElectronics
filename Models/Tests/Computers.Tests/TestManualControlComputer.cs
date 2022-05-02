@@ -12,8 +12,8 @@ namespace DigitalElectronics.Computers.Tests
     {
         private readonly BitArray Address0x0 = new BitArray((byte)0x0).Trim(4);
         private readonly BitArray Address0x1 = new BitArray((byte)0x1).Trim(4);
-        private readonly BitArray Address0xD = new BitArray((byte)0xD).Trim(4);
         private readonly BitArray Address0xE = new BitArray((byte)0xE).Trim(4);
+        private readonly BitArray Address0xF = new BitArray((byte)0xF).Trim(4);
 
         [Test]
         public void Create()
@@ -22,7 +22,7 @@ namespace DigitalElectronics.Computers.Tests
             computer.Should().NotBeNull();
         }
 
-        [Ignore("Come back to this")]
+        [Test]
         public void OperateComputerToAdd30And12AndOutput()
         {
             var computer = new ManualControlComputer();
@@ -30,14 +30,14 @@ namespace DigitalElectronics.Computers.Tests
             // Initialize RAM
             InitializeRAM();
 
-            // Load the contents of memory address 14 (0xD) in to A Register
-            LDA(Address0xD);
+            // Load the contents of memory address 14 (0xR) in to A Register
+            LDA(Address0xE);
 
             computer.ARegister.ProbeState().ToByte().Should().Be(30);
             computer.BRegister.ProbeState().ToByte().Should().Be(255);
 
-            // Add the contents of memory address 15 (0xE) to the A Register
-            ADD(Address0xE);
+            // Add the contents of memory address 15 (0xF) to the A Register
+            ADD(Address0xF);
 
             computer.BRegister.ProbeState().ToByte().Should().Be(12);
             computer.ARegister.ProbeState().ToByte().Should().Be(42);
@@ -49,41 +49,33 @@ namespace DigitalElectronics.Computers.Tests
 
             void InitializeRAM()
             {
-                computer.RAM.SetInputLD(true);
-
-                // Load the instruction 'LDA 14' (0x1D) int memory address
+                // Load the instruction 'LDA 14' (0x1E) int memory address
                 WriteMemoryAddress(Address0x0, 0x1D);
 
-                // Load the instruction 'LDA 15' (0x1E) int memory address
+                // Load the instruction 'LDA 15' (0x1F) int memory address
                 WriteMemoryAddress(Address0x1, 0x1E);
 
                 // Load decimal value 30 into address 14
-                WriteMemoryAddress(Address0xD, 30);
+                WriteMemoryAddress(Address0xE, 30);
 
                 // Load decimal value 12 into address 15
-                WriteMemoryAddress(Address0xE, 12);
-
-                computer.RAM.SetInputLD(false);
+                WriteMemoryAddress(Address0xF, 12);
 
                 void WriteMemoryAddress(BitArray address, byte data)
                 {
-                    ////computer.RAM.SetInputA(address);
+                    SetAddress(address);
+
+                    computer.RAM.SetInputLD(true);
                     computer.RAM.SetInputD(new BitArray(data));
                     computer.Clock();
+                    computer.RAM.SetInputLD(false);
                     computer.RAM.ProbeState(address).ToByte().Should().Be(data);
                 }
             }
 
             void LDA(BitArray address)
             {
-                // Load `address` into address register
-                computer.AddressRegister.SetInputL(true);
-                computer.AddressRegister.SetInputD(address);
-                computer.Clock();
-                computer.AddressRegister.SetInputL(false);
-
-                // Transfer address register's output to RAM
-                ////computer.RAM.SetInputA(computer.AddressRegister.ProbeState());
+                SetAddress(address);
                 
                 computer.RAM.SetInputE(true);
                 
@@ -110,7 +102,8 @@ namespace DigitalElectronics.Computers.Tests
 
             void LDB(BitArray address)
             {
-                ////computer.RAM.SetInputA(address);
+                SetAddress(address);
+
                 computer.RAM.SetInputE(true);
 
                 computer.BRegister.SetInputL(true);
@@ -130,6 +123,14 @@ namespace DigitalElectronics.Computers.Tests
                 computer.OutRegister.SetInputL(false);
 
                 computer.ARegister.SetInputE(false);
+            }
+
+            void SetAddress(BitArray address)
+            {
+                computer.MAR.SetInputLA(true);
+                computer.MAR.SetInputS(address);
+                computer.Clock();
+                computer.MAR.SetInputLA(false);
             }
         }
     }

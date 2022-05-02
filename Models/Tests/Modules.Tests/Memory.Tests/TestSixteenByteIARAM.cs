@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace DigitalElectronics.Modules.Tests.Memory.Tests
 {
-    public class TestSixteenByteAddressableRAM
+    public class TestSixteenByteIARAM
     {
         private BitConverter _bitConverter;
 
@@ -110,12 +110,12 @@ namespace DigitalElectronics.Modules.Tests.Memory.Tests
             ramModule.ProbeState(address0x0).ToByte().Should().Be(205);
         }
 
-        [Ignore("Come back to this")]
+        [Test]
         public void TestWriteAndReadEveryByteOfMemory()
         {
-            //var ramModule = new SixteenByteAddressableRAM();
-            //var ramTester = new RamTester(ramModule, 4);
-            //ramTester.DoTest();
+            var ramModule = new SixteenByteIARAM();
+            var ramTester = new RamTester(ramModule, 4);
+            ramTester.DoTest();
         }
     }
 }

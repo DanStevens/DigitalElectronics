@@ -1,4 +1,5 @@
 ﻿using DigitalElectronics.Components.Memory;
+using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.ALUs;
 using DigitalElectronics.Modules.Comms;
 using DigitalElectronics.Modules.Memory;
@@ -15,27 +16,39 @@ namespace DigitalElectronics.Computers
         private const int AddressSize = 4;
         private const int WordSize = 8;
 
-        private readonly Register _addressRegister;
-        private readonly SixteenByteDARAM _ram;
+        private readonly SixteenByteIARAM _ram;
         private readonly ArithmeticLogicUnit _alu;
         private readonly Register _aRegister;
         private readonly Register _bRegister;
         private readonly Register _outRegister;
         private readonly ParallelBus _bus;
 
-        public IWritableRegister AddressRegister => _addressRegister;
+        /// <summary>16 byte Random Access Memory</summary>
         public IRAM RAM => _ram;
+
+        /// <summary>4-bit Memory Address Register</summary>
+        public ISharedAddrDataInput MAR => _ram;
+
+        /// <summary>8-bit A register</summary>
         public IReadWriteRegister ARegister => _aRegister;
+
+        /// <summary>8-bit B register</summary>
         public IReadWriteRegister BRegister => _bRegister;
+
+        /// <summary>Arithmetic Logic Unit</summary>
         public IArithmeticLogicUnit ALU => _alu;
+
         ////private IRegister InstructionRegister { get; }
+
+        /// <summary>8-bit output register</summary>
         public IWritableRegister OutRegister => _outRegister;
+
+        /// <summary>Main system bus</summary>
         public ParallelBus Bus => _bus;
 
         public ManualControlComputer()
         {
-            _addressRegister = new Register(AddressSize);
-            _ram = new SixteenByteDARAM();
+            _ram = new SixteenByteIARAM();
             _aRegister = new Register(WordSize);
             _bRegister = new Register(WordSize);
             _alu = new ArithmeticLogicUnit(WordSize);
@@ -48,7 +61,6 @@ namespace DigitalElectronics.Computers
         public void Clock()
         {
             Bus.Transfer();
-            _addressRegister.Clock();
             RAM.Clock();
             ARegister.Clock();
             BRegister.Clock();

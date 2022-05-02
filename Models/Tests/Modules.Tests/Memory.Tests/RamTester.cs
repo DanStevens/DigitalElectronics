@@ -91,6 +91,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
             SetAddress(addressBits);
             _ram.SetInputE(true);
             _ram.Output.Should().BeEquivalentTo(expectedData);
+            _ram.SetInputE(false);
         }
 
         private void WriteToMemoryLocation(BitArray addressBits, BitArray data)
@@ -104,17 +105,22 @@ namespace DigitalElectronics.Modules.Memory.Tests
             _ram.SetInputE(false);
             _ram.Output.Should().BeNull();
             _ram.ProbeState(addressBits).Should().BeEquivalentTo(data);
+            _ram.SetInputLD(false);
         }
 
         private void SetAddress(BitArray addressBits)
         {
+            if (_ram is ISharedAddrDataInput iaram)
+            {
+                iaram.SetInputLA(true);
+                iaram.SetInputS(addressBits);
+                _ram.Clock();
+                iaram.SetInputLA(false);
+                return;
+            }
+
             if (_ram is IDedicatedAddrInput daram)
                 daram.SetInputA(addressBits);
-
-            //if (_ram is ISharedAddrDataInput iaram)
-            //{
-            //    // TODO
-            //}
         }
     }
 }

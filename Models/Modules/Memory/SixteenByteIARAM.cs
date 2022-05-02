@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
+
+#nullable enable
 
 namespace DigitalElectronics.Modules.Memory
 {
@@ -16,6 +19,7 @@ namespace DigitalElectronics.Modules.Memory
     /// address register and a <see cref="SixteenByteDARAM">16 byte DARAM</see> module.
     /// </remarks>
     /// <seealso cref="ISharedAddrDataInput"/>
+    [DebuggerDisplay("Shared A/D RAM: Address={this.ProbeAddress()}")]
     public class SixteenByteIARAM : IRAM, ISharedAddrDataInput
     {
         private readonly Register _addressRegister;
@@ -24,6 +28,7 @@ namespace DigitalElectronics.Modules.Memory
         public SixteenByteIARAM()
         {
             _addressRegister = new Register(AddressSize);
+            _addressRegister.SetInputE(true);
             _ram = new SixteenByteDARAM();
         }
 
@@ -45,6 +50,7 @@ namespace DigitalElectronics.Modules.Memory
         {
             _addressRegister.Clock();
             _ram.Clock();
+            _ram.SetInputA(_addressRegister.Output!);
         }
 
         public IList<BitArray> ProbeState() => _ram.ProbeState();
@@ -87,6 +93,6 @@ namespace DigitalElectronics.Modules.Memory
         /// can be called to see the current address.</remarks>
         public BitArray ProbeAddress() => _addressRegister.ProbeState();
 
-        void IInputModule.SetInputD(BitArray data) => this.SetInputS(data);
+        void IInputModule.SetInputD(BitArray data) => SetInputS(data);
     }
 }
