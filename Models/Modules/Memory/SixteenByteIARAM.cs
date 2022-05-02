@@ -16,7 +16,7 @@ namespace DigitalElectronics.Modules.Memory
     /// address register and a <see cref="SixteenByteDARAM">16 byte DARAM</see> module.
     /// </remarks>
     /// <seealso cref="IIARAM"/>
-    public class SixteenByteIARAM : IIARAM
+    public class SixteenByteIARAM : IRAM, IIARAM
     {
         private readonly Register _addressRegister;
         private readonly SixteenByteDARAM _ram;

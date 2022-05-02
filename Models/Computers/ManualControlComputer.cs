@@ -25,7 +25,7 @@ namespace DigitalElectronics.Computers
         private readonly ParallelBus _bus;
 
         public IWritableRegister AddressRegister => _addressRegister;
-        public IDARAM RAM => _ram;
+        public IRAM RAM => _ram;
         public IReadWriteRegister ARegister => _aRegister;
         public IReadWriteRegister BRegister => _bRegister;
         public IArithmeticLogicUnit ALU => _alu;

@@ -62,16 +62,16 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
         }
 
-        private static IDARAM CreateRamMock(BitArray? output = null)
+        private static IRAM CreateRamMock(BitArray? output = null)
         {
-            var ramMock = Substitute.For<IDARAM>();
+            var ramMock = Substitute.For<IRAM, IDARAM>();
             ramMock.WordSize.Returns(8);
             ramMock.Capacity.Returns(16);
             ramMock.ProbeState(Arg.Any<BitArray>()).Returns(new BitArray(byte.MaxValue));
             ramMock.ProbeState().Returns(initialRamState);
             ramMock.Output.Returns(output);
 
-            ramMock.When(_ => _.SetInputA(Arg.Is<BitArray>(ba => ba.Length > 4)))
+            ((IDARAM)ramMock).When(_ => _.SetInputA(Arg.Is<BitArray>(ba => ba.Length > 4)))
                 .Throw<System.ArgumentOutOfRangeException>();
             //Assert.Throws<System.ArgumentOutOfRangeException>(() => ramMock.SetInputA(new BitArray(length: 5)));
             //Assert.DoesNotThrow(() => ramMock.SetInputA(new BitArray(length: 4)));
@@ -111,8 +111,13 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         {
             var initialAddress = 6;
             var ramMock = CreateRamMock();
-           _ = new SixteenByteRAMViewModel(ramMock, initialAddress);
-            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray((byte)initialAddress).Trim(4)));
+            _ = new SixteenByteRAMViewModel(ramMock, initialAddress);
+            AssertRamMockReceivedSetInputAOnce((IDARAM)ramMock, (byte)initialAddress);
+        }
+
+        private static void AssertRamMockReceivedSetInputAOnce(IDARAM ramMock, byte address)
+        {
+            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray(address).Trim(4)));
         }
 
         [Test]
@@ -120,7 +125,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         {
             var ramMock = CreateRamMock();
             _ = new SixteenByteRAMViewModel(ramMock, -1);
-            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray((byte)0).Trim(4)));
+            AssertRamMockReceivedSetInputAOnce((IDARAM)ramMock, 0);
         }
 
         [Test]
@@ -128,10 +133,10 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         {
             var ramMock = CreateRamMock();
             _ = new SixteenByteRAMViewModel(ramMock, 16);
-            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray((byte)15).Trim(4)));
+            AssertRamMockReceivedSetInputAOnce((IDARAM)ramMock, 15);
             ramMock.ClearReceivedCalls();
             _ = new SixteenByteRAMViewModel(ramMock, 17);
-            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray((byte)15).Trim(4)));
+            AssertRamMockReceivedSetInputAOnce((IDARAM)ramMock, 15);
         }
 
         [Test]
@@ -142,11 +147,11 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             // Set to 15
             objUT.Address = CreateFullyObservableBitCollection((byte)15);
-            AssertSetInputAWasCalled(ramMock, new BitArray((byte)15));
+            AssertSetInputAWasCalled((IDARAM)ramMock, new BitArray((byte)15));
 
             // Set to zero
             objUT.Address = CreateFullyObservableBitCollection((byte)0);
-            AssertSetInputAWasCalled(ramMock, new BitArray((byte)0));
+            AssertSetInputAWasCalled((IDARAM)ramMock, new BitArray((byte)0));
         }
 
         [Test]
@@ -157,7 +162,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             objUT.Address[0].Value = true;
 
-            AssertSetInputAWasCalled(ramMock, new BitArray((byte)1));
+            AssertSetInputAWasCalled((IDARAM)ramMock, new BitArray((byte)1));
         }
 
         [Test]
@@ -346,7 +351,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             // Use real `SixteenByteRAM` object
             var objUT = new SixteenByteRAMViewModel();
             objUT.ProbeAll[6].ToByte().Should().Be(byte.MaxValue);
-            
+
             objUT.Address = CreateFullyObservableBitCollection((byte)6);
             objUT.Data = CreateObservableBitCollection((byte)42);
             objUT.Load = true;

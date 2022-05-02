@@ -12,7 +12,7 @@ namespace DigitalElectronics.Modules.Memory
     /// <remarks>'Directly addressable' means the module has a dedicated address input,
     /// with a number of lines (bits) equal to <see cref="IRAM.AddressSize"/> bits,
     /// which are set via the <see cref="SetInputA"/> method.</remarks>
-    public interface IDARAM : IRAM
+    public interface IDARAM
     {
         /// <summary>
         /// Sets the 'Address' input according to the given <see cref="BitArray"/>
@@ -33,7 +33,7 @@ namespace DigitalElectronics.Modules.Memory
     /// method. The <see cref="SetInputLA"/> and <see cref="IRAM.SetInputLD"/>
     /// methods, which determine whether the data passed to the shared input is used
     /// as an address or data.</remarks>
-    public interface IIARAM : IRAM
+    public interface IIARAM
     {
         /// <summary>
         /// Sets value of the 'Shared Data' inputs according to the given <see cref="BitArray"/>

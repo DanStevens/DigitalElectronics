@@ -17,7 +17,7 @@ namespace DigitalElectronics.Modules.Memory
     /// <remarks>'Directly addressable' means the module has a dedicated address input,
     /// connected to an integrated address bus, with 4 lines (bits),
     /// which are set via the <see cref="SetInputA"/> method.</remarks>
-    public class SixteenByteDARAM : IDARAM
+    public class SixteenByteDARAM : IRAM, IDARAM
     {
         private const int _WordSize = 8; // Bits
         private const int _Capacity = 16;  // Words/Bytes
