@@ -1,5 +1,4 @@
 ﻿using DigitalElectronics.Components.Memory;
-using DigitalElectronics.Modules;
 using DigitalElectronics.Modules.ALUs;
 using DigitalElectronics.Modules.Comms;
 using DigitalElectronics.Modules.Memory;

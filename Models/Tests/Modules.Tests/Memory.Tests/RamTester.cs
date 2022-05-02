@@ -108,8 +108,13 @@ namespace DigitalElectronics.Modules.Memory.Tests
 
         private void SetAddress(BitArray addressBits)
         {
-            // TODO: Come back to this
-            //_ram.SetInputA(addressBits);
+            if (_ram is IDedicatedAddrInput daram)
+                daram.SetInputA(addressBits);
+
+            //if (_ram is ISharedAddrDataInput iaram)
+            //{
+            //    // TODO
+            //}
         }
     }
 }

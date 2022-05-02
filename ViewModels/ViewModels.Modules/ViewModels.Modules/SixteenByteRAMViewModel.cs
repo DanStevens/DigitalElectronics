@@ -154,7 +154,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
     private void SyncAddress(BitArray address)
     {
 
-        ((IDARAM)_ram).SetInputA(address);
+        ((IDedicatedAddrInput)_ram).SetInputA(address);
         SyncOutput();
     }
 

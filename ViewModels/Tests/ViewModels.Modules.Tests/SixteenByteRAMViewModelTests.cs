@@ -64,14 +64,14 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
         private static IRAM CreateRamMock(BitArray? output = null)
         {
-            var ramMock = Substitute.For<IRAM, IDARAM>();
+            var ramMock = Substitute.For<IRAM, IDedicatedAddrInput>();
             ramMock.WordSize.Returns(8);
             ramMock.Capacity.Returns(16);
             ramMock.ProbeState(Arg.Any<BitArray>()).Returns(new BitArray(byte.MaxValue));
             ramMock.ProbeState().Returns(initialRamState);
             ramMock.Output.Returns(output);
 
-            ((IDARAM)ramMock).When(_ => _.SetInputA(Arg.Is<BitArray>(ba => ba.Length > 4)))
+            ((IDedicatedAddrInput)ramMock).When(_ => _.SetInputA(Arg.Is<BitArray>(ba => ba.Length > 4)))
                 .Throw<System.ArgumentOutOfRangeException>();
             //Assert.Throws<System.ArgumentOutOfRangeException>(() => ramMock.SetInputA(new BitArray(length: 5)));
             //Assert.DoesNotThrow(() => ramMock.SetInputA(new BitArray(length: 4)));
@@ -80,7 +80,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return ramMock;
         }
 
-        private static void AssertSetInputAWasCalled(IDARAM ramMock, BitArray bitArray)
+        private static void AssertSetInputAWasCalled(IDedicatedAddrInput ramMock, BitArray bitArray)
         {
             var expectedArg = CreateExpectedBitArrayArg(bitArray);
             ramMock.Received(1).SetInputA(expectedArg);
@@ -112,20 +112,16 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             var initialAddress = 6;
             var ramMock = CreateRamMock();
             _ = new SixteenByteRAMViewModel(ramMock, initialAddress);
-            AssertRamMockReceivedSetInputAOnce((IDARAM)ramMock, (byte)initialAddress);
+            AssertRamMockReceivedSetInputAOnce((IDedicatedAddrInput)ramMock, (byte)initialAddress);
         }
 
-        private static void AssertRamMockReceivedSetInputAOnce(IDARAM ramMock, byte address)
-        {
-            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray(address).Trim(4)));
-        }
 
         [Test]
         public void Ctor_ClassSetInputAMethodPassingZero_WhenInitialAddressArgumentIsNegative()
         {
             var ramMock = CreateRamMock();
             _ = new SixteenByteRAMViewModel(ramMock, -1);
-            AssertRamMockReceivedSetInputAOnce((IDARAM)ramMock, 0);
+            AssertRamMockReceivedSetInputAOnce((IDedicatedAddrInput)ramMock, 0);
         }
 
         [Test]
@@ -133,10 +129,10 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         {
             var ramMock = CreateRamMock();
             _ = new SixteenByteRAMViewModel(ramMock, 16);
-            AssertRamMockReceivedSetInputAOnce((IDARAM)ramMock, 15);
+            AssertRamMockReceivedSetInputAOnce((IDedicatedAddrInput)ramMock, 15);
             ramMock.ClearReceivedCalls();
             _ = new SixteenByteRAMViewModel(ramMock, 17);
-            AssertRamMockReceivedSetInputAOnce((IDARAM)ramMock, 15);
+            AssertRamMockReceivedSetInputAOnce((IDedicatedAddrInput)ramMock, 15);
         }
 
         [Test]
@@ -147,11 +143,11 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             // Set to 15
             objUT.Address = CreateFullyObservableBitCollection((byte)15);
-            AssertSetInputAWasCalled((IDARAM)ramMock, new BitArray((byte)15));
+            AssertSetInputAWasCalled((IDedicatedAddrInput)ramMock, new BitArray((byte)15));
 
             // Set to zero
             objUT.Address = CreateFullyObservableBitCollection((byte)0);
-            AssertSetInputAWasCalled((IDARAM)ramMock, new BitArray((byte)0));
+            AssertSetInputAWasCalled((IDedicatedAddrInput)ramMock, new BitArray((byte)0));
         }
 
         [Test]
@@ -162,7 +158,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             objUT.Address[0].Value = true;
 
-            AssertSetInputAWasCalled((IDARAM)ramMock, new BitArray((byte)1));
+            AssertSetInputAWasCalled((IDedicatedAddrInput)ramMock, new BitArray((byte)1));
         }
 
         [Test]
@@ -620,6 +616,11 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             raised = false;
             objUT.Data = CreateObservableBitCollection((byte)255);
             raised.Should().Be(true);
+        }
+
+        private static void AssertRamMockReceivedSetInputAOnce(IDedicatedAddrInput ramMock, byte address)
+        {
+            ramMock.Received(1).SetInputA(CreateExpectedBitArrayArg(new BitArray(address).Trim(4)));
         }
     }
 }
