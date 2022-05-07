@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Concepts;
@@ -11,6 +12,7 @@ namespace DigitalElectronics.Modules.Counters
     /// <summary>
     /// Models a program counter
     /// </summary>
+    [DebuggerDisplay("Program Counter: {this.ProbeState()}")]
     public class ProgramCounter : IProgramCounter
     {
         private readonly BinaryCounter _counter;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using DigitalElectronics.Concepts;
 
@@ -9,6 +10,7 @@ namespace DigitalElectronics.Modules.Comms
     /// <summary>
     /// Models a parallel bus
     /// </summary>
+    [DebuggerDisplay("Bus: {DebuggerDisplay}")]
     public class ParallelBus
     {
         private readonly IModule[] _modules;
@@ -71,5 +73,8 @@ namespace DigitalElectronics.Modules.Comms
                 foreach (var inputModule in _modules.OfType<IInputModule>())
                     inputModule.SetInputD(Output);
         }
+
+        internal string DebuggerDisplay =>
+            Output?.ToString(NumberFormat.MsbBinary) ?? "[Z State]";
     }
 }
