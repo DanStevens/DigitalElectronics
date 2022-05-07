@@ -23,5 +23,7 @@
         /// <remarks>When set to `true`, when the module is <see cref="Clock">clocked</see>,
         /// the address is updated.</remarks>
         void SetInputLA(bool value);
+
+        BitArray ProbeAddress();
     }
 }

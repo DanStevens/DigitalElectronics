@@ -12,6 +12,7 @@ namespace DigitalElectronics.Computers.Tests
     {
         private readonly BitArray Address0x0 = new BitArray((byte)0x0).Trim(4);
         private readonly BitArray Address0x1 = new BitArray((byte)0x1).Trim(4);
+        private readonly BitArray Address0x2 = new BitArray((byte)0x2).Trim(4);
         private readonly BitArray Address0xE = new BitArray((byte)0xE).Trim(4);
         private readonly BitArray Address0xF = new BitArray((byte)0xF).Trim(4);
 
@@ -26,21 +27,39 @@ namespace DigitalElectronics.Computers.Tests
         public void OperateComputerToAdd30And12AndOutput()
         {
             var computer = new ManualControlComputer();
+            computer.PC.ProbeState().ToByte().Should().Be(0xF);
 
             // Initialize RAM
             InitializeRAM();
 
-            // Load the contents of memory address 14 (0xR) in to A Register
-            LDA(Address0xE);
+            FetchInstruction();
 
+            computer.PC.ProbeState().ToByte().Should().Be(0);
+            computer.IRegister.ProbeState().ToByte().Should().Be(0x1E);
+
+            // Load the contents of memory address 14 (0xE) in to A Register
+            LDA();
+
+            //computer.IRegister.ProbeState().ToByte().Should().Be(0xE);
+            computer.MAR.ProbeAddress().ToByte().Should().Be(0xE);
             computer.ARegister.ProbeState().ToByte().Should().Be(30);
             computer.BRegister.ProbeState().ToByte().Should().Be(255);
 
+            FetchInstruction();
+
+            computer.PC.ProbeState().ToByte().Should().Be(1);
+            computer.IRegister.ProbeState().ToByte().Should().Be(0x1F);
+
             // Add the contents of memory address 15 (0xF) to the A Register
-            ADD(Address0xF);
+            ADD();
 
             computer.BRegister.ProbeState().ToByte().Should().Be(12);
             computer.ARegister.ProbeState().ToByte().Should().Be(42);
+
+            FetchInstruction();
+
+            computer.PC.ProbeState().ToByte().Should().Be(2);
+            computer.IRegister.ProbeState().ToByte().Should().Be(0xE0);
 
             // Put the contents of A Register into the Output Register
             OUT();
@@ -50,10 +69,13 @@ namespace DigitalElectronics.Computers.Tests
             void InitializeRAM()
             {
                 // Load the instruction 'LDA 14' (0x1E) int memory address
-                WriteMemoryAddress(Address0x0, 0x1D);
+                WriteMemoryAddress(Address0x0, 0x1E);
 
-                // Load the instruction 'LDA 15' (0x1F) int memory address
-                WriteMemoryAddress(Address0x1, 0x1E);
+                // Load the instruction 'ADD 15' (0x1F) int memory address
+                WriteMemoryAddress(Address0x1, 0x1F);
+
+                // Load the instruction 'OUT' (0x1F) int memory address
+                WriteMemoryAddress(Address0x2, 0xE0);
 
                 // Load decimal value 30 into address 14
                 WriteMemoryAddress(Address0xE, 30);
@@ -68,61 +90,56 @@ namespace DigitalElectronics.Computers.Tests
                     computer.RAM.SetInputLD(true);
                     computer.RAM.SetInputD(new BitArray(data));
                     computer.Clock();
-                    computer.RAM.SetInputLD(false);
                     computer.RAM.ProbeState(address).ToByte().Should().Be(data);
                 }
             }
 
-            void LDA(BitArray address)
+            // TODO: See if this can be reduced to 2 cycles
+            void FetchInstruction()
             {
-                SetAddress(address);
-                
-                computer.RAM.SetInputE(true);
-                
-                computer.ARegister.SetInputL(true);
+                computer.PC.SetInputCE(true);  // Set signal CE high
                 computer.Clock();
-                computer.ALU.SetInputA(computer.ARegister.ProbeState());
-                computer.ARegister.SetInputL(false);
+                
+                computer.PC.SetInputE(true);   // Set signal CO high
+                computer.MAR.SetInputLA(true); // Set signal MI high
+                computer.Clock();
 
-                computer.RAM.SetInputE(false);
+                computer.RAM.SetInputE(true);       // Set signal RO high
+                computer.IRegister.SetInputL(true); // Set signal II high
+                computer.Clock();
             }
 
-            void ADD(BitArray address)
+            void LDA()
             {
-                LDB(address);
-
-                computer.ALU.SetInputEO(true);
-
-                computer.ARegister.SetInputL(true);
+                computer.IRegister.SetInputE(true); // Set signal IO high
+                computer.MAR.SetInputLA(true);      // Set signal MI high
                 computer.Clock();
-                computer.ARegister.SetInputL(false);
 
-                computer.ALU.SetInputEO(false);
+                computer.RAM.SetInputE(true);       // Set signal RO high
+                computer.ARegister.SetInputL(true); // Set signal AI high
+                computer.Clock();
             }
 
-            void LDB(BitArray address)
+            void ADD()
             {
-                SetAddress(address);
-
-                computer.RAM.SetInputE(true);
-
-                computer.BRegister.SetInputL(true);
+                computer.IRegister.SetInputE(true); // Set signal IO high
+                computer.MAR.SetInputLA(true);      // Set signal MI high
                 computer.Clock();
-                computer.BRegister.SetInputL(false);
-                computer.ALU.SetInputB(computer.BRegister.ProbeState());
 
-                computer.RAM.SetInputE(false);
+                computer.RAM.SetInputE(true);       // Set signal RO high
+                computer.BRegister.SetInputL(true); // Set signal BI high
+                computer.Clock();
+
+                computer.ALU.SetInputEO(true);      // Set signal EO high
+                computer.ARegister.SetInputL(true); // Set signal AI high
+                computer.Clock();
             }
 
             void OUT()
             {
-                computer.ARegister.SetInputE(true);
-
-                computer.OutRegister.SetInputL(true);
+                computer.ARegister.SetInputE(true);   // Set signal AO high
+                computer.OutRegister.SetInputL(true); // Set signal OI high
                 computer.Clock();
-                computer.OutRegister.SetInputL(false);
-
-                computer.ARegister.SetInputE(false);
             }
 
             void SetAddress(BitArray address)
@@ -130,7 +147,6 @@ namespace DigitalElectronics.Computers.Tests
                 computer.MAR.SetInputLA(true);
                 computer.MAR.SetInputS(address);
                 computer.Clock();
-                computer.MAR.SetInputLA(false);
             }
         }
     }

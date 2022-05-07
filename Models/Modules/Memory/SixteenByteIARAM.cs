@@ -86,6 +86,8 @@ namespace DigitalElectronics.Modules.Memory
         /// </summary>
         public void SetInputLA(bool value) => _addressRegister.SetInputL(value);
 
+        BitArray ISharedAddrDataInput.ProbeAddress() => _addressRegister.ProbeState();
+
         /// <summary>
         /// Returns the internal state of the integrated address register
         /// </summary>
