@@ -4,7 +4,7 @@
 
 namespace DigitalElectronics.Modules.Counters
 {
-    public interface IProgramCounter : IOutputModule
+    public interface IProgramCounter : IOutputModule, IInputModule
     {
         /// <summary>
         /// Returns the internal state of the program counter
@@ -14,14 +14,14 @@ namespace DigitalElectronics.Modules.Counters
         BitArray ProbeState();
 
         /// <summary>
-        /// Sets the program counter to the given value
+        /// Clocks (increments) the program counter by 1
         /// </summary>
-        /// <param name="address">The value (or address) to jump to</param>
-        void Jump(BitArray address);
+        void Clock();
 
         /// <summary>
-        /// Increments the program counter by 1
+        /// Sets value for 'Count Enabled' input
         /// </summary>
-        void Inc();
+        /// <param name="value"></param>
+        void SetInputCE(bool value);
     }
 }

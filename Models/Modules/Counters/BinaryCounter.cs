@@ -49,9 +49,9 @@ namespace DigitalElectronics.Modules.Counters
         public BitArray Output => new (_jkFlipFlops.Select(_ => _.OutputQ));
 
         /// <summary>
-        /// Increments the binary counter by 1
+        /// Clocks (increments) the binary counter by 1
         /// </summary>
-        public void Inc()
+        public void Clock()
         {
             for (int i = 0; i < SizeInBits; i++)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using DigitalElectronics.Components.FlipFlops;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Concepts;
 
@@ -15,25 +16,36 @@ namespace DigitalElectronics.Modules.Counters
     [DebuggerDisplay("Program Counter: {this.ProbeState()}")]
     public class ProgramCounter : IProgramCounter
     {
+        // TODO: Replace these bool fields with component logic
+        // Ideally we shouldn't be using a bool field here, but have some other components
+        // (e.g. logic gates, latches, flip-flops) that implement this, but unfortunately
+        // Ben Eater didn't cover this in his videos. He used a DM74LS163A chip as the PC
+        // and skipped over creating a PC from a binary counter.
+        private bool _countEnabledInputState;
+        private bool _loadInputState;
+        private BitArray _jumpAddress;
+
         private readonly BinaryCounter _counter;
         private readonly TriStateBuffer[] _triStateBuffers;
 
         /// <summary>
         /// Constructs a program counter of the given size
         /// </summary>
-        /// <param name="wordSize">The word size of the program counter in bits</param>
+        /// <param name="addressSize">The word size of the program counter in bits</param>
         /// <exception cref="ArgumentOutOfRangeException">if argument is less than 1</exception>
-        public ProgramCounter(int wordSize)
+        public ProgramCounter(int addressSize)
         {
-            if (wordSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(wordSize), "Argument must be greater than 0");
+            if (addressSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(addressSize), "Argument must be greater than 0");
 
-            WordSize = wordSize;
-            _counter = new BinaryCounter(wordSize);
+            AddressSize = addressSize;
+            _counter = new BinaryCounter(addressSize);
 
-            _triStateBuffers = new TriStateBuffer[WordSize];
-            for (int i = 0; i < WordSize; i++)
+            _triStateBuffers = new TriStateBuffer[AddressSize];
+            for (int i = 0; i < AddressSize; i++)
                 _triStateBuffers[i] = new TriStateBuffer();
+
+            _jumpAddress = new BitArray(length: AddressSize);
 
             Sync();
         }
@@ -41,7 +53,7 @@ namespace DigitalElectronics.Modules.Counters
         /// <summary>
         /// The word size of the program counter in bits
         /// </summary>
-        public int WordSize { get; }
+        public int AddressSize { get; }
 
         /// <summary>
         /// The tri-state output of the register
@@ -70,6 +82,35 @@ namespace DigitalElectronics.Modules.Counters
         }
 
         /// <summary>
+        /// Sets value for 'Count Enabled' input
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetInputCE(bool value)
+        {
+            _countEnabledInputState = value;
+        }
+
+        /// <summary>
+        /// Sets value for 'Load' input
+        /// </summary>
+        /// <param name="value">Set to `true` to enable the program counter to jump to the address
+        /// given by the last call to <see cref="SetInputD(BitArray)"/></param>
+        public void SetInputL(bool value)
+        {
+            // TODO: Get rid of bool field
+            _loadInputState = value;
+        }
+
+
+        public void Clock()
+        {
+            if (_countEnabledInputState)
+                Inc();
+            if (_loadInputState)
+                Jump(_jumpAddress);
+        }
+
+        /// <summary>
         /// Returns the internal state of the program counter
         /// </summary>
         /// <remarks>Consumers can use this to get the program counter's state without have to set
@@ -80,7 +121,12 @@ namespace DigitalElectronics.Modules.Counters
         /// Sets the program counter to the given value
         /// </summary>
         /// <param name="address">The value (or address) to jump to</param>
-        public void Jump(BitArray address)
+        public void SetInputD(BitArray address)
+        {
+            _jumpAddress = address;
+        }
+
+        private void Jump(BitArray address)
         {
             _counter.Set(address);
             Sync();
@@ -89,16 +135,18 @@ namespace DigitalElectronics.Modules.Counters
         /// <summary>
         /// Increments the program counter by 1
         /// </summary>
-        public void Inc()
+        private void Inc()
         {
-            _counter.Inc();
+            _counter.Clock();
             Sync();
         }
 
         private void Sync()
         {
-            for (int i = 0; i < WordSize; i++)
+            for (int i = 0; i < AddressSize; i++)
                 _triStateBuffers[i].SetInputA(_counter.Output[i]);
         }
+
+        int IModule.WordSize => AddressSize;
     }
 }
