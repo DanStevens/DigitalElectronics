@@ -1,6 +1,7 @@
 ﻿using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
+using static DigitalElectronics.Computers.ManualControlComputer;
 
 namespace DigitalElectronics.Computers.Tests
 {
@@ -27,44 +28,44 @@ namespace DigitalElectronics.Computers.Tests
         public void OperateComputerToAdd30And12AndOutput()
         {
             var computer = new ManualControlComputer();
-            computer.PC.ProbeState().ToByte().Should().Be(0xF);
+            computer.ProbePC().ToByte().Should().Be(0xF);
 
             // Initialize RAM
             InitializeRAM();
 
             FetchInstruction();
 
-            computer.PC.ProbeState().ToByte().Should().Be(0);
-            computer.IRegister.ProbeState().ToByte().Should().Be(0x1E);
+            computer.ProbePC().ToByte().Should().Be(0);
+            computer.ProbeIRegister().ToByte().Should().Be(0x1E);
 
             // Load the contents of memory address 14 (0xE) in to A Register
             LDA();
 
-            //computer.IRegister.ProbeState().ToByte().Should().Be(0xE);
-            computer.MAR.ProbeAddress().ToByte().Should().Be(0xE);
-            computer.ARegister.ProbeState().ToByte().Should().Be(30);
-            computer.BRegister.ProbeState().ToByte().Should().Be(255);
+            //computer.ProbeIRegister().ToByte().Should().Be(0xE);
+            computer.ProbeMAR().ToByte().Should().Be(0xE);
+            computer.ProbeARegister().ToByte().Should().Be(30);
+            computer.ProbeBRegister().ToByte().Should().Be(255);
 
             FetchInstruction();
 
-            computer.PC.ProbeState().ToByte().Should().Be(1);
-            computer.IRegister.ProbeState().ToByte().Should().Be(0x1F);
+            computer.ProbePC().ToByte().Should().Be(1);
+            computer.ProbeIRegister().ToByte().Should().Be(0x1F);
 
             // Add the contents of memory address 15 (0xF) to the A Register
             ADD();
 
-            computer.BRegister.ProbeState().ToByte().Should().Be(12);
-            computer.ARegister.ProbeState().ToByte().Should().Be(42);
+            computer.ProbeBRegister().ToByte().Should().Be(12);
+            computer.ProbeARegister().ToByte().Should().Be(42);
 
             FetchInstruction();
 
-            computer.PC.ProbeState().ToByte().Should().Be(2);
-            computer.IRegister.ProbeState().ToByte().Should().Be(0xE0);
+            computer.ProbePC().ToByte().Should().Be(2);
+            computer.ProbeIRegister().ToByte().Should().Be(0xE0);
 
             // Put the contents of A Register into the Output Register
             OUT();
 
-            computer.OutRegister.ProbeState().ToByte().Should().Be(42);
+            computer.ProbeOutRegister().ToByte().Should().Be(42);
 
             void InitializeRAM()
             {
@@ -87,67 +88,68 @@ namespace DigitalElectronics.Computers.Tests
                 {
                     SetAddress(address);
 
-                    computer.RAM.SetInputLD(true);
-                    computer.RAM.SetInputD(new BitArray(data));
+                    computer.SetControlSignal(ControlWord.RI);
+                    computer.SetRAM(new BitArray(data));
                     computer.Clock();
-                    computer.RAM.ProbeState(address).ToByte().Should().Be(data);
+                    computer.ProbeRAM(address).ToByte().Should().Be(data);
+                }
+
+                void SetAddress(BitArray address)
+                {
+                    computer.SetControlSignal(ControlWord.MI);
+                    computer.SetMAR(address);
+                    computer.Clock();
                 }
             }
 
             // TODO: See if this can be reduced to 2 cycles
             void FetchInstruction()
             {
-                computer.PC.SetInputCE(true);  // Set signal CE high
+                computer.SetControlSignal(ControlWord.CE);
                 computer.Clock();
                 
-                computer.PC.SetInputE(true);   // Set signal CO high
-                computer.MAR.SetInputLA(true); // Set signal MI high
+                computer.SetControlSignal(ControlWord.CO);
+                computer.SetControlSignal(ControlWord.MI);
                 computer.Clock();
 
-                computer.RAM.SetInputE(true);       // Set signal RO high
-                computer.IRegister.SetInputL(true); // Set signal II high
+                computer.SetControlSignal(ControlWord.RO);
+                computer.SetControlSignal(ControlWord.II);
                 computer.Clock();
             }
 
             void LDA()
             {
-                computer.IRegister.SetInputE(true); // Set signal IO high
-                computer.MAR.SetInputLA(true);      // Set signal MI high
+                computer.SetControlSignal(ControlWord.IO);
+                computer.SetControlSignal(ControlWord.MI);
                 computer.Clock();
 
-                computer.RAM.SetInputE(true);       // Set signal RO high
-                computer.ARegister.SetInputL(true); // Set signal AI high
+                computer.SetControlSignal(ControlWord.RO);
+                computer.SetControlSignal(ControlWord.AI);
                 computer.Clock();
             }
 
             void ADD()
             {
-                computer.IRegister.SetInputE(true); // Set signal IO high
-                computer.MAR.SetInputLA(true);      // Set signal MI high
+                computer.SetControlSignal(ControlWord.IO);
+                computer.SetControlSignal(ControlWord.MI);
                 computer.Clock();
 
-                computer.RAM.SetInputE(true);       // Set signal RO high
-                computer.BRegister.SetInputL(true); // Set signal BI high
+                computer.SetControlSignal(ControlWord.RO);
+                computer.SetControlSignal(ControlWord.BI);
                 computer.Clock();
 
-                computer.ALU.SetInputEO(true);      // Set signal EO high
-                computer.ARegister.SetInputL(true); // Set signal AI high
+                computer.SetControlSignal(ControlWord.EO);
+                computer.SetControlSignal(ControlWord.AI);
                 computer.Clock();
             }
 
             void OUT()
             {
-                computer.ARegister.SetInputE(true);   // Set signal AO high
-                computer.OutRegister.SetInputL(true); // Set signal OI high
+                computer.SetControlSignal(ControlWord.AO);
+                computer.SetControlSignal(ControlWord.OI);
                 computer.Clock();
             }
 
-            void SetAddress(BitArray address)
-            {
-                computer.MAR.SetInputLA(true);
-                computer.MAR.SetInputS(address);
-                computer.Clock();
-            }
         }
     }
 }

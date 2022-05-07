@@ -1,4 +1,6 @@
-﻿using DigitalElectronics.Components.Memory;
+﻿using System;
+using System.Collections.Generic;
+using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.ALUs;
 using DigitalElectronics.Modules.Comms;
@@ -14,6 +16,68 @@ namespace DigitalElectronics.Computers
     /// </summary>
     public class ManualControlComputer
     {
+        /// <summary>
+        /// Control signal enumerations for <see cref="ManualControlComputer"/>
+        /// </summary>
+        public enum ControlWord
+        {
+            ///<summary>Halt</summary>
+            Halt,
+            ///<summary>Memory Register In</summary>
+            MI,
+            ///<summary>RAM In</summary>
+            RI,
+            ///<summary>RAM Out</summary>
+            RO,
+            ///<summary>Instruction Register Out</summary>
+            IO,
+            ///<summary>Instruction Register In</summary>
+            II,
+            ///<summary>A Register In</summary>
+            AI,
+            ///<summary>A Register Out</summary>
+            AO,
+            ///<summary>ALU Sum Out</summary>
+            EO,
+            ///<summary>ALU Subtract</summary>
+            SU,
+            ///<summary>B Register In</summary>
+            BI,
+            ///<summary>B Register Out</summary>
+            BO,
+            /// <summary>OUT Register In</summary>
+            OI,
+            ///<summary>Program Counter Enable</summary>
+            CE,
+            ///<summary>Program Counter Out</summary>
+            CO,
+            ///<summary>Jump</summary>
+            J
+        }
+
+        /// <summary>
+        /// Maps control words to their corresponding micro operation
+        /// </summary>
+        private static readonly Dictionary<ControlWord, Action<ManualControlComputer>> _controlWordMap = new()
+        {
+            { ControlWord.Halt, c => throw new NotImplementedException() },
+            { ControlWord.MI, c => c._ram.SetInputLA(true) },
+            { ControlWord.RI, c => c._ram.SetInputLD(true) },
+            { ControlWord.RO, c => c._ram.SetInputE(true) },
+            { ControlWord.IO, c => c._iRegister.SetInputE(true) },
+            { ControlWord.II, c => c._iRegister.SetInputL(true) },
+            { ControlWord.AI, c => c._aRegister.SetInputL(true) },
+            { ControlWord.AO, c => c._aRegister.SetInputE(true) },
+            { ControlWord.EO, c => c._alu.SetInputEO(true) },
+            { ControlWord.SU, c => c._alu.SetInputSu(true) },
+            { ControlWord.BI, c => c._bRegister.SetInputL(true) },
+            { ControlWord.BO, c => c._bRegister.SetInputE(true) },
+            { ControlWord.OI, c => c._outRegister.SetInputL(true) },
+            { ControlWord.CE, c => c._pc.SetInputCE(true) },
+            { ControlWord.CO, c => c._pc.SetInputE(true) },
+            { ControlWord.J, c => c._pc.SetInputL(true) },
+        };
+
         private const int AddressSize = 4;
         private const int WordSize = 8;
 
@@ -25,33 +89,6 @@ namespace DigitalElectronics.Computers
         private readonly Register _bRegister;
         private readonly Register _outRegister;
         private readonly ParallelBus _bus;
-
-        /// <summary>Program counter</summary>
-        public IProgramCounter PC => _pc;
-
-        /// <summary>16 byte Random Access Memory</summary>
-        public IRAM RAM => _ram;
-
-        /// <summary>4-bit Memory Address Register</summary>
-        public ISharedAddrDataInput MAR => _ram;
-
-        /// <summary>8-bit A register</summary>
-        public IReadWriteRegister ARegister => _aRegister;
-
-        /// <summary>8-bit B register</summary>
-        public IReadWriteRegister BRegister => _bRegister;
-
-        /// <summary>Arithmetic Logic Unit</summary>
-        public IArithmeticLogicUnit ALU => _alu;
-
-        /// <summary>Instruction register</summary>
-        public IReadWriteRegister IRegister => _iRegister;
-
-        /// <summary>8-bit output register</summary>
-        public IWritableRegister OutRegister => _outRegister;
-
-        /// <summary>Main system bus</summary>
-        public ParallelBus Bus => _bus;
 
         public ManualControlComputer()
         {
@@ -67,19 +104,64 @@ namespace DigitalElectronics.Computers
                 _pc, _ram, _iRegister, _aRegister, _bRegister, _alu, _outRegister);
         }
 
+        // Sets the given control signal high
+        public void SetControlSignal(ControlWord s)
+        {
+            _controlWordMap[s].Invoke(this);
+        }
+
         public void Clock()
         {
-            Bus.Transfer();
-            PC.Clock();
-            RAM.Clock();
-            IRegister.Clock();
-            ARegister.Clock();
-            BRegister.Clock();
-            OutRegister.Clock();
+            _bus.Transfer();
+            _pc.Clock();
+            _ram.Clock();
+            _iRegister.Clock();
+            _aRegister.Clock();
+            _bRegister.Clock();
+            _outRegister.Clock();
 
             ResetControlLines();
             SyncALU();
         }
+
+        public void SetMAR(BitArray address) => _ram.SetInputS(address);
+
+        public void SetRAM(BitArray data) => _ram.SetInputS(data);
+
+        /// <summary>
+        /// Returns internal state of Program Counter
+        /// </summary>
+        public BitArray ProbePC() => _pc.ProbeState();
+
+        /// <summary>
+        /// Returns internal state of Memory Address Register
+        /// </summary>
+        public BitArray ProbeMAR() => _ram.ProbeAddress();
+
+        /// <summary>
+        /// Returns internal state of RAM at the given address
+        /// </summary>
+        public BitArray ProbeRAM(BitArray address) => _ram.ProbeState(address);
+
+        /// <summary>
+        /// Returns internal state of Instruction Register
+        /// </summary>
+        public BitArray ProbeIRegister() => _iRegister.ProbeState();
+
+        /// <summary>
+        /// Returns internal state of A Register
+        /// </summary>
+        public BitArray ProbeARegister() => _aRegister.ProbeState();
+
+        /// <summary>
+        /// Returns internal state of B Register
+        /// </summary>
+        public BitArray ProbeBRegister() => _bRegister.ProbeState();
+
+        /// <summary>
+        /// Returns internal state of OUT Register
+        /// </summary>
+        public BitArray ProbeOutRegister() => _outRegister.ProbeState();
 
         private void ResetControlLines()
         {
