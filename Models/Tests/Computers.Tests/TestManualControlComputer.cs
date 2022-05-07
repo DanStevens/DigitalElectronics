@@ -11,11 +11,16 @@ namespace DigitalElectronics.Computers.Tests
     /// </summary>
     public class TestManualControlComputer
     {
-        private readonly BitArray Address0x0 = new BitArray((byte)0x0).Trim(4);
-        private readonly BitArray Address0x1 = new BitArray((byte)0x1).Trim(4);
-        private readonly BitArray Address0x2 = new BitArray((byte)0x2).Trim(4);
-        private readonly BitArray Address0xE = new BitArray((byte)0xE).Trim(4);
-        private readonly BitArray Address0xF = new BitArray((byte)0xF).Trim(4);
+
+        // Machine code and data for test OperateComputerToAdd30And12AndOutput
+        private readonly byte[] programDataAdd12And30 =
+        {
+            0x1E, // LDA 14
+            0x1F, // ADD 15
+            0xE0, // OUT
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // Unused
+            30, 12 // Data
+        };
 
         [Test]
         public void Create()
@@ -29,77 +34,45 @@ namespace DigitalElectronics.Computers.Tests
         {
             var computer = new ManualControlComputer();
             computer.ProbePC().ToByte().Should().Be(0xF);
+            computer.LoadRAM(programDataAdd12And30);
 
-            // Initialize RAM
-            InitializeRAM();
+            Run();
 
-            FetchInstruction();
-
-            computer.ProbePC().ToByte().Should().Be(0);
-            computer.ProbeIRegister().ToByte().Should().Be(0x1E);
-
-            // Load the contents of memory address 14 (0xE) in to A Register
-            LDA();
-
-            //computer.ProbeIRegister().ToByte().Should().Be(0xE);
-            computer.ProbeMAR().ToByte().Should().Be(0xE);
-            computer.ProbeARegister().ToByte().Should().Be(30);
-            computer.ProbeBRegister().ToByte().Should().Be(255);
-
-            FetchInstruction();
-
-            computer.ProbePC().ToByte().Should().Be(1);
-            computer.ProbeIRegister().ToByte().Should().Be(0x1F);
-
-            // Add the contents of memory address 15 (0xF) to the A Register
-            ADD();
-
-            computer.ProbeBRegister().ToByte().Should().Be(12);
-            computer.ProbeARegister().ToByte().Should().Be(42);
-
-            FetchInstruction();
-
-            computer.ProbePC().ToByte().Should().Be(2);
-            computer.ProbeIRegister().ToByte().Should().Be(0xE0);
-
-            // Put the contents of A Register into the Output Register
-            OUT();
-
-            computer.ProbeOutRegister().ToByte().Should().Be(42);
-
-            void InitializeRAM()
+            void Run()
             {
-                // Load the instruction 'LDA 14' (0x1E) int memory address
-                WriteMemoryAddress(Address0x0, 0x1E);
+                FetchInstruction();
 
-                // Load the instruction 'ADD 15' (0x1F) int memory address
-                WriteMemoryAddress(Address0x1, 0x1F);
+                computer.ProbePC().ToByte().Should().Be(0);
+                computer.ProbeIRegister().ToByte().Should().Be(0x1E);
 
-                // Load the instruction 'OUT' (0x1F) int memory address
-                WriteMemoryAddress(Address0x2, 0xE0);
+                // Load the contents of memory address 14 (0xE) in to A Register
+                LDA();
 
-                // Load decimal value 30 into address 14
-                WriteMemoryAddress(Address0xE, 30);
+                //computer.ProbeIRegister().ToByte().Should().Be(0xE);
+                computer.ProbeMAR().ToByte().Should().Be(0xE);
+                computer.ProbeARegister().ToByte().Should().Be(30);
+                computer.ProbeBRegister().ToByte().Should().Be(255);
 
-                // Load decimal value 12 into address 15
-                WriteMemoryAddress(Address0xF, 12);
+                FetchInstruction();
 
-                void WriteMemoryAddress(BitArray address, byte data)
-                {
-                    SetAddress(address);
+                computer.ProbePC().ToByte().Should().Be(1);
+                computer.ProbeIRegister().ToByte().Should().Be(0x1F);
 
-                    computer.SetControlSignal(ControlWord.RI);
-                    computer.SetRAM(new BitArray(data));
-                    computer.Clock();
-                    computer.ProbeRAM(address).ToByte().Should().Be(data);
-                }
+                // Add the contents of memory address 15 (0xF) to the A Register
+                ADD();
 
-                void SetAddress(BitArray address)
-                {
-                    computer.SetControlSignal(ControlWord.MI);
-                    computer.SetMAR(address);
-                    computer.Clock();
-                }
+                computer.ProbeBRegister().ToByte().Should().Be(12);
+                computer.ProbeARegister().ToByte().Should().Be(42);
+
+                FetchInstruction();
+
+                computer.ProbePC().ToByte().Should().Be(2);
+                computer.ProbeIRegister().ToByte().Should().Be(0xE0);
+
+                // Put the contents of A Register into the Output Register
+                OUT();
+
+                computer.ProbeOutRegister().ToByte().Should().Be(42);
             }
 
             // TODO: See if this can be reduced to 2 cycles
@@ -149,7 +122,6 @@ namespace DigitalElectronics.Computers.Tests
                 computer.SetControlSignal(ControlWord.OI);
                 computer.Clock();
             }
-
         }
     }
 }

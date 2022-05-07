@@ -124,9 +124,27 @@ namespace DigitalElectronics.Computers
             SyncALU();
         }
 
-        public void SetMAR(BitArray address) => _ram.SetInputS(address);
+        /// <summary>
+        /// Loads the given bytes into RAM, up to <see cref="IRAM.Capacity"/>
+        /// </summary>
+        /// <param name="image">An array of bytes to load</param>
+        /// <exception cref="ArgumentNullException">when <paramref name="image"/> is null</exception>
+        public void LoadRAM(byte[] image)
+        {
+            _ = image ?? throw new ArgumentNullException(nameof(image));
 
-        public void SetRAM(BitArray data) => _ram.SetInputS(data);
+            var cap = Math.Min(image.Length, _ram.Capacity);
+            for (byte i = 0; i < cap; i++)
+            {
+                SetControlSignal(ControlWord.MI);
+                _ram.SetInputS(new BitArray(i));
+                Clock();
+
+                SetControlSignal(ControlWord.RI);
+                _ram.SetInputS(new BitArray(image[i]));
+                Clock();
+            }
+        }
 
         /// <summary>
         /// Returns internal state of Program Counter
