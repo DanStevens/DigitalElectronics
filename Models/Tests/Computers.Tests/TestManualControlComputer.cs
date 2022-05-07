@@ -33,16 +33,23 @@ namespace DigitalElectronics.Computers.Tests
         public void OperateComputerToAdd30And12AndOutput()
         {
             var computer = new ManualControlComputer();
-            computer.ProbePC().ToByte().Should().Be(0xF);
             computer.LoadRAM(programDataAdd12And30);
 
+            ResetProgramCounter();
             Run();
+
+            void ResetProgramCounter()
+            {
+                computer.SetControlSignal(ControlWord.CE);
+                computer.Clock();
+                computer.ProbePC().ToByte().Should().Be(0);
+            }
 
             void Run()
             {
                 FetchInstruction();
 
-                computer.ProbePC().ToByte().Should().Be(0);
+                computer.ProbePC().ToByte().Should().Be(1);
                 computer.ProbeIRegister().ToByte().Should().Be(0x1E);
 
                 // Load the contents of memory address 14 (0xE) in to A Register
@@ -55,7 +62,7 @@ namespace DigitalElectronics.Computers.Tests
 
                 FetchInstruction();
 
-                computer.ProbePC().ToByte().Should().Be(1);
+                computer.ProbePC().ToByte().Should().Be(2);
                 computer.ProbeIRegister().ToByte().Should().Be(0x1F);
 
                 // Add the contents of memory address 15 (0xF) to the A Register
@@ -66,7 +73,7 @@ namespace DigitalElectronics.Computers.Tests
 
                 FetchInstruction();
 
-                computer.ProbePC().ToByte().Should().Be(2);
+                computer.ProbePC().ToByte().Should().Be(3);
                 computer.ProbeIRegister().ToByte().Should().Be(0xE0);
 
                 // Put the contents of A Register into the Output Register
@@ -75,18 +82,15 @@ namespace DigitalElectronics.Computers.Tests
                 computer.ProbeOutRegister().ToByte().Should().Be(42);
             }
 
-            // TODO: See if this can be reduced to 2 cycles
             void FetchInstruction()
             {
-                computer.SetControlSignal(ControlWord.CE);
-                computer.Clock();
-                
                 computer.SetControlSignal(ControlWord.CO);
                 computer.SetControlSignal(ControlWord.MI);
                 computer.Clock();
 
                 computer.SetControlSignal(ControlWord.RO);
                 computer.SetControlSignal(ControlWord.II);
+                computer.SetControlSignal(ControlWord.CE);
                 computer.Clock();
             }
 
