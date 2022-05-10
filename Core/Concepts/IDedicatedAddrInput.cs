@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a memory module with a dedicated address input
     /// </summary>
-    /// <remarks>A memory module that implements this interface has a
+    /// <remarks>This interface represents a memory module that has a
     /// dedicated address input, with a number of lines (bits) equal to
     /// <see cref="DigitalElectronics.Modules.Memory.IRAM.AddressSize"/> bits,
     /// which are set via the <see cref="SetInputA"/> method.</remarks>
