@@ -18,9 +18,9 @@ namespace DigitalElectronics.Modules.Memory
     /// used as address or data. Internally, this 16 byte IARAM module contains an 8-bit
     /// address register and a <see cref="SixteenByteDARAM">16 byte DARAM</see> module.
     /// </remarks>
-    /// <seealso cref="ISharedAddrInput"/>
+    /// <seealso cref="ISharedAddressable"/>
     [DebuggerDisplay("Shared A/D RAM: Address={this.ProbeAddress()}")]
-    public class SixteenByteIARAM : IRAM, ISharedAddrInput
+    public class SixteenByteIARAM : IRAM, ISharedAddressable
     {
         private readonly Register _addressRegister;
         private readonly SixteenByteDARAM _ram;

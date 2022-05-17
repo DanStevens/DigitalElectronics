@@ -110,7 +110,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
 
         private void SetAddress(BitArray addressBits)
         {
-            if (_ram is ISharedAddrInput iaram)
+            if (_ram is ISharedAddressable iaram)
             {
                 iaram.SetInputLA(true);
                 iaram.SetInputS(addressBits);
@@ -119,7 +119,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
                 return;
             }
 
-            if (_ram is IDedicatedAddrInput daram)
+            if (_ram is IDedicatedAddressable daram)
                 daram.SetInputA(addressBits);
         }
     }

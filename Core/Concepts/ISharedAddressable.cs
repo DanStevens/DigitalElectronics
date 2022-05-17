@@ -1,7 +1,7 @@
 ﻿namespace DigitalElectronics.Concepts
 {
     /// <summary>
-    /// Represents a memory modules with a shared address input
+    /// Represents a component with a shared address input
     /// </summary>
     /// <remarks>
     /// This interface represents a memory module that has a set of inputs lines (set via
@@ -10,7 +10,7 @@
     /// <see cref="SetInputLA(bool)">'Load Address'</see> input, when set, signals to the memory module
     /// that the given input should be interpret as an address
     /// </remarks>
-    public interface ISharedAddrInput
+    public interface ISharedAddressable : IAddressable
     {
         /// <summary>
         /// Sets value of the 'Shared' input lines according to the given <see cref="BitArray"/>
