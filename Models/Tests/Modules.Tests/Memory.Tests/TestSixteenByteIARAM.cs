@@ -117,5 +117,12 @@ namespace DigitalElectronics.Modules.Tests.Memory.Tests
             var ramTester = new RamTester(ramModule, 4);
             ramTester.DoTest();
         }
+
+        [Test]
+        public void MaxAddress_ShouldBeZeroTo16()
+        {
+            var ramModule = new SixteenByteIARAM();
+            ramModule.MaxAddress.Should().Be(15);
+        }
     }
 }

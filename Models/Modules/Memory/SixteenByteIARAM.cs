@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using DigitalElectronics.Components.Memory;
-using DigitalElectronics.Concepts;
+﻿
 
 #nullable enable
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using DigitalElectronics.Components.Memory;
+using DigitalElectronics.Concepts;
 namespace DigitalElectronics.Modules.Memory
 {
     /// <summary>
@@ -35,6 +37,8 @@ namespace DigitalElectronics.Modules.Memory
         public int Capacity => ((IRAM)_ram).Capacity;
 
         public int AddressSize => 4;
+
+        public int MaxAddress => 15;
 
         public void SetInputA(BitArray address)
         {

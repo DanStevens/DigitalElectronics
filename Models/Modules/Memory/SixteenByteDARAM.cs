@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿
+
+#nullable enable
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
-
-#nullable enable
-
 namespace DigitalElectronics.Modules.Memory
 {
 
@@ -49,6 +51,8 @@ namespace DigitalElectronics.Modules.Memory
         }
 
         public int AddressSize => 4;
+
+        public int MaxAddress => 15;
 
         BitArray IAddressable.ProbeAddress() => _addressDecoder.OutputY;
 
