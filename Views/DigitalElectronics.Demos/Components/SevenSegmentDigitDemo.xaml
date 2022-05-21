@@ -1,0 +1,19 @@
+﻿<Window x:Class="DigitalElectronics.Demos.Components.SevenSegmentDigitDemo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigitalElectronics.Demos.Components"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        mc:Ignorable="d"
+        Title="SeventSegmentDigitDemo" Height="200" Width="300">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <controls:SegmentedLED Height="70" Width="35"
+                               Stroke="Aqua"
+                               SegmentsLitColor="HotPink"
+                               SegmentAIsLit="True" />
+        <controls:SegmentedLED Height="70" Width="35"
+                               SegmentsUnlitColor="Gray"
+                               SegmentAIsLit="False" />
+    </StackPanel>
+</Window>

@@ -30,6 +30,7 @@
                 <Button Content="Gated D Latch Demo" Click="Button_Click" Tag="Components.GatedDLatchDemo" />
                 <Button Content="D Flip-Flop Demo" Click="Button_Click" Tag="Components.DFlipFlopDemo" />
                 <Button Content="1-bit Register Demo" Click="Button_Click" Tag="Components.OneBitRegisterDemo" />
+                <Button Content="7 Segment Digit" Click="Button_Click" Tag="Components.SevenSegmentDigitDemo" />
             </StackPanel>
         </GroupBox>
         <GroupBox Grid.Row="0" Grid.Column="1" Header="Module Demos">
