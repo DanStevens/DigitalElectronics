@@ -11,15 +11,18 @@
         <Grid.Resources>
             <SolidColorBrush x:Key="SegmentsLitBrush" Color="{Binding SegmentsLitColor}" />
             <SolidColorBrush x:Key="SegmentsUnlitBrush" Color="{Binding SegmentsUnlitColor}" />
-            <Style x:Key="SegmentAStyle" TargetType="{x:Type Ellipse}">
+            <Style x:Key="SegmentBaseStyle" TargetType="{x:Type Ellipse}">
+                <Setter Property="Fill" Value="{DynamicResource SegmentsUnlitBrush}" />
+                <Setter Property="Stroke" Value="{Binding Stroke}" />
+            </Style>
+            <Style x:Key="SegmentAStyle" TargetType="{x:Type Ellipse}" BasedOn="{StaticResource SegmentBaseStyle}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding SegmentAIsLit}" Value="true">
                         <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
                     </DataTrigger>
                 </Style.Triggers>
-                <Setter Property="Fill" Value="{DynamicResource SegmentsUnlitBrush}" />
             </Style>
         </Grid.Resources>
-        <Ellipse x:Name="segmentA" Style="{StaticResource SegmentAStyle}" Stroke="{Binding Stroke}" />
+        <Ellipse x:Name="segmentA" Style="{StaticResource SegmentAStyle}" />
     </Grid>
 </UserControl>
