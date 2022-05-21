@@ -31,9 +31,9 @@ namespace DigitalElectronics.UI.Controls
 
         #region Stroke depdency property
 
-        public Stroke Stroke
+        public Brush Stroke
         {
-            get { return (Stroke)GetValue(StrokeProperty); }
+            get { return (Brush)GetValue(StrokeProperty); }
             set { SetValue(StrokeProperty, value); }
         }
 
