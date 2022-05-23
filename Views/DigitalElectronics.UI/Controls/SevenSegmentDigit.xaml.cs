@@ -8,9 +8,9 @@ namespace DigitalElectronics.UI.Controls
     /// <summary>
     /// Interaction logic for LED.xaml
     /// </summary>
-    public partial class SegmentedLED : UserControl
+    public partial class SevenSegmentDigit : UserControl
     {
-        public SegmentedLED()
+        public SevenSegmentDigit()
         {
             InitializeComponent();
             _layoutRoot.DataContext = this;
@@ -27,7 +27,7 @@ namespace DigitalElectronics.UI.Controls
         public static readonly DependencyProperty SegmentAIsLitProperty = DependencyProperty.Register(
             name: nameof(SegmentAIsLit),
             propertyType: typeof(bool),
-            ownerType: typeof(SegmentedLED),
+            ownerType: typeof(SevenSegmentDigit),
             new PropertyMetadata(false));
 
         #endregion
@@ -43,7 +43,7 @@ namespace DigitalElectronics.UI.Controls
         public static readonly DependencyProperty SegmentBIsLitProperty = DependencyProperty.Register(
             name: nameof(SegmentBIsLit),
             propertyType: typeof(bool),
-            ownerType: typeof(SegmentedLED),
+            ownerType: typeof(SevenSegmentDigit),
             new PropertyMetadata(false));
 
         #endregion
@@ -59,7 +59,7 @@ namespace DigitalElectronics.UI.Controls
         public static readonly DependencyProperty SegmentCIsLitProperty = DependencyProperty.Register(
             name: nameof(SegmentCIsLit),
             propertyType: typeof(bool),
-            ownerType: typeof(SegmentedLED),
+            ownerType: typeof(SevenSegmentDigit),
             new PropertyMetadata(false));
 
         #endregion
@@ -75,7 +75,7 @@ namespace DigitalElectronics.UI.Controls
         public static readonly DependencyProperty SegmentDIsLitProperty = DependencyProperty.Register(
             name: nameof(SegmentDIsLit),
             propertyType: typeof(bool),
-            ownerType: typeof(SegmentedLED),
+            ownerType: typeof(SevenSegmentDigit),
             new PropertyMetadata(false));
 
         #endregion
@@ -91,7 +91,7 @@ namespace DigitalElectronics.UI.Controls
         public static readonly DependencyProperty SegmentEIsLitProperty = DependencyProperty.Register(
             name: nameof(SegmentEIsLit),
             propertyType: typeof(bool),
-            ownerType: typeof(SegmentedLED),
+            ownerType: typeof(SevenSegmentDigit),
             new PropertyMetadata(false));
 
         #endregion
@@ -107,7 +107,7 @@ namespace DigitalElectronics.UI.Controls
         public static readonly DependencyProperty SegmentFIsLitProperty = DependencyProperty.Register(
             name: nameof(SegmentFIsLit),
             propertyType: typeof(bool),
-            ownerType: typeof(SegmentedLED),
+            ownerType: typeof(SevenSegmentDigit),
             new PropertyMetadata(false));
 
         #endregion
@@ -123,7 +123,7 @@ namespace DigitalElectronics.UI.Controls
         public static readonly DependencyProperty SegmentGIsLitProperty = DependencyProperty.Register(
             name: nameof(SegmentGIsLit),
             propertyType: typeof(bool),
-            ownerType: typeof(SegmentedLED),
+            ownerType: typeof(SevenSegmentDigit),
             new PropertyMetadata(false));
 
         #endregion
@@ -137,7 +137,7 @@ namespace DigitalElectronics.UI.Controls
         }
 
         public static readonly DependencyProperty StrokeProperty =
-            DependencyProperty.Register("Stroke", typeof(Brush), typeof(SegmentedLED), new PropertyMetadata(default));
+            DependencyProperty.Register("Stroke", typeof(Brush), typeof(SevenSegmentDigit), new PropertyMetadata(default));
 
         #endregion
 
@@ -150,7 +150,7 @@ namespace DigitalElectronics.UI.Controls
         }
 
         public static readonly DependencyProperty SegmentsUnlitColorProperty =
-            DependencyProperty.Register("SegmentsUnlitColor", typeof(Color), typeof(SegmentedLED), new PropertyMetadata(Colors.Transparent));
+            DependencyProperty.Register("SegmentsUnlitColor", typeof(Color), typeof(SevenSegmentDigit), new PropertyMetadata(Colors.Transparent));
 
         #endregion
 
@@ -163,7 +163,7 @@ namespace DigitalElectronics.UI.Controls
         }
 
         public static readonly DependencyProperty SegmentsLitColorProperty =
-            DependencyProperty.Register("SegmentsLitColor", typeof(Color), typeof(SegmentedLED), new PropertyMetadata(Colors.OrangeRed));
+            DependencyProperty.Register("SegmentsLitColor", typeof(Color), typeof(SevenSegmentDigit), new PropertyMetadata(Colors.OrangeRed));
 
         #endregion
 

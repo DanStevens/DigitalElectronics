@@ -8,11 +8,12 @@
         mc:Ignorable="d"
         Title="SeventSegmentDigitDemo" Height="200" Width="300">
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <controls:SegmentedLED Height="70" Width="35"
+        <controls:SevenSegmentDigit Height="70" Width="35" Margin="5"
                                Stroke="Aqua"
                                SegmentsLitColor="HotPink"
-                               SegmentAIsLit="True" />
-        <controls:SegmentedLED Height="70" Width="35"
+                               SegmentAIsLit="True" SegmentBIsLit="True" SegmentGIsLit="True"
+                               SegmentEIsLit="True" SegmentDIsLit="True"/>
+        <controls:SevenSegmentDigit Height="70" Width="35" Margin="5"
                                SegmentsUnlitColor="Gray"
                                SegmentAIsLit="False" />
     </StackPanel>
