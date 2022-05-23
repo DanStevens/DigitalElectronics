@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:DigitalElectronics.Demos.Components"
         xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
         xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:om="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
+        xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
         d:DataContext="{d:DesignInstance Type=local:SevenSegmentDigitDemoViewModel}"
         mc:Ignorable="d"
         Title="Seven Segment Digit Demo" Height="200" Width="300">
@@ -13,6 +16,25 @@
         <controls:SevenSegmentDigit Background="Black" Height="70" Margin="5" Padding="5"
                                     SegmentsLitColor="Lime" SegmentsUnlitColor="#FF404040"
                                     Lines="{Binding LinesAsBools}" HorizontalAlignment="Center" />
-        <controls:DipSwitch Margin="5" BitOrder="LsbFirst" Lines="{Binding Lines}" />
+        <StackPanel Orientation="Vertical" Margin="5">
+            <controls:DipSwitch BitOrder="LsbFirst" Lines="{Binding Lines}" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,-2,0" HorizontalAlignment="Right">
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="TextAlignment" Value="Center" />
+                        <Setter Property="Width" Value="12" />
+                        <Setter Property="Margin" Value="0,0,4,0" />
+                    </Style>
+                </StackPanel.Resources>
+                <d:TextBlock Text="." />
+                <TextBlock Text="G" />
+                <TextBlock Text="F" />
+                <TextBlock Text="E" />
+                <TextBlock Text="D" />
+                <TextBlock Text="C" />
+                <TextBlock Text="B" />
+                <TextBlock Text="A" />
+            </StackPanel>
+        </StackPanel>
     </StackPanel>
 </Window>
