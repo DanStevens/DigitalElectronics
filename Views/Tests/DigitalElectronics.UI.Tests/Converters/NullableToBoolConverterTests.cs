@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using DigitalElectronics.Demos.Converters;
+using DigitalElectronics.UI.Converters;
 using FluentAssertions;
 using NUnit.Framework;
 

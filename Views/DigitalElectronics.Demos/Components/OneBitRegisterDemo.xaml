@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
         xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
-        xmlns:converters="clr-namespace:DigitalElectronics.Demos.Converters;assembly=DigitalElectronics.UI"
+        xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
         Title="D Flip Flop Demo" Height="200" Width="300">
     <Window.DataContext>
