@@ -16,20 +16,119 @@ namespace DigitalElectronics.UI.Controls
             _layoutRoot.DataContext = this;
         }
 
-        #region IsLit dependency property
+        #region SegmentAIsLit dependency property
 
         public bool SegmentAIsLit
         {
-            get { return (bool)GetValue(SegmentAIsLitProperty); }
-            set { SetValue(SegmentAIsLitProperty, value); }
+            get => (bool)GetValue(SegmentAIsLitProperty);
+            set => SetValue(SegmentAIsLitProperty, value);
         }
 
-        public static readonly DependencyProperty SegmentAIsLitProperty =
-            DependencyProperty.Register("SegmentAIsLit", typeof(bool), typeof(SegmentedLED), new PropertyMetadata(false));
+        public static readonly DependencyProperty SegmentAIsLitProperty = DependencyProperty.Register(
+            name: nameof(SegmentAIsLit),
+            propertyType: typeof(bool),
+            ownerType: typeof(SegmentedLED),
+            new PropertyMetadata(false));
 
         #endregion
 
-        #region Stroke depdency property
+        #region SegmentBIsLit dependency property
+
+        public bool SegmentBIsLit
+        {
+            get => (bool)GetValue(SegmentBIsLitProperty);
+            set => SetValue(SegmentBIsLitProperty, value);
+        }
+
+        public static readonly DependencyProperty SegmentBIsLitProperty = DependencyProperty.Register(
+            name: nameof(SegmentBIsLit),
+            propertyType: typeof(bool),
+            ownerType: typeof(SegmentedLED),
+            new PropertyMetadata(false));
+
+        #endregion
+
+        #region SegmentCIsLit dependency property
+
+        public bool SegmentCIsLit
+        {
+            get => (bool)GetValue(SegmentCIsLitProperty);
+            set => SetValue(SegmentCIsLitProperty, value);
+        }
+
+        public static readonly DependencyProperty SegmentCIsLitProperty = DependencyProperty.Register(
+            name: nameof(SegmentCIsLit),
+            propertyType: typeof(bool),
+            ownerType: typeof(SegmentedLED),
+            new PropertyMetadata(false));
+
+        #endregion
+
+        #region SegmentDIsLit dependency property
+
+        public bool SegmentDIsLit
+        {
+            get => (bool)GetValue(SegmentDIsLitProperty);
+            set => SetValue(SegmentDIsLitProperty, value);
+        }
+
+        public static readonly DependencyProperty SegmentDIsLitProperty = DependencyProperty.Register(
+            name: nameof(SegmentDIsLit),
+            propertyType: typeof(bool),
+            ownerType: typeof(SegmentedLED),
+            new PropertyMetadata(false));
+
+        #endregion
+
+        #region SegmentEIsLit dependency property
+
+        public bool SegmentEIsLit
+        {
+            get => (bool)GetValue(SegmentEIsLitProperty);
+            set => SetValue(SegmentEIsLitProperty, value);
+        }
+
+        public static readonly DependencyProperty SegmentEIsLitProperty = DependencyProperty.Register(
+            name: nameof(SegmentEIsLit),
+            propertyType: typeof(bool),
+            ownerType: typeof(SegmentedLED),
+            new PropertyMetadata(false));
+
+        #endregion
+
+        #region SegmentFIsLit dependency property
+
+        public bool SegmentFIsLit
+        {
+            get => (bool)GetValue(SegmentFIsLitProperty);
+            set => SetValue(SegmentFIsLitProperty, value);
+        }
+
+        public static readonly DependencyProperty SegmentFIsLitProperty = DependencyProperty.Register(
+            name: nameof(SegmentFIsLit),
+            propertyType: typeof(bool),
+            ownerType: typeof(SegmentedLED),
+            new PropertyMetadata(false));
+
+        #endregion
+
+        #region SegmentGIsLit dependency property
+
+        public bool SegmentGIsLit
+        {
+            get => (bool)GetValue(SegmentGIsLitProperty);
+            set => SetValue(SegmentGIsLitProperty, value);
+        }
+
+        public static readonly DependencyProperty SegmentGIsLitProperty = DependencyProperty.Register(
+            name: nameof(SegmentGIsLit),
+            propertyType: typeof(bool),
+            ownerType: typeof(SegmentedLED),
+            new PropertyMetadata(false));
+
+        #endregion
+
+        #region Stroke dependency property
 
         public Brush Stroke
         {
@@ -38,7 +137,7 @@ namespace DigitalElectronics.UI.Controls
         }
 
         public static readonly DependencyProperty StrokeProperty =
-            DependencyProperty.Register("Stroke", typeof(Brush), typeof(SegmentedLED), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.Register("Stroke", typeof(Brush), typeof(SegmentedLED), new PropertyMetadata(default));
 
         #endregion
 
