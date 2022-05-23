@@ -19,7 +19,7 @@
                 </Style>
                 <Style x:Key="SegmentAStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SegmentAIsLit}" Value="true">
+                        <DataTrigger Binding="{Binding Lines[0]}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -29,7 +29,7 @@
                 </Style>
                 <Style x:Key="SegmentBStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SegmentBIsLit}" Value="true">
+                        <DataTrigger Binding="{Binding Lines[1]}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -40,7 +40,7 @@
                 </Style>
                 <Style x:Key="SegmentCStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SegmentCIsLit}" Value="true">
+                        <DataTrigger Binding="{Binding Lines[2]}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -51,7 +51,7 @@
                 </Style>
                 <Style x:Key="SegmentDStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SegmentDIsLit}" Value="true">
+                        <DataTrigger Binding="{Binding Lines[3]}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -61,7 +61,7 @@
                 </Style>
                 <Style x:Key="SegmentEStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SegmentEIsLit}" Value="true">
+                        <DataTrigger Binding="{Binding Lines[4]}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -72,7 +72,7 @@
                 </Style>
                 <Style x:Key="SegmentFStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SegmentFIsLit}" Value="true">
+                        <DataTrigger Binding="{Binding Lines[5]}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -83,7 +83,7 @@
                 </Style>
                 <Style x:Key="SegmentGStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SegmentGIsLit}" Value="true">
+                        <DataTrigger Binding="{Binding Lines[6]}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -92,7 +92,7 @@
                     <Setter Property="VerticalAlignment" Value="Center" />
                 </Style>
             </Grid.Resources>
-            <Path x:Name="segmentA" Style="{StaticResource SegmentAStyle}"  />
+            <Path x:Name="segmentA" Style="{StaticResource SegmentAStyle}" />
             <Path x:Name="segmentB" Style="{StaticResource SegmentBStyle}" />
             <Path x:Name="segmentC" Style="{StaticResource SegmentCStyle}" />
             <Path x:Name="segmentD" Style="{StaticResource SegmentDStyle}" />

@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Ink;
 using System.Windows.Media;
 
 namespace DigitalElectronics.UI.Controls
@@ -10,121 +12,25 @@ namespace DigitalElectronics.UI.Controls
     /// </summary>
     public partial class SevenSegmentDigit : UserControl
     {
+        private static readonly bool[] LinesDefault = Enumerable.Repeat(true, 7).ToArray();
+
         public SevenSegmentDigit()
         {
             InitializeComponent();
             _layoutRoot.DataContext = this;
         }
 
-        #region SegmentAIsLit dependency property
+        #region Lines dependency property
 
-        public bool SegmentAIsLit
+        public ICollection<bool> Lines
         {
-            get => (bool)GetValue(SegmentAIsLitProperty);
-            set => SetValue(SegmentAIsLitProperty, value);
+            get { return (ICollection<bool>)GetValue(LinesProperty); }
+            set { SetValue(LinesProperty, value); }
         }
 
-        public static readonly DependencyProperty SegmentAIsLitProperty = DependencyProperty.Register(
-            name: nameof(SegmentAIsLit),
-            propertyType: typeof(bool),
-            ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(true));
-
-        #endregion
-
-        #region SegmentBIsLit dependency property
-
-        public bool SegmentBIsLit
-        {
-            get => (bool)GetValue(SegmentBIsLitProperty);
-            set => SetValue(SegmentBIsLitProperty, value);
-        }
-
-        public static readonly DependencyProperty SegmentBIsLitProperty = DependencyProperty.Register(
-            name: nameof(SegmentBIsLit),
-            propertyType: typeof(bool),
-            ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(true));
-
-        #endregion
-
-        #region SegmentCIsLit dependency property
-
-        public bool SegmentCIsLit
-        {
-            get => (bool)GetValue(SegmentCIsLitProperty);
-            set => SetValue(SegmentCIsLitProperty, value);
-        }
-
-        public static readonly DependencyProperty SegmentCIsLitProperty = DependencyProperty.Register(
-            name: nameof(SegmentCIsLit),
-            propertyType: typeof(bool),
-            ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(true));
-
-        #endregion
-
-        #region SegmentDIsLit dependency property
-
-        public bool SegmentDIsLit
-        {
-            get => (bool)GetValue(SegmentDIsLitProperty);
-            set => SetValue(SegmentDIsLitProperty, value);
-        }
-
-        public static readonly DependencyProperty SegmentDIsLitProperty = DependencyProperty.Register(
-            name: nameof(SegmentDIsLit),
-            propertyType: typeof(bool),
-            ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(true));
-
-        #endregion
-
-        #region SegmentEIsLit dependency property
-
-        public bool SegmentEIsLit
-        {
-            get => (bool)GetValue(SegmentEIsLitProperty);
-            set => SetValue(SegmentEIsLitProperty, value);
-        }
-
-        public static readonly DependencyProperty SegmentEIsLitProperty = DependencyProperty.Register(
-            name: nameof(SegmentEIsLit),
-            propertyType: typeof(bool),
-            ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(true));
-
-        #endregion
-
-        #region SegmentFIsLit dependency property
-
-        public bool SegmentFIsLit
-        {
-            get => (bool)GetValue(SegmentFIsLitProperty);
-            set => SetValue(SegmentFIsLitProperty, value);
-        }
-
-        public static readonly DependencyProperty SegmentFIsLitProperty = DependencyProperty.Register(
-            name: nameof(SegmentFIsLit),
-            propertyType: typeof(bool),
-            ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(true));
-
-        #endregion
-
-        #region SegmentGIsLit dependency property
-
-        public bool SegmentGIsLit
-        {
-            get => (bool)GetValue(SegmentGIsLitProperty);
-            set => SetValue(SegmentGIsLitProperty, value);
-        }
-
-        public static readonly DependencyProperty SegmentGIsLitProperty = DependencyProperty.Register(
-            name: nameof(SegmentGIsLit),
-            propertyType: typeof(bool),
-            ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(true));
+        public static readonly DependencyProperty LinesProperty =
+            DependencyProperty.Register("Lines", typeof(ICollection<bool>), typeof(SevenSegmentDigit),
+                new PropertyMetadata(                    LinesDefault));
 
         #endregion
 
