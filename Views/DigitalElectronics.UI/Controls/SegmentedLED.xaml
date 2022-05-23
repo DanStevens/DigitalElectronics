@@ -3,26 +3,103 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" d:DesignHeight="70" d:DesignWidth="35">
+             mc:Ignorable="d" d:Height="160" d:Width="100">
     <UserControl.Resources>
-        <Geometry x:Key="SevenSegmentTop">M0,0 L45,0 37.5,10.05037 7.5,10.05037 z</Geometry>
-</UserControl.Resources>
-    <Grid x:Name="_layoutRoot">
-        <Grid.Resources>
-            <SolidColorBrush x:Key="SegmentsLitBrush" Color="{Binding SegmentsLitColor}" />
-            <SolidColorBrush x:Key="SegmentsUnlitBrush" Color="{Binding SegmentsUnlitColor}" />
-            <Style x:Key="SegmentBaseStyle" TargetType="{x:Type Ellipse}">
-                <Setter Property="Fill" Value="{DynamicResource SegmentsUnlitBrush}" />
-                <Setter Property="Stroke" Value="{Binding Stroke}" />
-            </Style>
-            <Style x:Key="SegmentAStyle" TargetType="{x:Type Ellipse}" BasedOn="{StaticResource SegmentBaseStyle}">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding SegmentAIsLit}" Value="true">
-                        <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Resources>
-        <Ellipse x:Name="segmentA" Style="{StaticResource SegmentAStyle}" />
-    </Grid>
+        <Geometry x:Key="HorizontalSegmentGeometry">m 26 0 4 4 -4 4 H 4 L 0 4 4 0 Z</Geometry>
+        <Geometry x:Key="VerticalSegmentGeometry">M 8 30 4 34 0 30 V 4 L 4 0 8 4 Z</Geometry>
+    </UserControl.Resources>
+    <Viewbox>
+        <Grid x:Name="_layoutRoot" Height="80" Width="40">
+            <Grid.Resources>
+                <SolidColorBrush x:Key="SegmentsLitBrush" Color="{Binding SegmentsLitColor}" />
+                <SolidColorBrush x:Key="SegmentsUnlitBrush" Color="{Binding SegmentsUnlitColor}" />
+                <Style x:Key="SegmentBaseStyle" TargetType="{x:Type Path}">
+                    <Setter Property="Fill" Value="{DynamicResource SegmentsUnlitBrush}" />
+                    <d:Setter Property="Fill" Value="Gray" />
+                    <Setter Property="Stroke" Value="{Binding Stroke}" />
+                </Style>
+                <Style x:Key="SegmentAStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SegmentAIsLit}" Value="true">
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                </Style>
+                <Style x:Key="SegmentBStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SegmentBIsLit}" Value="true">
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="Margin" Value="0,5,0,0" />
+                </Style>
+                <Style x:Key="SegmentCStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SegmentCIsLit}" Value="true">
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                    <Setter Property="Margin" Value="0,0,0,5" />
+                </Style>
+                <Style x:Key="SegmentDStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SegmentDIsLit}" Value="true">
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                </Style>
+                <Style x:Key="SegmentEStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SegmentEIsLit}" Value="true">
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                    <Setter Property="Margin" Value="0,0,0,5" />
+                </Style>
+                <Style x:Key="SegmentFStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SegmentFIsLit}" Value="true">
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="Margin" Value="0,5,0,0" />
+                </Style>
+                <Style x:Key="SegmentGStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SegmentGIsLit}" Value="true">
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </Grid.Resources>
+            <Path x:Name="segmentA" Style="{StaticResource SegmentAStyle}"  />
+            <Path x:Name="segmentB" Style="{StaticResource SegmentBStyle}" />
+            <Path x:Name="segmentC" Style="{StaticResource SegmentCStyle}" />
+            <Path x:Name="segmentD" Style="{StaticResource SegmentDStyle}" />
+            <Path x:Name="segmentE" Style="{StaticResource SegmentEStyle}" />
+            <Path x:Name="segmentF" Style="{StaticResource SegmentFStyle}" />
+            <Path x:Name="segmentG" Style="{StaticResource SegmentGStyle}" />
+        </Grid>
+    </Viewbox>
 </UserControl>
