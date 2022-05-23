@@ -28,7 +28,7 @@ namespace DigitalElectronics.UI.Controls
             name: nameof(SegmentAIsLit),
             propertyType: typeof(bool),
             ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(false));
+            new PropertyMetadata(true));
 
         #endregion
 
@@ -44,7 +44,7 @@ namespace DigitalElectronics.UI.Controls
             name: nameof(SegmentBIsLit),
             propertyType: typeof(bool),
             ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(false));
+            new PropertyMetadata(true));
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace DigitalElectronics.UI.Controls
             name: nameof(SegmentCIsLit),
             propertyType: typeof(bool),
             ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(false));
+            new PropertyMetadata(true));
 
         #endregion
 
@@ -76,7 +76,7 @@ namespace DigitalElectronics.UI.Controls
             name: nameof(SegmentDIsLit),
             propertyType: typeof(bool),
             ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(false));
+            new PropertyMetadata(true));
 
         #endregion
 
@@ -92,7 +92,7 @@ namespace DigitalElectronics.UI.Controls
             name: nameof(SegmentEIsLit),
             propertyType: typeof(bool),
             ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(false));
+            new PropertyMetadata(true));
 
         #endregion
 
@@ -108,7 +108,7 @@ namespace DigitalElectronics.UI.Controls
             name: nameof(SegmentFIsLit),
             propertyType: typeof(bool),
             ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(false));
+            new PropertyMetadata(true));
 
         #endregion
 
@@ -124,7 +124,7 @@ namespace DigitalElectronics.UI.Controls
             name: nameof(SegmentGIsLit),
             propertyType: typeof(bool),
             ownerType: typeof(SevenSegmentDigit),
-            new PropertyMetadata(false));
+            new PropertyMetadata(true));
 
         #endregion
 

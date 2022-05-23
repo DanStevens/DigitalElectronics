@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" d:Height="160" d:Width="100">
+             mc:Ignorable="d" d:DesignHeight="80" d:DesignWidth="40">
     <UserControl.Resources>
         <Geometry x:Key="HorizontalSegmentGeometry">m 26 0 4 4 -4 4 H 4 L 0 4 4 0 Z</Geometry>
         <Geometry x:Key="VerticalSegmentGeometry">M 8 30 4 34 0 30 V 4 L 4 0 8 4 Z</Geometry>
@@ -15,7 +15,6 @@
                 <SolidColorBrush x:Key="SegmentsUnlitBrush" Color="{Binding SegmentsUnlitColor}" />
                 <Style x:Key="SegmentBaseStyle" TargetType="{x:Type Path}">
                     <Setter Property="Fill" Value="{DynamicResource SegmentsUnlitBrush}" />
-                    <d:Setter Property="Fill" Value="Gray" />
                     <Setter Property="Stroke" Value="{Binding Stroke}" />
                 </Style>
                 <Style x:Key="SegmentAStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
