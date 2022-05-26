@@ -5,16 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigitalElectronics.Demos.Components"
         xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
-        xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
-        xmlns:system="clr-namespace:System;assembly=System.Runtime"
-        xmlns:om="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
-        xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
-        d:DataContext="{d:DesignInstance Type=local:SevenSegmentDigitDemoViewModel}"
+        xmlns:components="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
+        d:DataContext="{d:DesignInstance Type=components:SevenSegmentDigitDemoViewModel}"
         mc:Ignorable="d"
         Title="Seven Segment Digit Demo" Height="200" Width="300">
     <StackPanel Orientation="Horizontal">
         <GroupBox Header="By Segment" Margin="5">
-            <StackPanel x:Name="BySegmentLayoutRoot" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <StackPanel.DataContext>
+                    <components:SevenSegmentDigitDemoViewModel />
+                </StackPanel.DataContext>
         <controls:SevenSegmentDigit Background="Black" Height="70" Margin="5" Padding="5"
                                     SegmentsLitColor="Lime" SegmentsUnlitColor="#FF404040"
                                             Lines="{Binding SegmentLinesAsBools}" HorizontalAlignment="Center" />
