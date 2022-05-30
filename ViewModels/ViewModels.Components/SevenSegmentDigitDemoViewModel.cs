@@ -5,42 +5,37 @@ using DigitalElectronics.ViewModels.Utilities;
 
 namespace DigitalElectronics.ViewModels.Components;
 
-public class SevenSegmentDigitDemoViewModel : INotifyPropertyChanged
+public class SevenSegmentDigitDemoViewModel
 {
-    private FullyObservableCollection<Bit>? _segmentLines;
-
     public SevenSegmentDigitDemoViewModel()
     {
-        SegmentLines = new FullyObservableCollection<Bit>(Enumerable.Range(0, 7).Select(_ => new Bit(true)));
+        BySegmentDigitDemo = new BySegmentDigitDemoViewModel();
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public BySegmentDigitDemoViewModel BySegmentDigitDemo { get; }
 
-    public FullyObservableCollection<Bit>? SegmentLines
+    public class BySegmentDigitDemoViewModel : INotifyPropertyChanged
     {
-        get => _segmentLines;
-        set
+        public BySegmentDigitDemoViewModel()
         {
-            if (_segmentLines?.SequenceEqual(value) != true)
-            {
-                if (_segmentLines != null) _segmentLines.ItemPropertyChanged -= OnSegmentLineChanged;
-                _segmentLines = value;
-                if (_segmentLines != null) _segmentLines.ItemPropertyChanged += OnSegmentLineChanged;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(SegmentLinesAsBools));
-            }
+            SegmentLines = new FullyObservableCollection<Bit>(Enumerable.Range(0, 7).Select(_ => new Bit(true)));
+            SegmentLines.ItemPropertyChanged += OnSegmentLineChanged;
         }
-    }
 
-    private void OnSegmentLineChanged(object? sender, ItemPropertyChangedEventArgs e)
-    {
-        RaisePropertyChanged(nameof(SegmentLinesAsBools));
-    }
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ICollection<bool>? SegmentLinesAsBools => SegmentLines?.Select(i => (bool)i)?.ToArray();
+        public FullyObservableCollection<Bit>? SegmentLines { get; }
 
-    protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public ICollection<bool>? SegmentLinesAsBools => SegmentLines?.Select(i => (bool)i)?.ToArray();
+
+        public virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnSegmentLineChanged(object? sender, ItemPropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(SegmentLinesAsBools));
+        }
     }
 }
