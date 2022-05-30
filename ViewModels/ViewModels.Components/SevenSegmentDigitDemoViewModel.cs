@@ -10,9 +10,11 @@ public class SevenSegmentDigitDemoViewModel
     public SevenSegmentDigitDemoViewModel()
     {
         BySegmentDigitDemo = new BySegmentDigitDemoViewModel();
+        HexDigitDemo = new SingleHexDigitDemoViewModel();
     }
 
     public BySegmentDigitDemoViewModel BySegmentDigitDemo { get; }
+    public SingleHexDigitDemoViewModel HexDigitDemo { get; }
 
     public class BySegmentDigitDemoViewModel : INotifyPropertyChanged
     {
@@ -37,5 +39,30 @@ public class SevenSegmentDigitDemoViewModel
         {
             RaisePropertyChanged(nameof(SegmentLinesAsBools));
         }
+    }
+
+    public class SingleHexDigitDemoViewModel : INotifyPropertyChanged
+    {
+        public SingleHexDigitDemoViewModel()
+        {
+            Value = new FullyObservableCollection<Bit>(Enumerable.Repeat(false, 4).Select(b => new Bit(b)));
+            Value.ItemPropertyChanged += OnValueBitChanged;
+        }
+
+        public FullyObservableCollection<Bit> Value { get; }
+
+        private void OnValueBitChanged(object? sender, ItemPropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(SegmentLines));
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public ICollection<bool> SegmentLines => new BitArray((byte)0x3F).ToArray();
     }
 }

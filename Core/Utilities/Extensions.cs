@@ -44,5 +44,10 @@ namespace DigitalElectronics.Utilities
         {
             return new BitArray(bits.ToArray());
         }
+
+        public static BitArray ToBitArray(this IEnumerable<bool> bits)
+        {
+            return new BitArray(bits.ToArray());
+        }
     }
 }

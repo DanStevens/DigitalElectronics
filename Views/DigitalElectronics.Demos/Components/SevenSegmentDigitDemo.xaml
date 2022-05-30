@@ -41,5 +41,26 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
+        <GroupBox Header="Single Hex Digit" Margin="5">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top"
+                        DataContext="{Binding HexDigitDemo}">
+                <controls:SevenSegmentDigit x:Name="SingleHexDemoDigit"
+                                            Background="Black" Height="70" Margin="5" Padding="5"
+                                            SegmentsLitColor="Lime" SegmentsUnlitColor="#FF404040"
+                                            Lines="{Binding SegmentLines}" HorizontalAlignment="Center" />
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <controls:DipSwitch BitOrder="LsbFirst" Lines="{Binding Value}" />
+                    <StackPanel Orientation="Horizontal" Margin="0,0,-2,0" HorizontalAlignment="Right">
+                        <StackPanel.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="TextAlignment" Value="Center" />
+                                <Setter Property="Width" Value="12" />
+                                <Setter Property="Margin" Value="0,0,4,0" />
+                            </Style>
+                        </StackPanel.Resources>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
     </StackPanel>
 </Window>
