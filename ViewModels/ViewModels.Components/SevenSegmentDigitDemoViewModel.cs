@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Concepts;
+using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.ViewModels.Utilities;
 
 namespace DigitalElectronics.ViewModels.Components;
@@ -43,16 +44,29 @@ public class SevenSegmentDigitDemoViewModel
 
     public class SingleHexDigitDemoViewModel : INotifyPropertyChanged
     {
+        private ROM _valueToSegmentsROM = new (
+            new byte[] { 0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71 }
+        );
+
         public SingleHexDigitDemoViewModel()
         {
             Value = new FullyObservableCollection<Bit>(Enumerable.Repeat(false, 4).Select(b => new Bit(b)));
             Value.ItemPropertyChanged += OnValueBitChanged;
+            Sync();
+            _valueToSegmentsROM.SetInputE(true);
         }
 
         public FullyObservableCollection<Bit> Value { get; }
 
         private void OnValueBitChanged(object? sender, ItemPropertyChangedEventArgs e)
         {
+            Sync();
+        }
+
+        private void Sync()
+        {
+            var val = new BitArray(Value.ToArray());
+            _valueToSegmentsROM.SetInputA(val);
             RaisePropertyChanged(nameof(SegmentLines));
         }
 
@@ -63,6 +77,6 @@ public class SevenSegmentDigitDemoViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ICollection<bool> SegmentLines => new BitArray((byte)0x3F).ToArray();
+        public ICollection<bool> SegmentLines => _valueToSegmentsROM.Output.ToArray();
     }
 }

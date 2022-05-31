@@ -8,12 +8,12 @@
         xmlns:components="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
         d:DataContext="{d:DesignInstance Type=components:SevenSegmentDigitDemoViewModel}"
         mc:Ignorable="d"
-        Title="Seven Segment Digit Demo" Height="200" Width="350">
+        Title="Seven Segment Digit Demo" Height="200" Width="330">
     <StackPanel Orientation="Horizontal">
         <StackPanel.DataContext>
             <components:SevenSegmentDigitDemoViewModel />
         </StackPanel.DataContext>
-        <GroupBox Header="By Segment" Margin="5">
+        <GroupBox Header="By Segment" Margin="5" Width="150">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top"
                         DataContext="{Binding BySegmentDigitDemo}">
                 <controls:SevenSegmentDigit Background="Black" Height="70" Margin="5" Padding="5"
@@ -41,7 +41,7 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Single Hex Digit" Margin="5">
+        <GroupBox Header="Single Hex Digit" Margin="5" Width="150">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top"
                         DataContext="{Binding HexDigitDemo}">
                 <controls:SevenSegmentDigit x:Name="SingleHexDemoDigit"

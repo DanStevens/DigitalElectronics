@@ -11,7 +11,7 @@ using DPMetadataOptions = System.Windows.FrameworkPropertyMetadataOptions;
 namespace DigitalElectronics.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for LED.xaml
+    /// Models a 7 segmented LED with a common cathode for displaying a decimal or hexadecimal digit
     /// </summary>
     public partial class SevenSegmentDigit : UserControl
     {
