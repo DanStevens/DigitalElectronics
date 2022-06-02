@@ -13,10 +13,12 @@ namespace DigitalElectronics.Modules.Output
     /// decimal for use with a multiplexed 7-segment display. Multiplexed means
     /// only outputs the segment lines for one of the four digits at a time,
     /// and cycles between them upon each call to <see cref="Clock()"/></remarks>
-    public class ByteTo4DigitMultiplexedDisplayDecoder
+    public class ByteTo4DigitMultiplexedDisplayDecoder : IInputModule
     {
+        private const int CounterSize = 2;
+
         private ROM _decoderROM = new (_decoderROMData);
-        private BinaryCounter _counter = new (2);
+        private BinaryCounter _counter = new (CounterSize);
 
         public ByteTo4DigitMultiplexedDisplayDecoder()
         {
@@ -25,6 +27,8 @@ namespace DigitalElectronics.Modules.Output
         }
 
         public BitArray Output => _decoderROM.Output;
+
+        public int WordSize => 8;
 
         public void SetInput(BitArray lines)
         {
@@ -38,7 +42,7 @@ namespace DigitalElectronics.Modules.Output
 
         private BitArray GetDecoderAddress(BitArray lines)
         {
-            var address = new BitArray(lines) {Length = 10};
+            var address = new BitArray(lines) {Length = WordSize + CounterSize};
             address[8] = _counter.Output[0];
             address[9] = _counter.Output[1];
             return address;
@@ -49,6 +53,11 @@ namespace DigitalElectronics.Modules.Output
             _counter.Clock();
             _decoderROM.SetInputA(8, _counter.Output[0]);
             _decoderROM.SetInputA(9, _counter.Output[1]);
+        }
+
+        void IInputModule.SetInputD(BitArray data)
+        {
+            SetInput(data);
         }
 
         private static readonly byte[] _decoderROMData =
