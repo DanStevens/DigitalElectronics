@@ -115,6 +115,34 @@ namespace DigitalElectronics.Modules.Tests.Memory.Tests
         }
 
         [Test]
+        public void SetInputA_ShouldChangeIndividualBitOfInternalAddress_WhenCalledWithLineIndex()
+        {
+            var objUT = new ROM(bytes);
+            objUT.SetInputA(new BitArray(false, false, false, false));
+            objUT.ProbeAddress().ToInt32().Should().Be(0);
+            objUT.SetInputA(lineIndex: 0, true);
+            objUT.ProbeAddress().ToInt32().Should().Be(1);
+            objUT.SetInputA(lineIndex: 1, true);
+            objUT.ProbeAddress().ToInt32().Should().Be(3);
+            objUT.SetInputA(lineIndex: 2, true);
+            objUT.ProbeAddress().ToInt32().Should().Be(7);
+            objUT.SetInputA(lineIndex: 3, true);
+            objUT.ProbeAddress().ToInt32().Should().Be(15);
+            objUT.SetInputA(lineIndex: 4, true);
+            objUT.ProbeAddress().ToInt32().Should().Be(31);
+            objUT.SetInputA(lineIndex: 0, false);
+            objUT.ProbeAddress().ToInt32().Should().Be(30);
+            objUT.SetInputA(lineIndex: 1, false);
+            objUT.ProbeAddress().ToInt32().Should().Be(28);
+            objUT.SetInputA(lineIndex: 2, false);
+            objUT.ProbeAddress().ToInt32().Should().Be(24);
+            objUT.SetInputA(lineIndex: 3, false);
+            objUT.ProbeAddress().ToInt32().Should().Be(16);
+            objUT.SetInputA(lineIndex: 4, false);
+            objUT.ProbeAddress().ToInt32().Should().Be(0);
+        }
+
+        [Test]
         public void Output_ShouldBeNullInitially()
         {
             new ROM(bytes).Output.Should().BeNull();

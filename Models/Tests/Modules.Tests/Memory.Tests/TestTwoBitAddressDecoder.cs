@@ -24,16 +24,3 @@ namespace DigitalElectronics.Modules.Memory.Tests
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// fluent assertions should beequivalentto class implements IEnumerable<X> and IEnumerable<Y> so cannot determine which on to use for asserting the equivalency of the collection

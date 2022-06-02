@@ -63,6 +63,14 @@ namespace DigitalElectronics.Modules.Memory
             _address = i;
         }
 
+        public void SetInputA(int lineIndex, bool value)
+        {
+            if (value)
+                _address |= 1 << lineIndex;
+            else
+                _address &= ~(1 << lineIndex);
+        }
+
         public IList<BitArray> ProbeState() => _data.Select(b => new BitArray(b)).ToArray();
     }
 }
