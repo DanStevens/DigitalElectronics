@@ -11,6 +11,7 @@
             <StackPanel.Resources>
                 <Style TargetType="{x:Type local:SevenSegmentDigit}">
                     <Setter Property="Padding" Value="{Binding DigitPadding}" />
+                    <Setter Property="Lines" Value="{Binding Value}" />
                 </Style>
             </StackPanel.Resources>
             <local:SevenSegmentDigit d:Padding="5" />

@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DP = System.Windows.DependencyProperty;
+using DPMetadata = System.Windows.FrameworkPropertyMetadata;
+using DPMetadataOptions = System.Windows.FrameworkPropertyMetadataOptions;
 
 namespace DigitalElectronics.UI.Controls
 {
@@ -37,11 +40,33 @@ namespace DigitalElectronics.UI.Controls
             set => SetValue(DigitPaddingProperty, value);
         }
 
-        public static readonly DependencyProperty DigitPaddingProperty = DependencyProperty.Register(
+        public static readonly DP DigitPaddingProperty = DP.Register(
             name: nameof(DigitPadding),
             propertyType: typeof(Thickness),
             ownerType: typeof(FourDigit7SegmentDisplay),
-            new PropertyMetadata(new Thickness(5)));
+            new DPMetadata(new Thickness(5)));
+
+        #endregion
+
+
+        #region Value dependency property
+
+        public ICollection<bool> Value
+        {
+            get => (ICollection<bool>)GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
+        }
+
+        public static readonly DP ValueProperty = DP.Register(
+            name: nameof(Value),
+            propertyType: typeof(ICollection<bool>),
+            ownerType: typeof(FourDigit7SegmentDisplay),
+            new DPMetadata(default(ICollection<bool>), ValuePropertyChanged));
+
+        private static void ValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            // TODO optional
+        }
 
         #endregion
     }
