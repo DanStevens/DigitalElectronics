@@ -21,10 +21,10 @@ for (byte value = 0; value < byte.MaxValue; value++)
 }
 
 // 1000s place
-//for (byte value = 0; value < byte.MaxValue; value++)
-//{
-//    Output(0); // Blank
-//}
+for (byte value = 0; value < byte.MaxValue; value++)
+{
+    Output(0); // Blank
+}
 
 void Output(byte value)
 {
