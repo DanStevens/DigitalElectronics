@@ -3,25 +3,25 @@ int outCount = 0;
 var newLineEvery = 10;
 
 // 1s place
-for (byte value = 0; value < byte.MaxValue; value++)
+for (int value = 0; value <= byte.MaxValue; value++)
 {
     Output(digits[(value / 1) % 10]);
 }
 
 // 10s place
-for (byte value = 0; value < byte.MaxValue; value++)
+for (int value = 0; value <= byte.MaxValue; value++)
 {
     Output(digits[(value / 10) % 10]);
 }
 
 // 100s place
-for (byte value = 0; value < byte.MaxValue; value++)
+for (int value = 0; value <= byte.MaxValue; value++)
 {
     Output(digits[(value / 100) % 10]);
 }
 
 // 1000s place
-for (byte value = 0; value < byte.MaxValue; value++)
+for (int value = 0; value <= byte.MaxValue; value++)
 {
     Output(0); // Blank
 }
