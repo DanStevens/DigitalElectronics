@@ -1,0 +1,13 @@
+﻿<Window x:Class="DigitalElectronics.Demos.Modules.FourDigit7SegmentDisplayDemo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigitalElectronics.Demos.Modules"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        mc:Ignorable="d"
+        Title="4 Digit 7 Segment Display Demo" Height="200" Width="300">
+    <Grid>
+        <controls:FourDigit7SegmentDisplay Width="150" Height="70" Background="Black" />
+    </Grid>
+</Window>

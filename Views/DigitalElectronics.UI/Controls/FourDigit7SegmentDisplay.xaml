@@ -11,13 +11,12 @@
             <StackPanel.Resources>
                 <Style TargetType="{x:Type local:SevenSegmentDigit}">
                     <Setter Property="Padding" Value="{Binding DigitPadding}" />
-                    <Setter Property="Lines" Value="{Binding Value}" />
                 </Style>
             </StackPanel.Resources>
-            <local:SevenSegmentDigit d:Padding="5" />
-            <local:SevenSegmentDigit d:Padding="5" />
-            <local:SevenSegmentDigit d:Padding="5" />
-            <local:SevenSegmentDigit d:Padding="5" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForSegment3}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForSegment2}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForSegment1}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForSegment0}" />
         </StackPanel>
     </Viewbox>
 </UserControl>
