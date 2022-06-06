@@ -44,6 +44,7 @@
                 <Button Content="Bus Transfer Demo" Click="Button_Click" Tag="Boards.BusTransferBoardDemo" />
                 <Button Content="ALU Demo" Click="Button_Click" Tag="Boards.AluBoardDemo" />
                 <Button Content="16 Byte RAM Demo" Click="Button_Click" Tag="Modules.SixteenByteRAMDemo" />
+                <Button Content="4 Digit Display Demo" Click="Button_Click" Tag="Modules.FourDigit7SegmentDisplayDemo" />
             </StackPanel>
         </GroupBox>
         <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom">Framework version:</TextBlock>

@@ -5,9 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigitalElectronics.Demos.Modules"
         xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        xmlns:modules="clr-namespace:DigitalElectronics.ViewModels.Modules;assembly=ViewModels.Modules"
         mc:Ignorable="d"
         Title="4 Digit 7 Segment Display Demo" Height="200" Width="300">
-    <Grid>
-        <controls:FourDigit7SegmentDisplay Width="150" Height="70" Background="Black" />
-    </Grid>
+    <Window.DataContext>
+        <modules:FourDigit7SegmentDisplayViewModel x:Name="ViewModel" />
+    </Window.DataContext>
+    <StackPanel HorizontalAlignment="Center">
+        <controls:DipSwitch Margin="20" HorizontalAlignment="Center" Lines="{Binding Value}" BitOrder="LsbFirst" />
+        <controls:FourDigit7SegmentDisplay Margin="10" Width="150" Height="70" Background="Black"
+                                           LinesForDigit0="{Binding Lines}"
+                                           LinesForDigit1="{Binding Lines}"
+                                           LinesForDigit2="{Binding Lines}"
+                                           LinesForDigit3="{Binding Lines}" />
+    </StackPanel>
 </Window>

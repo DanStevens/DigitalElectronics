@@ -7,16 +7,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="225" d:DesignWidth="500">
     <Viewbox>
-        <StackPanel x:Name="_layoutRoot" Orientation="Horizontal" d:Background="#FF1D1D1D">
+        <StackPanel x:Name="_layoutRoot" Orientation="Horizontal">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type local:SevenSegmentDigit}">
                     <Setter Property="Padding" Value="{Binding DigitPadding}" />
                 </Style>
             </StackPanel.Resources>
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForSegment3}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForSegment2}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForSegment1}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForSegment0}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit3}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit2}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit1}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit0}" />
         </StackPanel>
     </Viewbox>
 </UserControl>
