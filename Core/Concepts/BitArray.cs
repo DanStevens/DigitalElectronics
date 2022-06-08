@@ -448,6 +448,8 @@ namespace DigitalElectronics.Concepts
 
         internal string AsSignedDecimal => ToString(NumberFormat.SignedDecimal);
 
+        internal string AsHexadecimal => ToString(NumberFormat.UnsignedHexadecimal);
+
 #endif
     }
 }
