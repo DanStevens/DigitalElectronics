@@ -31,6 +31,21 @@ public class SevenSegmentDigitDemoViewModel
 
         public ICollection<bool>? SegmentLinesAsBools => SegmentLines?.Select(i => (bool)i)?.ToArray();
 
+        private bool _digitIsActive = true;
+
+        public bool DigitIsActive
+        {
+            get => _digitIsActive;
+            set
+            {
+                if (_digitIsActive != value)
+                {
+                    _digitIsActive = value;
+                    RaisePropertyChanged(nameof(DigitIsActive));
+                }
+            }
+        }
+
         public virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -57,6 +72,21 @@ public class SevenSegmentDigitDemoViewModel
         }
 
         public FullyObservableCollection<Bit> Value { get; }
+
+        private bool _digitIsActive = true;
+
+        public bool DigitIsActive
+        {
+            get => _digitIsActive;
+            set
+            {
+                if (_digitIsActive != value)
+                {
+                    _digitIsActive = value;
+                    RaisePropertyChanged(nameof(DigitIsActive));
+                }
+            }
+        }
 
         private void OnValueBitChanged(object? sender, ItemPropertyChangedEventArgs e)
         {
