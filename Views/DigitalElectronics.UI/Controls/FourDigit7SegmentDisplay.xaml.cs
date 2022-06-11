@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using DP = System.Windows.DependencyProperty;
 using DPMetadata = System.Windows.FrameworkPropertyMetadata;
 using DPMetadataOptions = System.Windows.FrameworkPropertyMetadataOptions;
@@ -35,6 +26,7 @@ namespace DigitalElectronics.UI.Controls
         /// <summary>
         /// Padding for all digits in the display
         /// </summary>
+        [Category("Layout")]
         public Thickness DigitPadding
         {
             get => (Thickness)GetValue(DigitPaddingProperty);
@@ -49,11 +41,48 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
+        #region SegmentsUnlitColor dependency property
+
+        [Category("Brush")]
+        public Color SegmentsUnlitColor
+        {
+            get { return (Color)GetValue(SegmentsUnlitColorProperty); }
+            set { SetValue(SegmentsUnlitColorProperty, value); }
+        }
+
+        public static readonly DP SegmentsUnlitColorProperty =
+            DP.Register(nameof(SegmentsUnlitColor),
+                typeof(Color),
+                typeof(FourDigit7SegmentDisplay),
+                new DPMetadata(Colors.Transparent,
+                    DPMetadataOptions.AffectsRender | DPMetadataOptions.SubPropertiesDoNotAffectRender));
+
+        #endregion
+
+        #region SegmentsLitColor dependency property
+
+        [Category("Brush")]
+        public Color SegmentsLitColor
+        {
+            get { return (Color)GetValue(SegmentsLitColorProperty); }
+            set { SetValue(SegmentsLitColorProperty, value); }
+        }
+
+        public static readonly DP SegmentsLitColorProperty =
+            DP.Register(nameof(SegmentsLitColor),
+                typeof(Color),
+                typeof(FourDigit7SegmentDisplay),
+                new DPMetadata(Colors.OrangeRed,
+                    DPMetadataOptions.AffectsRender | DPMetadataOptions.SubPropertiesDoNotAffectRender));
+
+        #endregion
+
         #region LinesForDigit0 dependency property
 
         /// <summary>
         /// Input lines for the rightmost 7 segment digit
         /// </summary>
+        [Category("Common")]
         public ICollection<bool> LinesForDigit0
         {
             get => (ICollection<bool>)GetValue(LinesForDigit0Property);
@@ -73,6 +102,7 @@ namespace DigitalElectronics.UI.Controls
         /// <summary>
         /// Input lines for the second digit from the right
         /// </summary>
+        [Category("Common")]
         public ICollection<bool> LinesForDigit1
         {
             get => (ICollection<bool>)GetValue(LinesForDigit1Property);
@@ -92,6 +122,7 @@ namespace DigitalElectronics.UI.Controls
         /// <summary>
         /// Input lines for the third digit from the right
         /// </summary>
+        [Category("Common")]
         public ICollection<bool> LinesForDigit2
         {
             get => (ICollection<bool>)GetValue(LinesForDigit2Property);
@@ -111,6 +142,7 @@ namespace DigitalElectronics.UI.Controls
         /// <summary>
         /// Input lines for the fourth digit from the right
         /// </summary>
+        [Category("Common")]
         public ICollection<bool> LinesForDigit3
         {
             get => (ICollection<bool>)GetValue(LinesForDigit3Property);
