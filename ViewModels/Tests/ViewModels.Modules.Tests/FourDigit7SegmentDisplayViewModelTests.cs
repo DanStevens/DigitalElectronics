@@ -65,6 +65,29 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
+        public void ActiveDigit()
+        {
+            var objUT = new FourDigit7SegmentDisplayViewModel();
+            AssertDigitActivateState(true, false, false, false);
+            objUT.Clock();
+            AssertDigitActivateState(false, true, false, false);
+            objUT.Clock();
+            AssertDigitActivateState(false, false, true, false);
+            objUT.Clock();
+            AssertDigitActivateState(false, false, false, true);
+            objUT.Clock();
+            AssertDigitActivateState(true, false, false, false);
+
+            void AssertDigitActivateState(params bool[] args)
+            {
+                objUT.Digit0IsActive.Should().Be(args[0]);
+                objUT.Digit1IsActive.Should().Be(args[1]);
+                objUT.Digit2IsActive.Should().Be(args[2]);
+                objUT.Digit3IsActive.Should().Be(args[3]);
+            }
+        }
+
+        [Test]
         public void PropertyChanged_EventShouldBeRaisedForLinesProperty_WhenValueBitIsChanged()
         {
             var objUT = new FourDigit7SegmentDisplayViewModel();
@@ -81,6 +104,18 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             using var monitor = objUT.Monitor();
             objUT.Clock();
             monitor.Should().RaisePropertyChangeFor(_ => _.Lines);
+        }
+
+        [Test]
+        public void PropertyChanged_EventShouldBeRaisedForDigitIsActiveProperties_WhenClockIsCalled()
+        {
+            var objUT = new FourDigit7SegmentDisplayViewModel();
+            using var monitor = objUT.Monitor();
+            objUT.Clock();
+            monitor.Should().RaisePropertyChangeFor(_ => _.Digit0IsActive);
+            monitor.Should().RaisePropertyChangeFor(_ => _.Digit1IsActive);
+            monitor.Should().RaisePropertyChangeFor(_ => _.Digit2IsActive);
+            monitor.Should().RaisePropertyChangeFor(_ => _.Digit3IsActive);
         }
 
         [Test]

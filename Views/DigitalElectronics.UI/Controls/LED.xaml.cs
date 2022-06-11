@@ -20,13 +20,13 @@ namespace DigitalElectronics.UI.Controls
         public static readonly Color DefaultLitColor = Colors.OrangeRed;
         public static readonly Color DefaultUnlitColor = Colors.Transparent;
 
-        DispatcherTimer _decayTimer;
+        private readonly DispatcherTimer _decayTimer;
 
         public LED()
         {
             InitializeComponent();
             _layoutRoot.DataContext = this;
-            _decayTimer = new DispatcherTimer(DispatcherPriority.Send, Dispatcher);
+            _decayTimer = new DispatcherTimer(DispatcherPriority.Normal, Dispatcher);
             _decayTimer.IsEnabled = false;
             _decayTimer.Interval = DecayDuration;
             _decayTimer.Tick += DecayTimerOnElapsed;
