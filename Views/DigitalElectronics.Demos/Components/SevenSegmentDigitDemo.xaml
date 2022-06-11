@@ -8,7 +8,7 @@
         xmlns:components="clr-namespace:DigitalElectronics.ViewModels.Components;assembly=ViewModels.Components"
         d:DataContext="{d:DesignInstance Type=components:SevenSegmentDigitDemoViewModel}"
         mc:Ignorable="d"
-        Title="Seven Segment Digit Demo" Height="200" Width="330">
+        Title="Seven Segment Digit Demo" Height="200" Width="350">
     <StackPanel Orientation="Horizontal">
         <StackPanel.DataContext>
             <components:SevenSegmentDigitDemoViewModel />
@@ -16,9 +16,11 @@
         <GroupBox Header="By Segment" Margin="5" Width="150">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top"
                         DataContext="{Binding BySegmentDigitDemo}">
+                <CheckBox Content="Is Active" Margin="5" HorizontalAlignment="Center" IsChecked="{Binding DigitIsActive}" />
                 <controls:SevenSegmentDigit Background="Black" Height="70" Margin="5" Padding="5"
-                                    SegmentsLitColor="Lime" SegmentsUnlitColor="#FF404040"
-                                    Lines="{Binding SegmentLinesAsBools}" HorizontalAlignment="Center" />
+                                            SegmentsLitColor="Lime" SegmentsUnlitColor="#FF404040"
+                                            Lines="{Binding SegmentLinesAsBools}" HorizontalAlignment="Center"
+                                            IsActive="{Binding DigitIsActive}" />
                 <StackPanel Orientation="Vertical" Margin="5">
                     <controls:DipSwitch BitOrder="LsbFirst" Lines="{Binding SegmentLines}" />
                     <StackPanel Orientation="Horizontal" Margin="0,0,-2,0" HorizontalAlignment="Right">
@@ -44,10 +46,12 @@
         <GroupBox Header="Single Hex Digit" Margin="5" Width="150">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top"
                         DataContext="{Binding HexDigitDemo}">
+                <CheckBox Content="Is Active" Margin="5" HorizontalAlignment="Center" IsChecked="{Binding DigitIsActive}" />
                 <controls:SevenSegmentDigit x:Name="SingleHexDemoDigit"
                                             Background="Black" Height="70" Margin="5" Padding="5"
                                             SegmentsLitColor="Lime" SegmentsUnlitColor="#FF404040"
-                                            Lines="{Binding SegmentLines}" HorizontalAlignment="Center" />
+                                            Lines="{Binding SegmentLines}" HorizontalAlignment="Center" 
+                                            IsActive="{Binding DigitIsActive}" />
                 <StackPanel Orientation="Vertical" Margin="5">
                     <controls:DipSwitch BitOrder="LsbFirst" Lines="{Binding Value}" />
                     <StackPanel Orientation="Horizontal" Margin="0,0,-2,0" HorizontalAlignment="Right">

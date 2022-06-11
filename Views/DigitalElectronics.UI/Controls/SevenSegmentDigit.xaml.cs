@@ -95,5 +95,27 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
+        #region IsActive dependency property
+
+        /// <summary>
+        /// A value indicating whether digit is active
+        /// </summary>
+        /// <remarks>When the digit is active (value is `true`), the lit state of the segments corresponds with the
+        /// state of the <see cref="Lines"/> property. When a digit is inactive (value is `false`), all digits are
+        /// unlit regardless of the state of the <see cref="Lines"/> property.</remarks>
+        [Category("Common")]
+        public bool IsActive
+        {
+            get => (bool)GetValue(IsActiveProperty);
+            set => SetValue(IsActiveProperty, value);
+        }
+
+        public static readonly DP IsActiveProperty = DP.Register(
+            name: nameof(IsActive),
+            propertyType: typeof(bool),
+            ownerType: typeof(SevenSegmentDigit),
+            new DPMetadata(true, DPMetadataOptions.AffectsRender));
+
+        #endregion
     }
 }

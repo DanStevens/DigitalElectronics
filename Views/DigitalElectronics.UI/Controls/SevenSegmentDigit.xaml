@@ -19,9 +19,13 @@
                 </Style>
                 <Style x:Key="SegmentAStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Lines[0]}" Value="true">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[0]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                     <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
                     <Setter Property="HorizontalAlignment" Value="Center" />
@@ -29,9 +33,14 @@
                 </Style>
                 <Style x:Key="SegmentBStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Lines[1]}" Value="true">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[1]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
+
                     </Style.Triggers>
                     <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
                     <Setter Property="HorizontalAlignment" Value="Right" />
@@ -40,9 +49,14 @@
                 </Style>
                 <Style x:Key="SegmentCStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Lines[2]}" Value="true">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[2]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
+
                     </Style.Triggers>
                     <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
                     <Setter Property="HorizontalAlignment" Value="Right" />
@@ -51,9 +65,14 @@
                 </Style>
                 <Style x:Key="SegmentDStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Lines[3]}" Value="true">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[3]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
+
                     </Style.Triggers>
                     <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
                     <Setter Property="HorizontalAlignment" Value="Center" />
@@ -61,9 +80,14 @@
                 </Style>
                 <Style x:Key="SegmentEStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Lines[4]}" Value="true">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[4]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
+
                     </Style.Triggers>
                     <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
                     <Setter Property="HorizontalAlignment" Value="Left" />
@@ -72,9 +96,14 @@
                 </Style>
                 <Style x:Key="SegmentFStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Lines[5]}" Value="true">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[5]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
+
                     </Style.Triggers>
                     <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
                     <Setter Property="HorizontalAlignment" Value="Left" />
@@ -83,9 +112,14 @@
                 </Style>
                 <Style x:Key="SegmentGStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Lines[6]}" Value="true">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[6]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
+
                     </Style.Triggers>
                     <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
                     <Setter Property="HorizontalAlignment" Value="Center" />
