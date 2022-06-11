@@ -86,6 +86,25 @@ namespace DigitalElectronics.Modules.Output.Tests
             }
         }
 
+        [Test]
+        public void DigitActivateStates_ShouldCycleActiveDigit_WhenClockIsCalled()
+        {
+            using (new AssertionScope())
+            {
+                var objUT = new ByteTo4DigitMultiplexedDisplayDecoder();
+                objUT.DigitActivateStates.Should().HaveCount(4);
+                objUT.DigitActivateStates.Should().ContainInOrder(true, false, false, false);
+                objUT.Clock();
+                objUT.DigitActivateStates.Should().ContainInOrder(false, true, false, false);
+                objUT.Clock();
+                objUT.DigitActivateStates.Should().ContainInOrder(false, false, true, false);
+                objUT.Clock();
+                objUT.DigitActivateStates.Should().ContainInOrder(false, false, false, true);
+                objUT.Clock();
+                objUT.DigitActivateStates.Should().ContainInOrder(true, false, false, false); 
+            }
+        }
+
         private void AssertDigit(byte digit, byte expected, string position)
         {
             digit.Should().Be(expected, $"digit {segmentsToDigit[expected]} should be in the {position} position");
