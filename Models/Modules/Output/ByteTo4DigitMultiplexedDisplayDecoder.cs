@@ -19,16 +19,20 @@ namespace DigitalElectronics.Modules.Output
 
         private ROM _decoderROM = new (_decoderROMData);
         private BinaryCounter _counter = new (CounterSize);
+        private TwoBitAddressDecoder _activeDigitDecoder = new ();
 
         public ByteTo4DigitMultiplexedDisplayDecoder()
         {
             _decoderROM.SetInputE(true);
             _counter.Set(new BitArray((byte)0));
+            Sync();
         }
 
         public BitArray Output => _decoderROM.Output;
 
         public int WordSize => 8;
+
+        public BitArray DigitActivateStates => _activeDigitDecoder.OutputY;
 
         public void SetInput(BitArray lines)
         {
@@ -53,6 +57,13 @@ namespace DigitalElectronics.Modules.Output
             _counter.Clock();
             _decoderROM.SetInputA(8, _counter.Output[0]);
             _decoderROM.SetInputA(9, _counter.Output[1]);
+            Sync();
+        }
+
+        private void Sync()
+        {
+            _activeDigitDecoder.SetInputA0(_counter.Output[0]);
+            _activeDigitDecoder.SetInputA1(_counter.Output[1]);
         }
 
         void IInputModule.SetInputD(BitArray data)

@@ -48,10 +48,19 @@ namespace DigitalElectronics.ViewModels.Modules
             }
         }
 
+        public bool Digit0IsActive => _displayDecoder.DigitActivateStates[0];
+        public bool Digit1IsActive => _displayDecoder.DigitActivateStates[1];
+        public bool Digit2IsActive => _displayDecoder.DigitActivateStates[2];
+        public bool Digit3IsActive => _displayDecoder.DigitActivateStates[3];
+
         public void Clock()
         {
             _displayDecoder.Clock();
             RaisePropertyChanged(nameof(Lines));
+            RaisePropertyChanged(nameof(Digit0IsActive));
+            RaisePropertyChanged(nameof(Digit1IsActive));
+            RaisePropertyChanged(nameof(Digit2IsActive));
+            RaisePropertyChanged(nameof(Digit3IsActive));
         }
 
         public event EventHandler? UpdateIntervalChanged;

@@ -15,10 +15,10 @@
                     <Setter Property="SegmentsUnlitColor" Value="{Binding SegmentsUnlitColor}" />
                 </Style>
             </StackPanel.Resources>
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit3}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit2}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit1}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit0}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit3}" IsActive="{Binding Digit3IsActive}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit2}" IsActive="{Binding Digit2IsActive}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit1}" IsActive="{Binding Digit1IsActive}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit0}" IsActive="{Binding Digit0IsActive}" />
         </StackPanel>
     </Viewbox>
 </UserControl>

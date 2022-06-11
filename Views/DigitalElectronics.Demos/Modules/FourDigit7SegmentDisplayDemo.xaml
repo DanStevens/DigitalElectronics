@@ -15,10 +15,10 @@
         <controls:DipSwitch Margin="20" HorizontalAlignment="Center" Lines="{Binding Value}" BitOrder="LsbFirst" />
         <controls:FourDigit7SegmentDisplay Margin="10" Width="150" Height="70" Background="Black"
                                            SegmentsLitColor="OrangeRed" SegmentsUnlitColor="{DynamicResource VeryDarkGray}"
-                                           LinesForDigit0="{Binding Lines}"
-                                           LinesForDigit1="{Binding Lines}"
-                                           LinesForDigit2="{Binding Lines}"
-                                           LinesForDigit3="{Binding Lines}" />
+                                           LinesForDigit0="{Binding Lines}" Digit0IsActive="{Binding Digit0IsActive}"
+                                           LinesForDigit1="{Binding Lines}" Digit1IsActive="{Binding Digit1IsActive}"
+                                           LinesForDigit2="{Binding Lines}" Digit2IsActive="{Binding Digit2IsActive}"
+                                           LinesForDigit3="{Binding Lines}" Digit3IsActive="{Binding Digit3IsActive}" />
         <Slider Minimum="0" Maximum="2000" Value="{Binding UpdateInterval}" SmallChange="1"
                 TickFrequency="100" TickPlacement="BottomRight" LargeChange="10" />
         <DockPanel>
