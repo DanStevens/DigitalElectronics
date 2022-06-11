@@ -49,7 +49,7 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
-        #region LinesForSegment0 dependency property
+        #region LinesForDigit0 dependency property
 
         /// <summary>
         /// Input lines for the rightmost 7 segment digit
@@ -68,7 +68,7 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
-        #region LinesForSegment1 dependency property
+        #region LinesForDigit1 dependency property
 
         /// <summary>
         /// Input lines for the second digit from the right
@@ -87,7 +87,7 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
-        #region LinesForSegment2 dependency property
+        #region LinesForDigit2 dependency property
 
         /// <summary>
         /// Input lines for the third digit from the right
@@ -106,7 +106,7 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
-        #region LinesForSegment3 dependency property
+        #region LinesForDigit3 dependency property
 
         /// <summary>
         /// Input lines for the fourth digit from the right
