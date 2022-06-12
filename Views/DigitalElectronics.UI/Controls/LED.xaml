@@ -16,6 +16,9 @@
                         <DataTrigger Binding="{Binding IsLit}" Value="true">
                             <Setter Property="Fill" Value="{DynamicResource LitBrush}" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsDecaying}" Value="true">
+                            <Setter Property="Fill" Value="{DynamicResource LitBrush}" />
+                        </DataTrigger>
                     </Style.Triggers>
                     <Setter Property="Fill" Value="{DynamicResource UnlitBrush}" />
                 </Style>

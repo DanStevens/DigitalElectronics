@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using DP = System.Windows.DependencyProperty;
+using DPChangedEventArgs = System.Windows.DependencyPropertyChangedEventArgs;
 using DPMetadata = System.Windows.FrameworkPropertyMetadata;
 using DPMetadataOptions = System.Windows.FrameworkPropertyMetadataOptions;
 
@@ -95,5 +97,21 @@ namespace DigitalElectronics.UI.Controls
 
         #endregion
 
+
+        #region DecayDuration dependency property
+
+        public TimeSpan DecayDuration
+        {
+            get => (TimeSpan)GetValue(DecayDurationProperty);
+            set => SetValue(DecayDurationProperty, value);
+        }
+
+        public static readonly DP DecayDurationProperty = DP.Register(
+            name: nameof(DecayDuration),
+            propertyType: typeof(TimeSpan),
+            ownerType: typeof(SevenSegmentDigit),
+            new DPMetadata(default(TimeSpan), DPMetadataOptions.None));
+
+        #endregion
     }
 }

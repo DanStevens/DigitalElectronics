@@ -11,6 +11,7 @@
                 <Style x:Key="SegmentBaseStyle" TargetType="{x:Type controls:LED}">
                     <Setter Property="LitColor" Value="{Binding SegmentsLitColor}" />
                     <Setter Property="UnlitColor" Value="{Binding SegmentsUnlitColor}" />
+                    <Setter Property="DecayDuration" Value="{Binding DecayDuration}" />
                 </Style>
                 <Style x:Key="SegmentAStyle" TargetType="{x:Type controls:LED}"
                        BasedOn="{StaticResource SegmentBaseStyle}">
