@@ -84,6 +84,23 @@ public class SevenSegmentDigitDemoViewModel
                 {
                     _digitIsActive = value;
                     RaisePropertyChanged(nameof(DigitIsActive));
+                    DigitIsActive2 = _digitIsActive;
+                }
+            }
+        }
+
+
+        private bool _digitIsActive2 = true;
+
+        public bool DigitIsActive2
+        {
+            get => this._digitIsActive2;
+            set
+            {
+                if (this._digitIsActive2 != value)
+                {
+                    this._digitIsActive2 = value;
+                    this.RaisePropertyChanged(nameof(this.DigitIsActive2));
                 }
             }
         }
