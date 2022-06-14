@@ -18,7 +18,7 @@
                         DataContext="{Binding BySegmentDigitDemo}">
                 <CheckBox Content="Is Active" Margin="5" HorizontalAlignment="Center" IsChecked="{Binding DigitIsActive}" />
                 <controls:SevenSegmentDigit Background="Black" Height="70" Margin="5" Padding="5"
-                                            SegmentsLitColor="Lime" SegmentsUnlitColor="#FF404040"
+                                            SegmentsLitColor="Lime" SegmentsUnlitColor="{DynamicResource VeryDarkGray}"
                                             Lines="{Binding SegmentLinesAsBools}" HorizontalAlignment="Center"
                                             IsActive="{Binding DigitIsActive}" />
                 <StackPanel Orientation="Vertical" Margin="5">

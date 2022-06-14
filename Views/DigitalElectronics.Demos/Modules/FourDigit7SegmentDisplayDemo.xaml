@@ -14,6 +14,7 @@
     <StackPanel HorizontalAlignment="Center">
         <controls:DipSwitch Margin="20" HorizontalAlignment="Center" Lines="{Binding Value}" BitOrder="LsbFirst" />
         <controls:FourDigit7SegmentDisplay Margin="10" Width="150" Height="70" Background="Black"
+                                           SegmentsUnlitColor="{DynamicResource VeryDarkGray}"
                                            LinesForDigit0="{Binding Lines}"
                                            LinesForDigit1="{Binding Lines}"
                                            LinesForDigit2="{Binding Lines}"

@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using DP = System.Windows.DependencyProperty;
 using DPMetadata = System.Windows.FrameworkPropertyMetadata;
 using DPMetadataOptions = System.Windows.FrameworkPropertyMetadataOptions;
@@ -29,6 +19,40 @@ namespace DigitalElectronics.UI.Controls
             InitializeComponent();
             _layoutRoot.DataContext = this;
         }
+
+
+        #region SegmentsLitColor dependency property
+
+        public Color SegmentsLitColor
+        {
+            get => (Color)GetValue(SegmentsLitColorProperty);
+            set => SetValue(SegmentsLitColorProperty, value);
+        }
+
+        public static readonly DP SegmentsLitColorProperty = DP.Register(
+            name: nameof(SegmentsLitColor),
+            propertyType: typeof(Color),
+            ownerType: typeof(FourDigit7SegmentDisplay),
+            new DPMetadata(LED.DefaultLitColor, DPMetadataOptions.None));
+
+        #endregion
+
+
+        #region SegmentsUnlitColor dependency property
+
+        public Color SegmentsUnlitColor
+        {
+            get => (Color)GetValue(SegmentsUnlitColorProperty);
+            set => SetValue(SegmentsUnlitColorProperty, value);
+        }
+
+        public static readonly DP SegmentsUnlitColorProperty = DP.Register(
+            name: nameof(SegmentsUnlitColor),
+            propertyType: typeof(Color),
+            ownerType: typeof(FourDigit7SegmentDisplay),
+            new DPMetadata(LED.DefaultUnlitColor, DPMetadataOptions.None));
+
+        #endregion
 
         #region DigitPadding dependency property
 

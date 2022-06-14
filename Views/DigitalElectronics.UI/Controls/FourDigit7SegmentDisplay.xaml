@@ -11,6 +11,8 @@
             <StackPanel.Resources>
                 <Style TargetType="{x:Type local:SevenSegmentDigit}">
                     <Setter Property="Padding" Value="{Binding DigitPadding}" />
+                    <Setter Property="SegmentsLitColor" Value="{Binding SegmentsLitColor}" />
+                    <Setter Property="SegmentsUnlitColor" Value="{Binding SegmentsUnlitColor}" />
                 </Style>
             </StackPanel.Resources>
             <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit3}" />

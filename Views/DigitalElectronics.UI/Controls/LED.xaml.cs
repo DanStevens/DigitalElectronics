@@ -17,6 +17,9 @@ namespace DigitalElectronics.UI.Controls
     /// </summary>
     public partial class LED : UserControl
     {
+        public static readonly Color DefaultLitColor = Colors.OrangeRed;
+        public static readonly Color DefaultUnlitColor = Colors.Transparent;
+
         DispatcherTimer _decayTimer;
 
         public LED()
@@ -109,7 +112,7 @@ namespace DigitalElectronics.UI.Controls
             DP.Register(nameof(UnlitColor),
                 typeof(Color),
                 typeof(LED),
-                new DPMetadata(Colors.Transparent,
+                new DPMetadata(DefaultUnlitColor,
                     DPMetadataOptions.AffectsRender | DPMetadataOptions.SubPropertiesDoNotAffectRender));
 
         #endregion
@@ -127,7 +130,7 @@ namespace DigitalElectronics.UI.Controls
             DP.Register(nameof(LitColor),
                 typeof(Color),
                 typeof(LED),
-                new DPMetadata(Colors.OrangeRed,
+                new DPMetadata(DefaultLitColor,
                     DPMetadataOptions.AffectsRender | DPMetadataOptions.SubPropertiesDoNotAffectRender));
 
         #endregion
