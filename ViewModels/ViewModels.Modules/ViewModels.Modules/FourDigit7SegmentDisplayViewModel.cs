@@ -29,19 +29,19 @@ namespace DigitalElectronics.ViewModels.Modules
 
         public IList<bool> Lines => _displayDecoder.Output.ToList();
 
-        private double updateInterval = 1000;
+        private double _updateInterval = 1000;
 
         /// <summary>
         /// Interval at which to update (<see cref="Clock"/>) the display, in milliseconds.
         /// </summary>
         public double UpdateInterval
         {
-            get => updateInterval;
+            get => _updateInterval;
             set
             {
-                if (updateInterval != value)
+                if (_updateInterval != value)
                 {
-                    updateInterval = value;
+                    _updateInterval = value;
                     RaisePropertyChanged(nameof(UpdateInterval));
                     UpdateIntervalChanged?.Invoke(this, EventArgs.Empty);
                 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -36,7 +38,6 @@ namespace DigitalElectronics.UI.Controls
             new DPMetadata(LED.DefaultLitColor, DPMetadataOptions.None));
 
         #endregion
-
 
         #region SegmentsUnlitColor dependency property
 

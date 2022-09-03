@@ -11,14 +11,15 @@
             <StackPanel.Resources>
                 <Style TargetType="{x:Type local:SevenSegmentDigit}">
                     <Setter Property="Padding" Value="{Binding DigitPadding}" />
+                    <Setter Property="DecayDuration" Value="0:0:0.25" />
                     <Setter Property="SegmentsLitColor" Value="{Binding SegmentsLitColor}" />
                     <Setter Property="SegmentsUnlitColor" Value="{Binding SegmentsUnlitColor}" />
                 </Style>
             </StackPanel.Resources>
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit3}" IsActive="{Binding Digit3IsActive}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit2}" IsActive="{Binding Digit2IsActive}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit1}" IsActive="{Binding Digit1IsActive}" />
-            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit0}" IsActive="{Binding Digit0IsActive}" />
+            <local:SevenSegmentDigit x:Name="digit3" d:Padding="5" Lines="{Binding LinesForDigit3}" IsActive="{Binding Digit3IsActive}" />
+            <local:SevenSegmentDigit x:Name="digit2" d:Padding="5" Lines="{Binding LinesForDigit2}" IsActive="{Binding Digit2IsActive}" />
+            <local:SevenSegmentDigit x:Name="digit1" d:Padding="5" Lines="{Binding LinesForDigit1}" IsActive="{Binding Digit1IsActive}" />
+            <local:SevenSegmentDigit x:Name="digit0" d:Padding="5" Lines="{Binding LinesForDigit0}" IsActive="{Binding Digit0IsActive}" />
         </StackPanel>
     </Viewbox>
 </UserControl>

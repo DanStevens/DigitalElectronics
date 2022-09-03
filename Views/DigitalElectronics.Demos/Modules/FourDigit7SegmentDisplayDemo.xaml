@@ -7,7 +7,7 @@
         xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
         xmlns:modules="clr-namespace:DigitalElectronics.ViewModels.Modules;assembly=ViewModels.Modules"
         mc:Ignorable="d"
-        Title="4 Digit 7 Segment Display Demo" Height="230" Width="300">
+        Title="4 Digit 7 Segment Display Demo" Height="250" Width="300">
     <Window.DataContext>
         <modules:FourDigit7SegmentDisplayViewModel x:Name="ViewModel" />
     </Window.DataContext>
@@ -19,6 +19,8 @@
                                            LinesForDigit1="{Binding Lines}" Digit1IsActive="{Binding Digit1IsActive}"
                                            LinesForDigit2="{Binding Lines}" Digit2IsActive="{Binding Digit2IsActive}"
                                            LinesForDigit3="{Binding Lines}" Digit3IsActive="{Binding Digit3IsActive}" />
+        <!--<Slider Minimum="0" Maximum="500" Value="{Binding UpdateInterval}" SmallChange="1"
+                TickFrequency="100" TickPlacement="BottomRight" LargeChange="10" />-->
         <Slider Minimum="0" Maximum="2000" Value="{Binding UpdateInterval}" SmallChange="1"
                 TickFrequency="100" TickPlacement="BottomRight" LargeChange="10" />
         <DockPanel>

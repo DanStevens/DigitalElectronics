@@ -20,7 +20,7 @@ namespace DigitalElectronics.Demos.Modules
     /// </summary>
     public partial class FourDigit7SegmentDisplayDemo : Window
     {
-        private DispatcherTimer _displayTimer = new();
+        private readonly DispatcherTimer _displayTimer = new();
 
         public FourDigit7SegmentDisplayDemo()
         {
