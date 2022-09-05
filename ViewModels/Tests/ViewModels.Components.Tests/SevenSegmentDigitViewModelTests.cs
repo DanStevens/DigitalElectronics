@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography.X509Certificates;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 using DigitalElectronics.ViewModels.Utilities;
 using FluentAssertions;
 using NUnit.Framework;
+using static DigitalElectronics.ViewModels.Components.SevenSegmentDigitDemoViewModel;
 
 namespace DigitalElectronics.ViewModels.Components.Tests;
 
@@ -35,7 +37,6 @@ public class SevenSegmentDigitViewModelTests
         objUT.HexDigitDemo.SegmentLines.ToBitArray().ToByte().Should().Be(0x06);
     }
 
-
     [Test]
     public void HexDigitDemoSegmentLines_ShouldShowDigit8()
     {
@@ -53,5 +54,50 @@ public class SevenSegmentDigitViewModelTests
         objUT.HexDigitDemo.Value[2].Value = true; // Set value to 7 (0x7)
         objUT.HexDigitDemo.Value[3].Value = true; // Set value to 15 (0xF)
         objUT.HexDigitDemo.SegmentLines.ToBitArray().ToByte().Should().Be(0x71);
+    }
+
+    [Test]
+    public void HexDigitWithRegisterDemo_ShouldBeOfTypeSingleHexDigitWithRegisterDemoViewModel()
+    {
+        var objUT = new SevenSegmentDigitDemoViewModel();
+        objUT.HexDigitWithRegisterDemo.Should().BeOfType<SingleHexDigitWithRegisterDemoViewModel>();
+    }
+}
+
+public class SingleHexDigitWithRegisterDemoViewModelTests
+{
+    [Test]
+    public void RegisterData_ShouldBeZero_WhenObjectUnderTestIsCreated()
+    {
+        var objUT = new SingleHexDigitWithRegisterDemoViewModel();
+        objUT.Register.Data.ToBitArray().ToByte().Should().Be(0);
+    }
+
+    [Test]
+    public void SegmentLines_ShouldBeInitializedTo0x3F_WhenObjectUnderTestIsCreated()
+    {
+        var objUT = new SingleHexDigitWithRegisterDemoViewModel();
+        objUT.SegmentLines.Should().BeAssignableTo<ICollection<bool>>();
+        objUT.SegmentLines.Count.Should().Be(8);
+        objUT.SegmentLines.ToBitArray().ToByte().Should().Be(0x3F);
+    }
+
+    [Test]
+    public void SegmentLines_ShouldNotChangeWhenChangingValue()
+    {
+        var objUT = new SingleHexDigitWithRegisterDemoViewModel();
+        objUT.Register.Load.Should().Be(true);
+        objUT.Register.Data[0] = true; // Sets Value to 1
+        objUT.SegmentLines.ToBitArray().ToByte().Should().Be(0x3F);
+    }
+
+    [Test]
+    public void SegmentLines_ShouldShowDigit1_WhenClockIsCalled()
+    {
+        var objUT = new SingleHexDigitWithRegisterDemoViewModel();
+        objUT.Register.Load.Should().Be(true);
+        objUT.Register.Data[0] = true; // Sets Value to 1
+        objUT.Clock();
+        objUT.SegmentLines.ToBitArray().ToByte().Should().Be(0x06);
     }
 }

@@ -11,5 +11,10 @@ namespace DigitalElectronics.Demos.Components
         {
             InitializeComponent();
         }
+
+        private void ClockButton_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.HexDigitWithRegisterDemo.Clock();
+        }
     }
 }
