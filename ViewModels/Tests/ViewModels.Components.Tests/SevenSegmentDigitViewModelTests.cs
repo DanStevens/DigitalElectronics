@@ -70,7 +70,8 @@ public class SingleHexDigitWithRegisterDemoViewModelTests
     public void RegisterData_ShouldBeZero_WhenObjectUnderTestIsCreated()
     {
         var objUT = new SingleHexDigitWithRegisterDemoViewModel();
-        objUT.Register.Data.ToBitArray().ToByte().Should().Be(0);
+        objUT.Load.Should().Be(true);
+        objUT.Value.ToBitArray().ToByte().Should().Be(0);
     }
 
     [Test]
@@ -86,8 +87,8 @@ public class SingleHexDigitWithRegisterDemoViewModelTests
     public void SegmentLines_ShouldNotChangeWhenChangingValue()
     {
         var objUT = new SingleHexDigitWithRegisterDemoViewModel();
-        objUT.Register.Load.Should().Be(true);
-        objUT.Register.Data[0] = true; // Sets Value to 1
+        objUT.Load.Should().Be(true);
+        objUT.Value[0].Value = true; // Sets Value to 1
         objUT.SegmentLines.ToBitArray().ToByte().Should().Be(0x3F);
     }
 
@@ -95,8 +96,8 @@ public class SingleHexDigitWithRegisterDemoViewModelTests
     public void SegmentLines_ShouldShowDigit1_WhenClockIsCalled()
     {
         var objUT = new SingleHexDigitWithRegisterDemoViewModel();
-        objUT.Register.Load.Should().Be(true);
-        objUT.Register.Data[0] = true; // Sets Value to 1
+        objUT.Load.Should().Be(true);
+        objUT.Value[0].Value = true; // Sets Value to 1
         objUT.Clock();
         objUT.SegmentLines.ToBitArray().ToByte().Should().Be(0x06);
     }

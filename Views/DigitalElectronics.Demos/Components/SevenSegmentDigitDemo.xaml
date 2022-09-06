@@ -80,12 +80,12 @@
                     <StackPanel Orientation="Vertical">
                         <Border BorderBrush="Black" BorderThickness="1" Height="50" Margin="5" Padding="5">
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">4-bit Register</TextBlock>
-                                <controls:LedStrip Lines="{Binding Register.Probe}" LedSize="15" BitOrder="LsbFirst" />
+                                <TextBlock Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">Register</TextBlock>
+                                <controls:LedStrip Lines="{Binding RegisterState}" LedSize="8" BitOrder="LsbFirst" />
                             </StackPanel>
                         </Border>
-                        <controls:DipSwitch Lines="{Binding Register.Data}" HorizontalAlignment="Center" BitOrder="LsbFirst"/>
-                        <CheckBox Content="Load" IsChecked="{Binding Register.Load}" Margin="2.5" />
+                        <controls:DipSwitch Lines="{Binding Value}" HorizontalAlignment="Center" BitOrder="LsbFirst"/>
+                        <CheckBox Content="Load" IsChecked="{Binding Load}" Margin="2.5" />
                         <Button Content="Clock" HorizontalAlignment="Left" Width="50" Margin="2.5" Click="ClockButton_Click" />
                     </StackPanel>
                 </StackPanel>

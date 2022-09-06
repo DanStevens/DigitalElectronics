@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
@@ -120,7 +121,26 @@ public class SevenSegmentDigitDemoViewModel
             new byte[] { 0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71 }
         );
 
-        private readonly Register _register = new (4);
+        private readonly Register _register = new (8);
+
+
+        public SingleHexDigitWithRegisterDemoViewModel()
+        {
+            Value = new FullyObservableCollection<Bit>(Enumerable.Repeat(false, 4).Select(b => new Bit(b)));
+            Value.ItemPropertyChanged += OnValueBitChanged;
+
+            _valueToSegmentsROM.SetInputE(true);
+            _valueToSegmentsROM.SetInputA(new BitArray(length: 4));
+
+            Load = true;
+            _register.SetInputD(_valueToSegmentsROM.Output);
+            _register.Clock();
+            _register.SetInputE(true);
+
+            System.Diagnostics.Debug.Assert(_register.ProbeState().ToByte() == 0x3F);
+
+            Sync();
+        }
 
         private bool _digitIsActive = true;
 
@@ -137,32 +157,47 @@ public class SevenSegmentDigitDemoViewModel
             }
         }
 
-        public RegisterViewModel Register { get; set; }
 
-        public ICollection<bool> SegmentLines => _valueToSegmentsROM.Output.ToArray();
+        private bool _load;
 
-        public SingleHexDigitWithRegisterDemoViewModel()
+        public bool Load
         {
-            _valueToSegmentsROM.SetInputE(true);
-            _valueToSegmentsROM.SetInputA(new BitArray(length: 4));
-            
-            _register.SetInputL(true);
-            _register.SetInputD(new BitArray(length: _register.WordSize));
-            _register.Clock();
-            _register.SetInputE(true);
-
-            System.Diagnostics.Debug.Assert(_register.ProbeState().ToByte() == 0);
-            
-            Register = new RegisterViewModel(_register);
-            Register.Load = true;
-            _valueToSegmentsROM.SetInputE(true);
+            get => _load;
+            set
+            {
+                if (_load != value)
+                {
+                    _load = value;
+                    _register.SetInputL(value);
+                    RaisePropertyChanged(nameof(Load));
+                }
+            }
         }
+
+        public ICollection<bool> SegmentLines => _register.Output!;
+
+        public ReadOnlyObservableCollection<bool> RegisterState =>
+            new(new ObservableCollection<bool>(_register.ProbeState()));
+
+        public FullyObservableCollection<Bit> Value { get; }
 
         public void Clock()
         {
-            Register.Clock();
-            _valueToSegmentsROM.SetInputA(_register.Output);
+            _register.Clock();
             RaisePropertyChanged(nameof(SegmentLines));
+            RaisePropertyChanged(nameof(RegisterState));
+        }
+
+        private void OnValueBitChanged(object? sender, ItemPropertyChangedEventArgs e)
+        {
+            Sync();
+        }
+
+        private void Sync()
+        {
+            var val = new BitArray(Value.ToArray());
+            _valueToSegmentsROM.SetInputA(val);
+            _register.SetInputD(_valueToSegmentsROM.Output);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
