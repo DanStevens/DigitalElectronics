@@ -10,7 +10,7 @@ namespace DigitalElectronics.Modules.Output
     /// Models an unsigned byte to 4 digit decimal multiplexed display decoder
     /// </summary>
     /// <remarks>This module decodes a unsigned 8-bit binary input, into a 4 digit
-    /// decimal for use with a multiplexed 7-segment display. Multiplexed means
+    /// decimal for use with a multiplexed 7-segment display. Multiplexed means it
     /// only outputs the segment lines for one of the four digits at a time,
     /// and cycles between them upon each call to <see cref="Clock()"/></remarks>
     public class ByteTo4DigitMultiplexedDisplayDecoder : IInputModule
