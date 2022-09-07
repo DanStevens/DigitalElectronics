@@ -19,7 +19,7 @@ namespace DigitalElectronics.Computers
         /// <summary>
         /// Control signal enumerations for <see cref="ManualControlComputer"/>
         /// </summary>
-        public enum ControlWord
+        public enum ControlSignal
         {
             ///<summary>Halt</summary>
             Halt,
@@ -58,24 +58,24 @@ namespace DigitalElectronics.Computers
         /// <summary>
         /// Maps control words to their corresponding micro operation
         /// </summary>
-        private static readonly Dictionary<ControlWord, Action<ManualControlComputer>> _controlWordMap = new()
+        private static readonly Dictionary<ControlSignal, Action<ManualControlComputer>> _controlWordMap = new()
         {
-            { ControlWord.Halt, c => throw new NotImplementedException() },
-            { ControlWord.MI, c => c._ram.SetInputLA(true) },
-            { ControlWord.RI, c => c._ram.SetInputLD(true) },
-            { ControlWord.RO, c => c._ram.SetInputE(true) },
-            { ControlWord.IO, c => c._instrRegister.SetInputE(true) },
-            { ControlWord.II, c => c._instrRegister.SetInputL(true) },
-            { ControlWord.AI, c => c._aRegister.SetInputL(true) },
-            { ControlWord.AO, c => c._aRegister.SetInputE(true) },
-            { ControlWord.EO, c => c._alu.SetInputEO(true) },
-            { ControlWord.SU, c => c._alu.SetInputSu(true) },
-            { ControlWord.BI, c => c._bRegister.SetInputL(true) },
-            { ControlWord.BO, c => c._bRegister.SetInputE(true) },
-            { ControlWord.OI, c => c._outRegister.SetInputL(true) },
-            { ControlWord.CE, c => c._pc.SetInputCE(true) },
-            { ControlWord.CO, c => c._pc.SetInputE(true) },
-            { ControlWord.J, c => c._pc.SetInputL(true) },
+            { ControlSignal.Halt, c => throw new NotImplementedException() },
+            { ControlSignal.MI, c => c._ram.SetInputLA(true) },
+            { ControlSignal.RI, c => c._ram.SetInputLD(true) },
+            { ControlSignal.RO, c => c._ram.SetInputE(true) },
+            { ControlSignal.IO, c => c._instrRegister.SetInputE(true) },
+            { ControlSignal.II, c => c._instrRegister.SetInputL(true) },
+            { ControlSignal.AI, c => c._aRegister.SetInputL(true) },
+            { ControlSignal.AO, c => c._aRegister.SetInputE(true) },
+            { ControlSignal.EO, c => c._alu.SetInputEO(true) },
+            { ControlSignal.SU, c => c._alu.SetInputSu(true) },
+            { ControlSignal.BI, c => c._bRegister.SetInputL(true) },
+            { ControlSignal.BO, c => c._bRegister.SetInputE(true) },
+            { ControlSignal.OI, c => c._outRegister.SetInputL(true) },
+            { ControlSignal.CE, c => c._pc.SetInputCE(true) },
+            { ControlSignal.CO, c => c._pc.SetInputE(true) },
+            { ControlSignal.J, c => c._pc.SetInputL(true) },
         };
 
         private const int AddressSize = 4;
@@ -105,7 +105,7 @@ namespace DigitalElectronics.Computers
         }
 
         // Sets the given control signal high
-        public void SetControlSignal(ControlWord s)
+        public void SetControlSignal(ControlSignal s)
         {
             _controlWordMap[s].Invoke(this);
         }
@@ -136,11 +136,11 @@ namespace DigitalElectronics.Computers
             var cap = Math.Min(image.Length, _ram.Capacity);
             for (byte i = 0; i < cap; i++)
             {
-                SetControlSignal(ControlWord.MI);
+                SetControlSignal(ControlSignal.MI);
                 _ram.SetInputS(new BitArray(i));
                 Clock();
 
-                SetControlSignal(ControlWord.RI);
+                SetControlSignal(ControlSignal.RI);
                 _ram.SetInputS(new BitArray(image[i]));
                 Clock();
             }

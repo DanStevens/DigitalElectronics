@@ -40,7 +40,7 @@ namespace DigitalElectronics.Computers.Tests
 
             void ResetProgramCounter()
             {
-                computer.SetControlSignal(ControlWord.CE);
+                computer.SetControlSignal(ControlSignal.CE);
                 computer.Clock();
                 computer.ProbePC().ToByte().Should().Be(0);
             }
@@ -84,46 +84,46 @@ namespace DigitalElectronics.Computers.Tests
 
             void FetchInstruction()
             {
-                computer.SetControlSignal(ControlWord.CO);
-                computer.SetControlSignal(ControlWord.MI);
+                computer.SetControlSignal(ControlSignal.CO);
+                computer.SetControlSignal(ControlSignal.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlWord.RO);
-                computer.SetControlSignal(ControlWord.II);
-                computer.SetControlSignal(ControlWord.CE);
+                computer.SetControlSignal(ControlSignal.RO);
+                computer.SetControlSignal(ControlSignal.II);
+                computer.SetControlSignal(ControlSignal.CE);
                 computer.Clock();
             }
 
             void LDA()
             {
-                computer.SetControlSignal(ControlWord.IO);
-                computer.SetControlSignal(ControlWord.MI);
+                computer.SetControlSignal(ControlSignal.IO);
+                computer.SetControlSignal(ControlSignal.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlWord.RO);
-                computer.SetControlSignal(ControlWord.AI);
+                computer.SetControlSignal(ControlSignal.RO);
+                computer.SetControlSignal(ControlSignal.AI);
                 computer.Clock();
             }
 
             void ADD()
             {
-                computer.SetControlSignal(ControlWord.IO);
-                computer.SetControlSignal(ControlWord.MI);
+                computer.SetControlSignal(ControlSignal.IO);
+                computer.SetControlSignal(ControlSignal.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlWord.RO);
-                computer.SetControlSignal(ControlWord.BI);
+                computer.SetControlSignal(ControlSignal.RO);
+                computer.SetControlSignal(ControlSignal.BI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlWord.EO);
-                computer.SetControlSignal(ControlWord.AI);
+                computer.SetControlSignal(ControlSignal.EO);
+                computer.SetControlSignal(ControlSignal.AI);
                 computer.Clock();
             }
 
             void OUT()
             {
-                computer.SetControlSignal(ControlWord.AO);
-                computer.SetControlSignal(ControlWord.OI);
+                computer.SetControlSignal(ControlSignal.AO);
+                computer.SetControlSignal(ControlSignal.OI);
                 computer.Clock();
             }
         }
