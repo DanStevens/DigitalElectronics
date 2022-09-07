@@ -50,7 +50,7 @@ namespace DigitalElectronics.Computers.Tests
                 FetchInstruction();
 
                 computer.ProbePC().ToByte().Should().Be(1);
-                computer.ProbeIRegister().ToByte().Should().Be(0x1E);
+                computer.ProbeInstrRegister().ToByte().Should().Be(0x1E);
 
                 // Load the contents of memory address 14 (0xE) in to A Register
                 LDA();
@@ -63,7 +63,7 @@ namespace DigitalElectronics.Computers.Tests
                 FetchInstruction();
 
                 computer.ProbePC().ToByte().Should().Be(2);
-                computer.ProbeIRegister().ToByte().Should().Be(0x1F);
+                computer.ProbeInstrRegister().ToByte().Should().Be(0x1F);
 
                 // Add the contents of memory address 15 (0xF) to the A Register
                 ADD();
@@ -74,7 +74,7 @@ namespace DigitalElectronics.Computers.Tests
                 FetchInstruction();
 
                 computer.ProbePC().ToByte().Should().Be(3);
-                computer.ProbeIRegister().ToByte().Should().Be(0xE0);
+                computer.ProbeInstrRegister().ToByte().Should().Be(0xE0);
 
                 // Put the contents of A Register into the Output Register
                 OUT();

@@ -64,8 +64,8 @@ namespace DigitalElectronics.Computers
             { ControlWord.MI, c => c._ram.SetInputLA(true) },
             { ControlWord.RI, c => c._ram.SetInputLD(true) },
             { ControlWord.RO, c => c._ram.SetInputE(true) },
-            { ControlWord.IO, c => c._iRegister.SetInputE(true) },
-            { ControlWord.II, c => c._iRegister.SetInputL(true) },
+            { ControlWord.IO, c => c._instrRegister.SetInputE(true) },
+            { ControlWord.II, c => c._instrRegister.SetInputL(true) },
             { ControlWord.AI, c => c._aRegister.SetInputL(true) },
             { ControlWord.AO, c => c._aRegister.SetInputE(true) },
             { ControlWord.EO, c => c._alu.SetInputEO(true) },
@@ -83,7 +83,7 @@ namespace DigitalElectronics.Computers
 
         private readonly ProgramCounter _pc;
         private readonly SixteenByteIARAM _ram;
-        private readonly Register _iRegister;
+        private readonly Register _instrRegister;
         private readonly ArithmeticLogicUnit _alu;
         private readonly Register _aRegister;
         private readonly Register _bRegister;
@@ -94,14 +94,14 @@ namespace DigitalElectronics.Computers
         {
             _pc = new ProgramCounter(AddressSize);
             _ram = new SixteenByteIARAM();
-            _iRegister = new Register(WordSize);
+            _instrRegister = new Register(WordSize);
             _aRegister = new Register(WordSize);
             _bRegister = new Register(WordSize);
             _alu = new ArithmeticLogicUnit(WordSize);
             _outRegister = new Register(WordSize);
 
             _bus = new ParallelBus(WordSize,
-                _pc, _ram, _iRegister, _aRegister, _bRegister, _alu, _outRegister);
+                _pc, _ram, _instrRegister, _aRegister, _bRegister, _alu, _outRegister);
         }
 
         // Sets the given control signal high
@@ -115,7 +115,7 @@ namespace DigitalElectronics.Computers
             _bus.Transfer();
             _pc.Clock();
             _ram.Clock();
-            _iRegister.Clock();
+            _instrRegister.Clock();
             _aRegister.Clock();
             _bRegister.Clock();
             _outRegister.Clock();
@@ -164,7 +164,7 @@ namespace DigitalElectronics.Computers
         /// <summary>
         /// Returns internal state of Instruction Register
         /// </summary>
-        public BitArray ProbeIRegister() => _iRegister.ProbeState();
+        public BitArray ProbeInstrRegister() => _instrRegister.ProbeState();
 
         /// <summary>
         /// Returns internal state of A Register
@@ -188,8 +188,8 @@ namespace DigitalElectronics.Computers
             _ram.SetInputE(false);
             _ram.SetInputLA(false);
             _ram.SetInputLD(false);
-            _iRegister.SetInputE(false);
-            _iRegister.SetInputL(false);
+            _instrRegister.SetInputE(false);
+            _instrRegister.SetInputL(false);
             _aRegister.SetInputE(false);
             _aRegister.SetInputL(false);
             _bRegister.SetInputE(false);
