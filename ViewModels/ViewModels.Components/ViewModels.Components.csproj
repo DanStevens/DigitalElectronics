@@ -9,6 +9,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Models\Components\Components.csproj" />
+    <ProjectReference Include="..\..\Models\Modules\Modules.csproj" />
+    <ProjectReference Include="..\ViewModels.Modules\ViewModels.Modules\ViewModels.Modules.csproj" />
+    <ProjectReference Include="..\ViewModels.Utilities\ViewModels.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

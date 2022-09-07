@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using DigitalElectronics.Concepts;
-using DigitalElectronics.Utilities;
+using DP = System.Windows.DependencyProperty;
+using DPMetadata = System.Windows.FrameworkPropertyMetadata;
+using DPMetadataOptions = System.Windows.FrameworkPropertyMetadataOptions;
 
 namespace DigitalElectronics.UI.Controls
 {
@@ -32,31 +25,34 @@ namespace DigitalElectronics.UI.Controls
 
         #region Orientation dependency property
 
+        [Category("Layout")]
         public Orientation Orientation
         {
             get { return (Orientation)GetValue(OrientationProperty); }
             set { SetValue(OrientationProperty, value); }
         }
 
-        public static readonly DependencyProperty OrientationProperty =
-            DependencyProperty.Register("Orientation", typeof(Orientation), typeof(DipSwitch),
-                new PropertyMetadata(
+        public static readonly DP OrientationProperty =
+            DP.Register(nameof(Orientation), typeof(Orientation), typeof(DipSwitch),
+                new DPMetadata(
                     Orientation.Horizontal,
+                    DPMetadataOptions.AffectsArrange,
                     UpdateDock));
 
         #endregion
 
         #region BitOrder dependency property
 
+        [Category("Appearance")]
         public BitOrder BitOrder
         {
             get { return (BitOrder)GetValue(BitOrderProperty); }
             set { SetValue(BitOrderProperty, value); }
         }
 
-        public static readonly DependencyProperty BitOrderProperty =
-            DependencyProperty.Register("BitOrder", typeof(BitOrder), typeof(DipSwitch),
-                new PropertyMetadata(BitOrder.MsbFirst, UpdateDock));
+        public static readonly DP BitOrderProperty =
+            DP.Register(nameof(BitOrder), typeof(BitOrder), typeof(DipSwitch),
+                new DPMetadata(BitOrder.MsbFirst, UpdateDock));
 
         #endregion
 
@@ -69,29 +65,30 @@ namespace DigitalElectronics.UI.Controls
         }
 
         private static readonly DependencyPropertyKey DockPropertyKey =
-            DependencyProperty.RegisterReadOnly(nameof(Dock), typeof(Dock), typeof(DipSwitch), new PropertyMetadata(Dock.Left));
+            DP.RegisterReadOnly(nameof(Dock), typeof(Dock), typeof(DipSwitch), new DPMetadata(Dock.Left, DPMetadataOptions.AffectsArrange));
 
-        public static DependencyProperty DockProperty = DockPropertyKey.DependencyProperty;
+        public static DP DockProperty = DockPropertyKey.DependencyProperty;
 
         #endregion
 
         #region Lines read-only dependency property
 
+        [Category("Common")]
         public ObservableCollection<Bit> Lines
         {
             get { return (ObservableCollection<Bit>)GetValue(LinesProperty); }
             set { SetValue(LinesProperty, value); }
         }
 
-        public static readonly DependencyProperty LinesProperty =
-            DependencyProperty.Register("Lines", typeof(ObservableCollection<Bit>), typeof(DipSwitch),
-                new PropertyMetadata(null, OnLinesPropertyChanged));
+        public static readonly DP LinesProperty =
+            DP.Register(nameof(Lines), typeof(ObservableCollection<Bit>), typeof(DipSwitch),
+                new DPMetadata(null, OnLinesPropertyChanged));
 
         private static void OnLinesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is IEnumerable<Bit> newValue)
             {
-                var @this = ((DipSwitch)d);
+                var @this = (DipSwitch)d;
 
                 var oldValue = (e.OldValue as IEnumerable<Bit>) ?? Enumerable.Empty<Bit>();
                 foreach (var item in oldValue)
@@ -119,6 +116,7 @@ namespace DigitalElectronics.UI.Controls
 
         #region Value dependency property
 
+        [Category("Common")]
         public BitArray Value
         {
             get { return (BitArray)GetValue(ValueProperty); }
@@ -126,9 +124,9 @@ namespace DigitalElectronics.UI.Controls
         }
 
         private static readonly DependencyPropertyKey ValuePropertyKey =
-            DependencyProperty.RegisterReadOnly(nameof(Value), typeof(BitArray), typeof(DipSwitch), new PropertyMetadata());
+            DP.RegisterReadOnly(nameof(Value), typeof(BitArray), typeof(DipSwitch), new DPMetadata());
 
-        public static DependencyProperty ValueProperty = ValuePropertyKey.DependencyProperty;
+        public static DP ValueProperty = ValuePropertyKey.DependencyProperty;
 
         private void SetValue(IEnumerable<Bit> newValue)
         {

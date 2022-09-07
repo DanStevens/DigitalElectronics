@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.UI.Converters
 {
@@ -10,8 +11,8 @@ namespace DigitalElectronics.UI.Converters
     /// Converts a <see cref="Nullable{Boolean}"/> to non-nullable <see cref="Boolean"/>,
     /// where `null` is converted to `false`
     /// </summary>
-    [ValueConversion(typeof(bool?), typeof(bool))]
-    public class NullableBoolToBoolConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(Bit), typeof(bool))]
+    public class BitToBoolConverter : MarkupExtension, IValueConverter
     {
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
@@ -20,12 +21,12 @@ namespace DigitalElectronics.UI.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is bool && (bool)value;
+            return value is Bit bit && (bool)bit;
         }
 
         public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return new Bit(value.Equals(true));
         }
     }
 }

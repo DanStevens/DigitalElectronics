@@ -1,0 +1,138 @@
+﻿<UserControl x:Class="DigitalElectronics.UI.Controls.SevenSegmentDigit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignHeight="80" d:DesignWidth="40">
+    <UserControl.Resources>
+        <Geometry x:Key="HorizontalSegmentGeometry">m 26 0 4 4 -4 4 H 4 L 0 4 4 0 Z</Geometry>
+        <Geometry x:Key="VerticalSegmentGeometry">M 8 30 4 34 0 30 V 4 L 4 0 8 4 Z</Geometry>
+    </UserControl.Resources>
+    <Viewbox>
+        <Grid x:Name="_layoutRoot" Height="80" Width="40">
+            <Grid.Resources>
+                <SolidColorBrush x:Key="SegmentsLitBrush" Color="{Binding SegmentsLitColor}" />
+                <SolidColorBrush x:Key="SegmentsUnlitBrush" Color="{Binding SegmentsUnlitColor}" />
+                <Style x:Key="SegmentBaseStyle" TargetType="{x:Type Path}">
+                    <Setter Property="Fill" Value="{DynamicResource SegmentsUnlitBrush}" />
+                    <Setter Property="Stroke" Value="{Binding Stroke}" />
+                </Style>
+                <Style x:Key="SegmentAStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[0]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                </Style>
+                <Style x:Key="SegmentBStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[1]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="Margin" Value="0,5,0,0" />
+                </Style>
+                <Style x:Key="SegmentCStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[2]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                    <Setter Property="Margin" Value="0,0,0,5" />
+                </Style>
+                <Style x:Key="SegmentDStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[3]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                </Style>
+                <Style x:Key="SegmentEStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[4]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                    <Setter Property="Margin" Value="0,0,0,5" />
+                </Style>
+                <Style x:Key="SegmentFStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[5]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource VerticalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="Margin" Value="0,5,0,0" />
+                </Style>
+                <Style x:Key="SegmentGStyle" TargetType="{x:Type Path}" BasedOn="{StaticResource SegmentBaseStyle}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsActive}" Value="true" />
+                                <Condition Binding="{Binding Lines[6]}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Fill" Value="{DynamicResource SegmentsLitBrush}" />
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                    <Setter Property="Data" Value="{DynamicResource HorizontalSegmentGeometry}" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </Grid.Resources>
+            <Path x:Name="segmentA" Style="{StaticResource SegmentAStyle}" />
+            <Path x:Name="segmentB" Style="{StaticResource SegmentBStyle}" />
+            <Path x:Name="segmentC" Style="{StaticResource SegmentCStyle}" />
+            <Path x:Name="segmentD" Style="{StaticResource SegmentDStyle}" />
+            <Path x:Name="segmentE" Style="{StaticResource SegmentEStyle}" />
+            <Path x:Name="segmentF" Style="{StaticResource SegmentFStyle}" />
+            <Path x:Name="segmentG" Style="{StaticResource SegmentGStyle}" />
+        </Grid>
+    </Viewbox>
+</UserControl>
