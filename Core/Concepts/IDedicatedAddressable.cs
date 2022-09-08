@@ -1,9 +1,9 @@
 ﻿namespace DigitalElectronics.Concepts
 {
     /// <summary>
-    /// Represents a component a dedicated address input
+    /// Represents a component with a dedicated address input
     /// </summary>
-    /// <remarks>This interface represents a memory module that has a
+    /// <remarks>This interface represents an addressable component that has a
     /// dedicated address input, with a number of lines (bits) equal to
     /// <see cref="DigitalElectronics.Modules.Memory.IRAM.AddressSize"/> bits,
     /// which are set via the <see cref="SetInputA"/> method.</remarks>

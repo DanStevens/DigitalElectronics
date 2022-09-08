@@ -4,7 +4,7 @@
     /// Represents a component with a shared address input
     /// </summary>
     /// <remarks>
-    /// This interface represents a memory module that has a set of inputs lines (set via
+    /// This interface represents a an addressable component that has a set of inputs lines (set via
     /// <see cref="SetInputS(BitArray)"/> method) that is used to specify an address, where the same input
     /// lines are used for other purposes, such as receiving data. The
     /// <see cref="SetInputLA(bool)">'Load Address'</see> input, when set, signals to the memory module
@@ -16,7 +16,7 @@
         /// Sets value of the 'Shared' input lines according to the given <see cref="BitArray"/>
         /// </summary>
         /// <param name="addressOrData">A <see cref="BitArray"/> containing the values can
-        /// /// either be an address or data (or both)</param>
+        /// either be an address or data (or both)</param>
         void SetInputS(BitArray addressOrData);
 
         /// <summary>
