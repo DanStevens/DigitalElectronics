@@ -1,4 +1,5 @@
-﻿using DigitalElectronics.Concepts;
+﻿using System.Linq;
+using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
 using static DigitalElectronics.Computers.BenEater801Computer;
@@ -22,6 +23,17 @@ namespace DigitalElectronics.Computers.Tests
             30, 12 // Data
         };
 
+        // Machine code and data for test ProgramComputerToOutput3TimesTable
+        private readonly byte[] programData3TimesTable =
+        {
+            0b0101_0011, // LDI 3
+            0b0100_1111, // STA 15
+            0b0101_0000, // LDI 0
+            0b0010_1111, // ADD 15
+            0b1110_0000, // OUT
+            0b0110_0011, // JMP 3
+        };
+
         [Test]
         public void Create()
         {
@@ -29,21 +41,17 @@ namespace DigitalElectronics.Computers.Tests
             computer.Should().NotBeNull();
         }
 
+        /// <summary>
+        /// Tests the computer by manually operating the control signals of the computer
+        /// </summary>
         [Test]
         public void OperateComputerToAdd30And12AndOutput()
         {
             var computer = new BenEater801Computer();
             computer.LoadRAM(programDataAdd12And30);
+            ResetProgramCounter(computer);
 
-            ResetProgramCounter();
             Run();
-
-            void ResetProgramCounter()
-            {
-                computer.SetControlSignal(ControlSignal.CE);
-                computer.Clock();
-                computer.ProbePC().ToByte().Should().Be(0);
-            }
 
             void Run()
             {
@@ -84,47 +92,70 @@ namespace DigitalElectronics.Computers.Tests
 
             void FetchInstruction()
             {
-                computer.SetControlSignal(ControlSignal.CO);
-                computer.SetControlSignal(ControlSignal.MI);
+                computer.SetControlSignal(ControlSignals.CO);
+                computer.SetControlSignal(ControlSignals.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlSignal.RO);
-                computer.SetControlSignal(ControlSignal.II);
-                computer.SetControlSignal(ControlSignal.CE);
+                computer.SetControlSignal(ControlSignals.RO);
+                computer.SetControlSignal(ControlSignals.II);
+                computer.SetControlSignal(ControlSignals.CE);
                 computer.Clock();
             }
 
             void LDA()
             {
-                computer.SetControlSignal(ControlSignal.IO);
-                computer.SetControlSignal(ControlSignal.MI);
+                computer.SetControlSignal(ControlSignals.IO);
+                computer.SetControlSignal(ControlSignals.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlSignal.RO);
-                computer.SetControlSignal(ControlSignal.AI);
+                computer.SetControlSignal(ControlSignals.RO);
+                computer.SetControlSignal(ControlSignals.AI);
                 computer.Clock();
             }
 
             void ADD()
             {
-                computer.SetControlSignal(ControlSignal.IO);
-                computer.SetControlSignal(ControlSignal.MI);
+                computer.SetControlSignal(ControlSignals.IO);
+                computer.SetControlSignal(ControlSignals.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlSignal.RO);
-                computer.SetControlSignal(ControlSignal.BI);
+                computer.SetControlSignal(ControlSignals.RO);
+                computer.SetControlSignal(ControlSignals.BI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlSignal.EO);
-                computer.SetControlSignal(ControlSignal.AI);
+                computer.SetControlSignal(ControlSignals.EO);
+                computer.SetControlSignal(ControlSignals.AI);
                 computer.Clock();
             }
 
             void OUT()
             {
-                computer.SetControlSignal(ControlSignal.AO);
-                computer.SetControlSignal(ControlSignal.OI);
+                computer.SetControlSignal(ControlSignals.AO);
+                computer.SetControlSignal(ControlSignals.OI);
                 computer.Clock();
+            }
+        }
+
+        private static void ResetProgramCounter(BenEater801Computer computer)
+        {
+            computer.SetControlSignal(ControlSignals.CE);
+            computer.Clock();
+            computer.ProbePC().ToByte().Should().Be(0);
+        }
+
+        [Test]
+        public void ProgramComputerToOutput3TimesTable()
+        {
+            var computer = new BenEater801Computer();
+            computer.LoadRAM(programData3TimesTable);
+            ResetProgramCounter(computer);
+
+            foreach (byte i in Enumerable.Range(1, 10))
+            {
+                computer.Clock();   // LDI 3
+                computer.ProbeARegister().ToByte().Should().Be((byte)(i * 3));
+
+                computer.Clock();   // STA 15
             }
         }
     }
