@@ -1,15 +1,15 @@
 ﻿using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
-using static DigitalElectronics.Computers.ManualControlComputer;
+using static DigitalElectronics.Computers.BenEater801Computer;
 
 namespace DigitalElectronics.Computers.Tests
 {
 
     /// <summary>
-    /// Tests for the 8-bit manual control computer
+    /// Tests for Ben Eater's 8-bit programmable computer
     /// </summary>
-    public class TestManualControlComputer
+    public class TestBenEater801Computer
     {
 
         // Machine code and data for test OperateComputerToAdd30And12AndOutput
@@ -25,14 +25,14 @@ namespace DigitalElectronics.Computers.Tests
         [Test]
         public void Create()
         {
-            var computer = new ManualControlComputer();
+            var computer = new BenEater801Computer();
             computer.Should().NotBeNull();
         }
 
         [Test]
         public void OperateComputerToAdd30And12AndOutput()
         {
-            var computer = new ManualControlComputer();
+            var computer = new BenEater801Computer();
             computer.LoadRAM(programDataAdd12And30);
 
             ResetProgramCounter();

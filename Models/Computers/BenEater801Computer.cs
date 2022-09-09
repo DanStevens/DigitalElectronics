@@ -11,73 +11,14 @@ namespace DigitalElectronics.Computers
 {
 
     /// <summary>
-    /// A bare-bones 8-bit manual control computer, meaning it doesn't have a control logic module.
-    /// The operator must manually enable/disable module input/output and advance the clock.
+    /// A programmable 8-bit computer, based off Ben Eater's 8-bit breadboard computer.
     /// </summary>
-    public class ManualControlComputer
+    /// <seealso cref="https://eater.net/8bit">
+    /// Ben Eater's 8-bit computer on eater.net</seealso>
+    /// <seealso cref="https://youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU">
+    /// Building an 8-bit breadboard computer! - YouTube Playlist</seealso>
+    public partial class BenEater801Computer
     {
-        /// <summary>
-        /// Control signal enumerations for <see cref="ManualControlComputer"/>
-        /// </summary>
-        public enum ControlSignal
-        {
-            ///<summary>Halt</summary>
-            Halt,
-            ///<summary>Memory Register In</summary>
-            MI,
-            ///<summary>RAM In</summary>
-            RI,
-            ///<summary>RAM Out</summary>
-            RO,
-            ///<summary>Instruction Register Out</summary>
-            IO,
-            ///<summary>Instruction Register In</summary>
-            II,
-            ///<summary>A Register In</summary>
-            AI,
-            ///<summary>A Register Out</summary>
-            AO,
-            ///<summary>ALU Sum Out</summary>
-            EO,
-            ///<summary>ALU Subtract</summary>
-            SU,
-            ///<summary>B Register In</summary>
-            BI,
-            ///<summary>B Register Out</summary>
-            BO,
-            /// <summary>OUT Register In</summary>
-            OI,
-            ///<summary>Program Counter Enable</summary>
-            CE,
-            ///<summary>Program Counter Out</summary>
-            CO,
-            ///<summary>Jump</summary>
-            J
-        }
-
-        /// <summary>
-        /// Maps control words to their corresponding micro operation
-        /// </summary>
-        private static readonly Dictionary<ControlSignal, Action<ManualControlComputer>> _controlWordMap = new()
-        {
-            { ControlSignal.Halt, c => throw new NotImplementedException() },
-            { ControlSignal.MI, c => c._ram.SetInputLA(true) },
-            { ControlSignal.RI, c => c._ram.SetInputLD(true) },
-            { ControlSignal.RO, c => c._ram.SetInputE(true) },
-            { ControlSignal.IO, c => c._instrRegister.SetInputE(true) },
-            { ControlSignal.II, c => c._instrRegister.SetInputL(true) },
-            { ControlSignal.AI, c => c._aRegister.SetInputL(true) },
-            { ControlSignal.AO, c => c._aRegister.SetInputE(true) },
-            { ControlSignal.EO, c => c._alu.SetInputEO(true) },
-            { ControlSignal.SU, c => c._alu.SetInputSu(true) },
-            { ControlSignal.BI, c => c._bRegister.SetInputL(true) },
-            { ControlSignal.BO, c => c._bRegister.SetInputE(true) },
-            { ControlSignal.OI, c => c._outRegister.SetInputL(true) },
-            { ControlSignal.CE, c => c._pc.SetInputCE(true) },
-            { ControlSignal.CO, c => c._pc.SetInputE(true) },
-            { ControlSignal.J, c => c._pc.SetInputL(true) },
-        };
-
         private const int AddressSize = 4;
         private const int WordSize = 8;
 
@@ -90,7 +31,7 @@ namespace DigitalElectronics.Computers
         private readonly Register _outRegister;
         private readonly ParallelBus _bus;
 
-        public ManualControlComputer()
+        public BenEater801Computer()
         {
             _pc = new ProgramCounter(AddressSize);
             _ram = new SixteenByteIARAM();
@@ -102,12 +43,6 @@ namespace DigitalElectronics.Computers
 
             _bus = new ParallelBus(WordSize,
                 _pc, _ram, _instrRegister, _aRegister, _bRegister, _alu, _outRegister);
-        }
-
-        // Sets the given control signal high
-        public void SetControlSignal(ControlSignal s)
-        {
-            _controlWordMap[s].Invoke(this);
         }
 
         public void Clock()
@@ -180,23 +115,6 @@ namespace DigitalElectronics.Computers
         /// Returns internal state of OUT Register
         /// </summary>
         public BitArray ProbeOutRegister() => _outRegister.ProbeState();
-
-        private void ResetControlLines()
-        {
-            _pc.SetInputE(false);
-            _pc.SetInputCE(false);
-            _ram.SetInputE(false);
-            _ram.SetInputLA(false);
-            _ram.SetInputLD(false);
-            _instrRegister.SetInputE(false);
-            _instrRegister.SetInputL(false);
-            _aRegister.SetInputE(false);
-            _aRegister.SetInputL(false);
-            _bRegister.SetInputE(false);
-            _bRegister.SetInputL(false);
-            _alu.SetInputEO(false);
-            _outRegister.SetInputL(false);
-        }
 
         private void SyncALU()
         {
