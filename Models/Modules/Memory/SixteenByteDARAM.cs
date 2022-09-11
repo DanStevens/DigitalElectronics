@@ -151,6 +151,12 @@ namespace DigitalElectronics.Modules.Memory
             return _8BitRegisters[address.ToByte()].ProbeState();
         }
 
+        public void ResetAddress()
+        {
+            SetInputA(new BitArray(length: AddressSize));
+            Clock();
+        }
+
         int IRAM.Capacity => _Capacity;
 
         private void Sync()

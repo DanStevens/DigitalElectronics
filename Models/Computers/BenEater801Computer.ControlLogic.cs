@@ -1,5 +1,11 @@
 ﻿using System.Collections.Generic;
 using System;
+using static DigitalElectronics.Computers.BenEater801Computer.ControlSignals;
+using System.Linq;
+using DigitalElectronics.Modules.Counters;
+using DigitalElectronics.Modules.Memory;
+using DigitalElectronics.Concepts;
+using System.Diagnostics;
 
 namespace DigitalElectronics.Computers
 {
@@ -7,72 +13,187 @@ namespace DigitalElectronics.Computers
     public partial class BenEater801Computer
     {
         /// <summary>
-        /// Control signal enumerations for <see cref="BenEater801Computer"/>
+        /// Control signal enumerations for <see cref="BenEater801Computer"/>, which when
+        /// combine make a control word.
         /// </summary>
-        public enum ControlSignal
+        [Flags]
+        public enum ControlSignals : ushort
         {
             ///<summary>Halt</summary>
-            Halt,
+            Halt = 32768,
             ///<summary>Memory Register In</summary>
-            MI,
+            MI = 16384,
             ///<summary>RAM In</summary>
-            RI,
+            RI = 8192,
             ///<summary>RAM Out</summary>
-            RO,
+            RO = 4096,
             ///<summary>Instruction Register Out</summary>
-            IO,
+            IO = 2048,
             ///<summary>Instruction Register In</summary>
-            II,
+            II = 1024,
             ///<summary>A Register In</summary>
-            AI,
+            AI = 512,
             ///<summary>A Register Out</summary>
-            AO,
+            AO = 256,
             ///<summary>ALU Sum Out</summary>
-            EO,
+            EO = 128,
             ///<summary>ALU Subtract</summary>
-            SU,
+            SU = 64,
             ///<summary>B Register In</summary>
-            BI,
-            ///<summary>B Register Out</summary>
-            BO,
-            /// <summary>OUT Register In</summary>
-            OI,
+            BI = 32,
+            ///<summary>OUT Register In</summary>
+            OI = 16,
             ///<summary>Program Counter Enable</summary>
-            CE,
+            CE = 8,
             ///<summary>Program Counter Out</summary>
-            CO,
+            CO = 4,
             ///<summary>Jump</summary>
-            J
+            J = 2,
+            ///<summary>Unused</summary>
+            Unused = 1,
+            ///<summary>No signal</summary>
+            _ = 0,
         }
 
         /// <summary>
-        /// Maps control words to their corresponding micro operation
+        /// Microprograms for each of the instructions of the <see cref="BenEater801Computer"/>
         /// </summary>
-        private static readonly Dictionary<ControlSignal, Action<BenEater801Computer>> _controlWordMap = new()
+        /// <remarks>
+        /// The BE-801 computer supports an instruction cycle of up to 7 steps, including the fetch
+        /// stage, which is 2 steps.
+        /// </remarks>
+        private static readonly ControlSignals[] _microprograms =
         {
-            { ControlSignal.Halt, c => throw new NotImplementedException() },
-            { ControlSignal.MI, c => c._ram.SetInputLA(true) },
-            { ControlSignal.RI, c => c._ram.SetInputLD(true) },
-            { ControlSignal.RO, c => c._ram.SetInputE(true) },
-            { ControlSignal.IO, c => c._instrRegister.SetInputE(true) },
-            { ControlSignal.II, c => c._instrRegister.SetInputL(true) },
-            { ControlSignal.AI, c => c._aRegister.SetInputL(true) },
-            { ControlSignal.AO, c => c._aRegister.SetInputE(true) },
-            { ControlSignal.EO, c => c._alu.SetInputEO(true) },
-            { ControlSignal.SU, c => c._alu.SetInputSu(true) },
-            { ControlSignal.BI, c => c._bRegister.SetInputL(true) },
-            { ControlSignal.BO, c => c._bRegister.SetInputE(true) },
-            { ControlSignal.OI, c => c._outRegister.SetInputL(true) },
-            { ControlSignal.CE, c => c._pc.SetInputCE(true) },
-            { ControlSignal.CO, c => c._pc.SetInputE(true) },
-            { ControlSignal.J, c => c._pc.SetInputL(true) },
+            MI|CO,  RO|II|CE,  _,      _,      _,         _, _, _,   // 0000 - NOP
+            MI|CO,  RO|II|CE,  IO|MI,  RO|AI,  _,         _, _, _,   // 0001 - LDA
+            MI|CO,  RO|II|CE,  IO|MI,  RO|BI,  EO|AI,     _, _, _,   // 0010 - ADD
+            MI|CO,  RO|II|CE,  IO|MI,  RO|BI,  EO|AI|SU,  _, _, _,   // 0011 - SUB
+            MI|CO,  RO|II|CE,  IO|MI,  AO|RI,  _,         _, _, _,   // 0100 - STA
+            MI|CO,  RO|II|CE,  IO|AI,  _,      _,         _, _, _,   // 0101 - LDI
+            MI|CO,  RO|II|CE,  IO|J,   _,      _,         _, _, _,   // 0110 - JMP
+            MI|CO,  RO|II|CE,  _,      _,      _,         _, _, _,   // 0111
+            MI|CO,  RO|II|CE,  _,      _,      _,         _, _, _,   // 1000
+            MI|CO,  RO|II|CE,  _,      _,      _,         _, _, _,   // 1001
+            MI|CO,  RO|II|CE,  _,      _,      _,         _, _, _,   // 1010
+            MI|CO,  RO|II|CE,  _,      _,      _,         _, _, _,   // 1011
+            MI|CO,  RO|II|CE,  _,      _,      _,         _, _, _,   // 1100
+            MI|CO,  RO|II|CE,  _,      _,      _,         _, _, _,   // 1101
+            MI|CO,  RO|II|CE,  AO|OI,  _,      _,         _, _, _,   // 1110 - OUT
+            MI|CO,  RO|II|CE,  Halt,   _,      _,         _, _, _,   // 1111 - HLT
         };
 
-        // Sets the given control signal high
-        public void SetControlSignal(ControlSignal s)
+        private static readonly byte[] _microcodeLowBytes = new byte[_microprograms.Length];
+        private static readonly byte[] _microcodeHighBytes = new byte[_microprograms.Length];
+
+        /// <summary>
+        /// Maps control signals to their corresponding micro operation
+        /// </summary>
+        private static readonly Dictionary<ControlSignals, Action<BenEater801Computer>> _controlSignalMap = new()
         {
-            _controlWordMap[s].Invoke(this);
+            { Halt, c => { /*throw new NotImplementedException();*/ }},
+            { MI, c => c._ram.SetInputLA(true) },
+            { RI, c => c._ram.SetInputLD(true) },
+            { RO, c => c._ram.SetInputE(true) },
+            { IO, c => c._instrRegister.SetInputE(true) },
+            { II, c => c._instrRegister.SetInputL(true) },
+            { AI, c => c._aRegister.SetInputL(true) },
+            { AO, c => c._aRegister.SetInputE(true) },
+            { EO, c => c._alu.SetInputEO(true) },
+            { SU, c => c._alu.SetInputSu(true) },
+            { BI, c => c._bRegister.SetInputL(true) },
+            { OI, c => c._outRegister.SetInputL(true) },
+            { CE, c => c._pc.SetInputCE(true) },
+            { CO, c => c._pc.SetInputE(true) },
+            { J, c => c._pc.SetInputL(true) },
+            { Unused, c => {} },
+            { _, c => {} },
+        };
+
+        static void InitializeMicrocodeROM()
+        {
+            for (int i = 0; i < _microprograms.Length; i++)
+            {
+                var splitControlWord = BitConverter.GetBytes((ushort)_microprograms[i]);
+                System.Diagnostics.Debug.Assert(splitControlWord.Length == 2);
+                _microcodeLowBytes[i] = splitControlWord[0];
+                _microcodeHighBytes[i] = splitControlWord[1];
+            }
         }
+
+        private readonly BinaryCounter _stepCounter = new BinaryCounter(4);
+        private readonly FourBitAddressDecoder _stepLimiter = new FourBitAddressDecoder();
+
+        /// <summary>
+        /// When `true`, the computer operates in manual control mode, meaning an external operator
+        /// must set the <see cref="SetControlSignal(ControlSignals)">control signals</see> manually.
+        /// When `false`, the computer operates based off instructions programmed in RAM, starting at
+        /// memory address 0.
+        /// </summary>
+        public bool ManualControlMode { get; set; }
+
+        /// <summary>
+        /// Sets the given control signal high
+        /// </summary>
+        /// <param name="controlWord">The control signal</param>
+        public void SetControlSignal(ControlSignals controlSignal)
+        {
+            Debug.WriteLine("Set control signal {0}", controlSignal);
+            _controlSignalMap[controlSignal].Invoke(this);
+        }
+
+        /// <summary>
+        /// Sets the line associated with each control signal in the given control word to high
+        /// </summary>
+        /// <param name="controlWord">The control word</param>
+        public void SetControlSignals(ControlSignals controlWord)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                var controlSignal = (ControlSignals)(1 << i);
+                if (controlWord.HasFlag(controlSignal))
+                    SetControlSignal(controlSignal);
+            }
+        }
+
+        private void PerformControlLogic()
+        {
+            if (ManualControlMode) return;
+
+            _stepCounter.Clock();
+            _stepLimiter.SetInputA(_stepCounter.Output);
+
+            // Reset step counter to 0 as soon as it hits 6
+            if (_stepLimiter.OutputY[6]) _stepCounter.Set(new BitArray(length: 4));
+
+            var intr = _instrRegister.ProbeState();
+            var step = _stepCounter.Output;
+            var addr = new BitArray(step[0], step[1], step[2], intr[0], intr[1], intr[2], intr[3]);
+            _microcodeROMLowBytes.SetInputA(addr);
+            _microcodeROMHighBytes.SetInputA(addr);
+
+            for (int i = 0; i < 8; i++)
+            {
+                var lowControlSignal = (byte)(1 << i);
+                var controlWord = _microcodeROMLowBytes.Output.ToByte();
+                if ((controlWord & lowControlSignal) != 0)
+                    SetControlSignal((ControlSignals)lowControlSignal);
+            }
+
+            for (int i = 8; i < 16; i++)
+            {
+                var highControlSignal = (ushort)(1 << i);
+                var controlWord = _microcodeROMHighBytes.Output.ToByte() << 8;
+                if ((controlWord & highControlSignal) != 0)
+                    SetControlSignal((ControlSignals)highControlSignal);
+            }
+        }
+
+        private void ResetControlLogic()
+        {
+            _stepCounter.Reset();
+            ResetControlLines();
+        }
+
         private void ResetControlLines()
         {
             _pc.SetInputE(false);

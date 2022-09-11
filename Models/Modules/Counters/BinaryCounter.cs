@@ -85,5 +85,13 @@ namespace DigitalElectronics.Modules.Counters
                 _jkFlipFlops[i].SetInputK(true);
             }
         }
+
+        /// <summary>
+        /// Resets binary counter to initial state
+        /// </summary>
+        public void Reset()
+        {
+            Set(new BitArray(length: SizeInBits, true));
+        }
     }
 }

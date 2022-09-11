@@ -1,4 +1,5 @@
-﻿using DigitalElectronics.Concepts;
+﻿using System.Threading;
+using DigitalElectronics.Concepts;
 
 #nullable enable
 
@@ -23,5 +24,10 @@ namespace DigitalElectronics.Modules.Counters
         /// </summary>
         /// <param name="value"></param>
         void SetInputCE(bool value);
+
+        /// <summary>
+        /// Resets the program counter to zero
+        /// </summary>
+        public void Reset();
     }
 }

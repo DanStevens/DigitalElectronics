@@ -34,6 +34,11 @@ namespace DigitalElectronics.Components.Memory
         /// <see cref="Register.SetInputL">'Load' input</see> is `true`, the data set via
         /// <see cref="Register.SetInputD"/> is loaded into the registry.</remarks>
         void Clock();
+
+        /// <summary>
+        /// Resets the register, setting all bits to 1 and disabling output
+        /// </summary>
+        void Reset();
     }
 
     public interface IReadableRegister : IRegister, IOutputModule { }

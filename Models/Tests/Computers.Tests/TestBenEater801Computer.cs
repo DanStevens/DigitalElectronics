@@ -47,9 +47,9 @@ namespace DigitalElectronics.Computers.Tests
         [Test]
         public void OperateComputerToAdd30And12AndOutput()
         {
-            var computer = new BenEater801Computer();
+            var computer = new BenEater801Computer() {  ManualControlMode = true };
             computer.LoadRAM(programDataAdd12And30);
-            ResetProgramCounter(computer);
+            //ResetProgramCounter(computer);
 
             Run();
 
@@ -92,71 +92,96 @@ namespace DigitalElectronics.Computers.Tests
 
             void FetchInstruction()
             {
-                computer.SetControlSignal(ControlSignals.CO);
-                computer.SetControlSignal(ControlSignals.MI);
+                computer.SetControlSignals(ControlSignals.CO);
+                computer.SetControlSignals(ControlSignals.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlSignals.RO);
-                computer.SetControlSignal(ControlSignals.II);
-                computer.SetControlSignal(ControlSignals.CE);
+                computer.SetControlSignals(ControlSignals.RO);
+                computer.SetControlSignals(ControlSignals.II);
+                computer.SetControlSignals(ControlSignals.CE);
                 computer.Clock();
             }
 
             void LDA()
             {
-                computer.SetControlSignal(ControlSignals.IO);
-                computer.SetControlSignal(ControlSignals.MI);
+                computer.SetControlSignals(ControlSignals.IO);
+                computer.SetControlSignals(ControlSignals.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlSignals.RO);
-                computer.SetControlSignal(ControlSignals.AI);
+                computer.SetControlSignals(ControlSignals.RO);
+                computer.SetControlSignals(ControlSignals.AI);
                 computer.Clock();
             }
 
             void ADD()
             {
-                computer.SetControlSignal(ControlSignals.IO);
-                computer.SetControlSignal(ControlSignals.MI);
+                computer.SetControlSignals(ControlSignals.IO);
+                computer.SetControlSignals(ControlSignals.MI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlSignals.RO);
-                computer.SetControlSignal(ControlSignals.BI);
+                computer.SetControlSignals(ControlSignals.RO);
+                computer.SetControlSignals(ControlSignals.BI);
                 computer.Clock();
 
-                computer.SetControlSignal(ControlSignals.EO);
-                computer.SetControlSignal(ControlSignals.AI);
+                computer.SetControlSignals(ControlSignals.EO);
+                computer.SetControlSignals(ControlSignals.AI);
                 computer.Clock();
             }
 
             void OUT()
             {
-                computer.SetControlSignal(ControlSignals.AO);
-                computer.SetControlSignal(ControlSignals.OI);
+                computer.SetControlSignals(ControlSignals.AO);
+                computer.SetControlSignals(ControlSignals.OI);
                 computer.Clock();
             }
-        }
-
-        private static void ResetProgramCounter(BenEater801Computer computer)
-        {
-            computer.SetControlSignal(ControlSignals.CE);
-            computer.Clock();
-            computer.ProbePC().ToByte().Should().Be(0);
         }
 
         [Test]
         public void ProgramComputerToOutput3TimesTable()
         {
-            var computer = new BenEater801Computer();
+            var computer = new BenEater801Computer() {  ManualControlMode = false };
             computer.LoadRAM(programData3TimesTable);
-            ResetProgramCounter(computer);
+            //ResetProgramCounter(computer);
 
-            foreach (byte i in Enumerable.Range(1, 10))
-            {
-                computer.Clock();   // LDI 3
-                computer.ProbeARegister().ToByte().Should().Be((byte)(i * 3));
+            computer.ProbePC().ToByte().Should().Be(0);
+            computer.ProbeOutRegister().ToByte().Should().Be(255);
+            computer.ProbeMAR().ToByte().Should().Be(0);
 
-                computer.Clock();   // STA 15
-            }
+            // LDI 3
+            //computer.Clock(); // Step 0 - MI|CO
+            //computer.ProbePC().ToByte().Should().Be(0);
+            computer.Clock(); // Step 1 - RO|II|CE
+            //computer.ProbePC().ToByte().Should().Be(1);
+            //computer.ProbeInstrRegister().ToByte().Should().Be(0b0101_0011);
+            //computer.ProbeARegister().ToByte().Should().Be(3);
+
+            //computer.Clock();   // STA 15
+            //computer.ProbePC().ToByte().Should().Be(1);
+            //computer.ProbeInstrRegister().ToByte().Should().Be(0b01001111);
+            //computer.ProbeRAM(new BitArray((byte)15)).ToByte().Should().Be(3);
+
+            //computer.Clock();   // LDI 0
+            //computer.ProbePC().ToByte().Should().Be(2);
+            //computer.ProbeInstrRegister().ToByte().Should().Be(0b01010000);
+            //computer.ProbeARegister().ToByte().Should().Be(0);
+
+            //computer.Clock();   // ADD 15
+            //computer.ProbePC().ToByte().Should().Be(3);
+            //computer.ProbeInstrRegister().ToByte().Should().Be(0b00101111);
+            //computer.ProbeRAM(new BitArray((byte)15)).ToByte().Should().Be(3);
+
+            //computer.Clock();   // OUT
+            //computer.ProbePC().ToByte().Should().Be(4);
+            //computer.ProbeInstrRegister().ToByte().Should().Be(0b11100000);
+            //computer.ProbeOutRegister().ToByte().Should().Be(3);
+
+        }
+
+        private static void ResetProgramCounter(BenEater801Computer computer)
+        {
+            computer.SetControlSignals(ControlSignals.CE);
+            computer.Clock();
+            computer.ProbePC().ToByte().Should().Be(0);
         }
     }
 }

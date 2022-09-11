@@ -218,6 +218,23 @@ namespace DigitalElectronics.Components.Memory.Tests
             _4bitRegister.Output.Should().BeNull();
         }
 
+        [Test]
+        public void Reset_ShouldSetStateToAllOnes_EvenWhenInputLIsNotSet()
+        {
+            var data = new BitArray(true, false, true, false);
+            PushL();
+            _4bitRegister.SetInputD(data);
+            Clock();
+            ReleaseL();
+            AssertOutputs(true, false, true, false);
+            _4bitRegister.Output.ToByte().Should().Be(5);
+
+            _4bitRegister.Reset();
+            _4bitRegister.Output.Should().BeNull();
+            _4bitRegister.SetInputE(true);
+            AssertOutputs(true, true, true, true);
+        }
+
         private void AssertOutputs(params bool[] expectedOutputs)
         {
             var expectedData = new BitArray(expectedOutputs).AsReadOnlyList<bool>();

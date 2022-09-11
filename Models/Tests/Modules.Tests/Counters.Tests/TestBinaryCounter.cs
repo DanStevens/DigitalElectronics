@@ -95,5 +95,16 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
             fourBitBinaryCounter.Output.ToByte().Should().Be(5);
         }
 
+        [Test]
+        public void Reset_SetsToInitialState()
+        {
+            var fourBitBinaryCounter = new BinaryCounter(4);
+            fourBitBinaryCounter.Clock();
+            fourBitBinaryCounter.Output.ToByte().Should().Be(0);
+            fourBitBinaryCounter.Clock();
+            fourBitBinaryCounter.Output.ToByte().Should().Be(1);
+            fourBitBinaryCounter.Reset();
+            fourBitBinaryCounter.Output.ToByte().Should().Be(15);
+        }
     }
 }

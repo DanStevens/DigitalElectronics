@@ -118,5 +118,19 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
             programCounter.Output.Should().NotBeNull();
             programCounter.Output!.ToByte().Should().Be(15);
         }
+
+        [Test]
+        public void Reset_ShouldSetToZeroAndOutputToNull()
+        {
+            var programCounter = new ProgramCounter(AddressSize);
+            programCounter.SetInputCE(true);
+            programCounter.Clock();
+            programCounter.Clock();
+            programCounter.Clock();
+            programCounter.Reset();
+            programCounter.Output.Should().BeNull();
+            programCounter.SetInputE(true);
+            programCounter.Output.ToByte().Should().Be(0);
+        }
     }
 }

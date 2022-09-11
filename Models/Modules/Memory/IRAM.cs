@@ -57,5 +57,10 @@ namespace DigitalElectronics.Modules.Memory
         ///  <remarks>Consumers can use this to get the register's output without have to set
         /// the 'enable' signal (<see cref="Register.SetInputE"/>) to `true`.</remarks>
         BitArray ProbeState(BitArray address);
+
+        /// <summary>
+        /// Resets the internal address register to zero
+        /// </summary>
+        void ResetAddress();
     }
 }

@@ -126,6 +126,15 @@ namespace DigitalElectronics.Modules.Counters
             _jumpAddress = address;
         }
 
+        public void Reset()
+        {
+            SetInputL(true);
+            SetInputD(new BitArray(length: AddressSize));
+            Clock();
+            SetInputL(false);
+            SetInputE(false);
+        }
+
         private void Jump(BitArray address)
         {
             _counter.Set(address);

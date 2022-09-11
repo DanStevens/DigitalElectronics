@@ -127,5 +127,20 @@ namespace DigitalElectronics.Components.Memory
         /// `null` since setting the <see cref="SetInputE">enable signal></see> to
         /// `true` has no affect.
         public bool IsReadable => Mode.HasFlag(RegisterMode.Read);
+
+        /// <summary>
+        /// Resets the register, setting all bits to 1 and disabling output
+        /// </summary>
+        public void Reset()
+        {
+            foreach (var registerBit in _registers)
+            {
+                registerBit.SetInputL(true);
+                registerBit.SetInputD(true);
+                registerBit.Clock();
+                registerBit.SetInputL(false);
+                registerBit.SetInputE(false);
+            }
+        }
     }
 }

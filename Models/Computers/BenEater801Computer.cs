@@ -11,8 +11,18 @@ namespace DigitalElectronics.Computers
 {
 
     /// <summary>
-    /// A programmable 8-bit computer, based off Ben Eater's 8-bit breadboard computer.
+    /// The BE-801, a programmable 8-bit computer, based off Ben Eater's 8-bit breadboard computer.
     /// </summary>
+    /// <remarks>
+    /// Specifications:
+    ///   - 8-bit word length
+    ///   - A and B 8-bit registers
+    ///   - 4-bit address space
+    ///   - 16 byte RAM
+    ///   - 16-bit control word
+    ///   
+    /// The BE-801 is not turning complete as it lacks condition jump instruction
+    /// </remarks>
     /// <seealso cref="https://eater.net/8bit">
     /// Ben Eater's 8-bit computer on eater.net</seealso>
     /// <seealso cref="https://youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU">
@@ -22,6 +32,11 @@ namespace DigitalElectronics.Computers
         private const int AddressSize = 4;
         private const int WordSize = 8;
 
+        static BenEater801Computer()
+        {
+            InitializeMicrocodeROM();
+        }
+
         private readonly ProgramCounter _pc;
         private readonly SixteenByteIARAM _ram;
         private readonly Register _instrRegister;
@@ -30,6 +45,9 @@ namespace DigitalElectronics.Computers
         private readonly Register _bRegister;
         private readonly Register _outRegister;
         private readonly ParallelBus _bus;
+        private readonly ROM _microcodeROMLowBytes;
+        private readonly ROM _microcodeROMHighBytes;
+
 
         public BenEater801Computer()
         {
@@ -43,10 +61,31 @@ namespace DigitalElectronics.Computers
 
             _bus = new ParallelBus(WordSize,
                 _pc, _ram, _instrRegister, _aRegister, _bRegister, _alu, _outRegister);
+
+            _microcodeROMLowBytes = new ROM(_microcodeLowBytes);
+            _microcodeROMLowBytes.SetInputE(true);
+            _microcodeROMHighBytes = new ROM(_microcodeHighBytes);
+            _microcodeROMHighBytes.SetInputE(true);
+        }
+
+        /// <summary>
+        /// Resets registers to all 1s and program counter to zero. Leaves RAM untouched.
+        /// </summary>
+        public void Reset()
+        {
+            _instrRegister.Reset();
+            _aRegister.Reset();
+            _bRegister.Reset();
+            _outRegister.Reset();
+            _ram.ResetAddress();
+            _pc.Reset();
+            ResetControlLogic();
         }
 
         public void Clock()
         {
+            PerformControlLogic();
+
             _bus.Transfer();
             _pc.Clock();
             _ram.Clock();
@@ -60,10 +99,15 @@ namespace DigitalElectronics.Computers
         }
 
         /// <summary>
-        /// Loads the given bytes into RAM, up to <see cref="IRAM.Capacity"/>
+        /// Loads the given bytes into RAM, up to <see cref="IRAM.Capacity"/> and then calls
+        /// <see cref="Reset"/>
         /// </summary>
         /// <param name="image">An array of bytes to load</param>
         /// <exception cref="ArgumentNullException">when <paramref name="image"/> is null</exception>
+        /// <remarks>
+        /// Loads the bytes from address 0 overwriting memory address upto length of
+        /// <paramref name="image"/>.
+        /// </remarks>
         public void LoadRAM(byte[] image)
         {
             _ = image ?? throw new ArgumentNullException(nameof(image));
@@ -71,14 +115,16 @@ namespace DigitalElectronics.Computers
             var cap = Math.Min(image.Length, _ram.Capacity);
             for (byte i = 0; i < cap; i++)
             {
-                SetControlSignal(ControlSignal.MI);
+                SetControlSignals(ControlSignals.MI);
                 _ram.SetInputS(new BitArray(i));
                 Clock();
 
-                SetControlSignal(ControlSignal.RI);
+                SetControlSignals(ControlSignals.RI);
                 _ram.SetInputS(new BitArray(image[i]));
                 Clock();
             }
+
+            Reset();
         }
 
         /// <summary>

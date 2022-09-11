@@ -97,6 +97,12 @@ namespace DigitalElectronics.Modules.Memory
         /// can be called to see the current address.</remarks>
         public BitArray ProbeAddress() => _addressRegister.ProbeState();
 
+        public void ResetAddress()
+        {
+            SetInputA(new BitArray(length: AddressSize));
+            Clock();
+        }
+
         void IInputModule.SetInputD(BitArray data) => SetInputS(data);
     }
 }
