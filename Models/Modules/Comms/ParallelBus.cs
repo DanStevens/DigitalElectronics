@@ -69,9 +69,10 @@ namespace DigitalElectronics.Modules.Comms
         /// /// modules attached to the bus.</remarks>
         public void Transfer()
         {
-            if (Output != null)
+            var output = Output;
+            if (output != null)
                 foreach (var inputModule in _modules.OfType<IInputModule>())
-                    inputModule.SetInputD(Output);
+                    inputModule.SetInputD(output);
         }
 
         internal string DebuggerDisplay =>

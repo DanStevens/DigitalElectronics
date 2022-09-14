@@ -49,7 +49,6 @@ namespace DigitalElectronics.Computers.Tests
         {
             var computer = new BenEater801Computer() {  ManualControlMode = true };
             computer.LoadRAM(programDataAdd12And30);
-            //ResetProgramCounter(computer);
 
             Run();
 
@@ -141,47 +140,119 @@ namespace DigitalElectronics.Computers.Tests
         {
             var computer = new BenEater801Computer() {  ManualControlMode = false };
             computer.LoadRAM(programData3TimesTable);
-            //ResetProgramCounter(computer);
 
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(15);
+            computer.ProbeMAR().ToByte().Should().Be(0);
             computer.ProbePC().ToByte().Should().Be(0);
             computer.ProbeOutRegister().ToByte().Should().Be(255);
-            computer.ProbeMAR().ToByte().Should().Be(0);
 
             // LDI 3
-            //computer.Clock(); // Step 0 - MI|CO
-            //computer.ProbePC().ToByte().Should().Be(0);
-            computer.Clock(); // Step 1 - RO|II|CE
-            //computer.ProbePC().ToByte().Should().Be(1);
-            //computer.ProbeInstrRegister().ToByte().Should().Be(0b0101_0011);
-            //computer.ProbeARegister().ToByte().Should().Be(3);
-
-            //computer.Clock();   // STA 15
-            //computer.ProbePC().ToByte().Should().Be(1);
-            //computer.ProbeInstrRegister().ToByte().Should().Be(0b01001111);
-            //computer.ProbeRAM(new BitArray((byte)15)).ToByte().Should().Be(3);
-
-            //computer.Clock();   // LDI 0
-            //computer.ProbePC().ToByte().Should().Be(2);
-            //computer.ProbeInstrRegister().ToByte().Should().Be(0b01010000);
-            //computer.ProbeARegister().ToByte().Should().Be(0);
-
-            //computer.Clock();   // ADD 15
-            //computer.ProbePC().ToByte().Should().Be(3);
-            //computer.ProbeInstrRegister().ToByte().Should().Be(0b00101111);
-            //computer.ProbeRAM(new BitArray((byte)15)).ToByte().Should().Be(3);
-
-            //computer.Clock();   // OUT
-            //computer.ProbePC().ToByte().Should().Be(4);
-            //computer.ProbeInstrRegister().ToByte().Should().Be(0b11100000);
-            //computer.ProbeOutRegister().ToByte().Should().Be(3);
-
-        }
-
-        private static void ResetProgramCounter(BenEater801Computer computer)
-        {
-            computer.SetControlSignals(ControlSignals.CE);
-            computer.Clock();
+            computer.Clock(); // Step 0 - MI|CO
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(0);
             computer.ProbePC().ToByte().Should().Be(0);
+            computer.Clock(); // Step 1 - RO|II|CE
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(1);
+            computer.ProbePC().ToByte().Should().Be(1);
+            computer.ProbeInstrRegister().ToByte().Should().Be(0b0101_0011);
+            computer.Clock(); // Step 2 - IO|AI
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(2);
+            computer.ProbeARegister().ToByte().Should().Be(3);
+            computer.Clock(); // Step 3 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(3);
+            computer.Clock(); // Step 4 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(4);
+            computer.Clock(); // Step 5 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(5);
+
+            // STA 15
+            computer.Clock(); // Step 0 - MI|CO
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(0);
+            computer.ProbePC().ToByte().Should().Be(1);
+            computer.Clock(); // Step 1 - RO|II|CE
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(1);
+            computer.ProbePC().ToByte().Should().Be(2);
+            computer.ProbeInstrRegister().ToByte().Should().Be(0b0100_1111);
+            computer.Clock(); // Step 2 - IO|MI
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(2);
+            computer.Clock(); // Step 3 - AO|RI
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(3);
+            computer.ProbeRAM(new BitArray((byte)15)).ToByte().Should().Be(3);
+            computer.Clock(); // Step 4 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(4);
+            computer.Clock(); // Step 5 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(5);
+
+            // LDI 0
+            computer.Clock(); // Step 0 - MI|CO
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(0);
+            computer.ProbePC().ToByte().Should().Be(2);
+            computer.Clock(); // Step 1 - RO|II|CE
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(1);
+            computer.ProbePC().ToByte().Should().Be(3);
+            computer.ProbeInstrRegister().ToByte().Should().Be(0b0101_0000);
+            computer.Clock(); // Step 2 - IO|AI
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(2);
+            computer.ProbeARegister().ToByte().Should().Be(0);
+            computer.Clock(); // Step 3 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(3);
+            computer.Clock(); // Step 4 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(4);
+            computer.Clock(); // Step 5 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(5);
+
+            // ADD 15
+            computer.Clock(); // Step 0 - MI|CO
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(0);
+            computer.ProbePC().ToByte().Should().Be(3);
+            computer.Clock(); // Step 1 - RO|II|CE
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(1);
+            computer.ProbePC().ToByte().Should().Be(4);
+            computer.Clock(); // Step 2 - RO|BI
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(2);
+            computer.ProbeInstrRegister().ToByte().Should().Be(0b0010_1111);
+            computer.Clock(); // Step 3 - EO|AI
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(3);
+            computer.ProbeBRegister().ToByte().Should().Be(3);
+            computer.Clock(); // Step 4 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(4);
+            computer.ProbeARegister().ToByte().Should().Be(3);
+            computer.Clock(); // Step 5 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(5);
+
+            // OUT
+            computer.Clock(); // Step 0 - MI|CO
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(0);
+            computer.ProbePC().ToByte().Should().Be(4);
+            computer.Clock(); // Step 1 - RO|II|CE
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(1);
+            computer.ProbePC().ToByte().Should().Be(5);
+            computer.Clock(); // Step 2 - AO|OI
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(2);
+            computer.ProbeInstrRegister().ToByte().Should().Be(0b1110_0000);
+            computer.ProbeOutRegister().ToByte().Should().Be(3);
+            computer.Clock(); // Step 3 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(3);
+            computer.Clock(); // Step 4 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(4);
+            computer.Clock(); // Step 5 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(5);
+
+            // JMP 3
+            computer.Clock(); // Step 0 - MI|CO
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(0);
+            computer.ProbePC().ToByte().Should().Be(5);
+            computer.Clock(); // Step 1 - RO|II|CE
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(1);
+            computer.ProbePC().ToByte().Should().Be(6);
+            computer.Clock(); // Step 2 - IO|J
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(2);
+            computer.ProbePC().ToByte().Should().Be(3);
+            computer.Clock(); // Step 3 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(3);
+            computer.Clock(); // Step 4 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(4);
+            computer.Clock(); // Step 5 - (no op)
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(5);
         }
     }
 }

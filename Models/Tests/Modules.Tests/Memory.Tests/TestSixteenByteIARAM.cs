@@ -124,5 +124,22 @@ namespace DigitalElectronics.Modules.Tests.Memory.Tests
             var ramModule = new SixteenByteIARAM();
             ramModule.MaxAddress.Should().Be(15);
         }
+
+        [Test]
+        public void ResetAddress_ShouldSetAddressToZero()
+        {
+            var address0x5 = _bitConverter.GetBits((byte)5, 4);
+            var ramModule = new SixteenByteIARAM();
+
+            // Set address to 0
+            ramModule.SetInputLA(true);
+            ramModule.SetInputS(address0x5);
+            ramModule.Clock();
+            ramModule.SetInputLA(false);
+            ramModule.ProbeAddress().ToByte().Should().Be(5);
+
+            ramModule.ResetAddress();
+            ramModule.ProbeAddress().ToByte().Should().Be(0);
+        }
     }
 }

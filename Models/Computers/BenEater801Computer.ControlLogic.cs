@@ -5,7 +5,6 @@ using System.Linq;
 using DigitalElectronics.Modules.Counters;
 using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Concepts;
-using System.Diagnostics;
 
 namespace DigitalElectronics.Computers
 {
@@ -82,8 +81,7 @@ namespace DigitalElectronics.Computers
             MI|CO,  RO|II|CE,  Halt,   _,      _,         _, _, _,   // 1111 - HLT
         };
 
-        private static readonly byte[] _microcodeLowBytes = new byte[_microprograms.Length];
-        private static readonly byte[] _microcodeHighBytes = new byte[_microprograms.Length];
+        private static readonly byte[] _microcode = new byte[_microprograms.Length * 2];
 
         /// <summary>
         /// Maps control signals to their corresponding micro operation
@@ -115,8 +113,14 @@ namespace DigitalElectronics.Computers
             {
                 var splitControlWord = BitConverter.GetBytes((ushort)_microprograms[i]);
                 System.Diagnostics.Debug.Assert(splitControlWord.Length == 2);
-                _microcodeLowBytes[i] = splitControlWord[0];
-                _microcodeHighBytes[i] = splitControlWord[1];
+                _microcode[i] = splitControlWord[0];
+            }
+
+            for (int i = 0; i < _microprograms.Length; i++)
+            {
+                var splitControlWord = BitConverter.GetBytes((ushort)_microprograms[i]);
+                System.Diagnostics.Debug.Assert(splitControlWord.Length == 2);
+                _microcode[_microprograms.Length + i] = splitControlWord[1];
             }
         }
 
@@ -137,7 +141,7 @@ namespace DigitalElectronics.Computers
         /// <param name="controlWord">The control signal</param>
         public void SetControlSignal(ControlSignals controlSignal)
         {
-            Debug.WriteLine("Set control signal {0}", controlSignal);
+            System.Diagnostics.Debug.WriteLine("Set control signal {0}", controlSignal);
             _controlSignalMap[controlSignal].Invoke(this);
         }
 
@@ -155,6 +159,12 @@ namespace DigitalElectronics.Computers
             }
         }
 
+        /// <summary>
+        /// Returns the state of the internal microintruction step counter
+        /// </summary>
+        /// <returns></returns>
+        public BitArray ProbeMicroinstrStepCounter() => _stepCounter.Output;
+
         private void PerformControlLogic()
         {
             if (ManualControlMode) return;
@@ -165,25 +175,29 @@ namespace DigitalElectronics.Computers
             // Reset step counter to 0 as soon as it hits 6
             if (_stepLimiter.OutputY[6]) _stepCounter.Set(new BitArray(length: 4));
 
-            var intr = _instrRegister.ProbeState();
+            var instr = _instrRegister.ProbeState();
             var step = _stepCounter.Output;
-            var addr = new BitArray(step[0], step[1], step[2], intr[0], intr[1], intr[2], intr[3]);
-            _microcodeROMLowBytes.SetInputA(addr);
-            _microcodeROMHighBytes.SetInputA(addr);
+
+            var addr1 = new BitArray(step[0], step[1], step[2], instr[4], instr[5], instr[6], instr[7], false);
+            var addr = addr1;
+            _microcodeROM.SetInputA(addr);
+            var controlWordLowByte = _microcodeROM.Output.ToByte();
 
             for (int i = 0; i < 8; i++)
             {
                 var lowControlSignal = (byte)(1 << i);
-                var controlWord = _microcodeROMLowBytes.Output.ToByte();
-                if ((controlWord & lowControlSignal) != 0)
+                if ((controlWordLowByte & lowControlSignal) != 0)
                     SetControlSignal((ControlSignals)lowControlSignal);
             }
+
+            addr[7] = true;
+            _microcodeROM.SetInputA(addr);
+            var controlWordHighByte = _microcodeROM.Output.ToByte() << 8;
 
             for (int i = 8; i < 16; i++)
             {
                 var highControlSignal = (ushort)(1 << i);
-                var controlWord = _microcodeROMHighBytes.Output.ToByte() << 8;
-                if ((controlWord & highControlSignal) != 0)
+                if ((controlWordHighByte & highControlSignal) != 0)
                     SetControlSignal((ControlSignals)highControlSignal);
             }
         }

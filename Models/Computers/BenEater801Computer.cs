@@ -39,33 +39,30 @@ namespace DigitalElectronics.Computers
 
         private readonly ProgramCounter _pc;
         private readonly SixteenByteIARAM _ram;
-        private readonly Register _instrRegister;
+        private readonly InstructionRegister _instrRegister;
         private readonly ArithmeticLogicUnit _alu;
         private readonly Register _aRegister;
         private readonly Register _bRegister;
         private readonly Register _outRegister;
         private readonly ParallelBus _bus;
-        private readonly ROM _microcodeROMLowBytes;
-        private readonly ROM _microcodeROMHighBytes;
+        private readonly ROM _microcodeROM;
 
 
         public BenEater801Computer()
         {
             _pc = new ProgramCounter(AddressSize);
             _ram = new SixteenByteIARAM();
-            _instrRegister = new Register(WordSize);
-            _aRegister = new Register(WordSize);
-            _bRegister = new Register(WordSize);
+            _instrRegister = new InstructionRegister(WordSize) {  Label = "Instruction Register" };
+            _aRegister = new Register(WordSize) { Label = "A Register" };
+            _bRegister = new Register(WordSize) { Label = "B Register" };
             _alu = new ArithmeticLogicUnit(WordSize);
-            _outRegister = new Register(WordSize);
+            _outRegister = new Register(WordSize) { Label = "Out Register" };
 
             _bus = new ParallelBus(WordSize,
                 _pc, _ram, _instrRegister, _aRegister, _bRegister, _alu, _outRegister);
 
-            _microcodeROMLowBytes = new ROM(_microcodeLowBytes);
-            _microcodeROMLowBytes.SetInputE(true);
-            _microcodeROMHighBytes = new ROM(_microcodeHighBytes);
-            _microcodeROMHighBytes.SetInputE(true);
+            _microcodeROM = new ROM(_microcode);
+            _microcodeROM.SetInputE(true);
         }
 
         /// <summary>
@@ -117,11 +114,13 @@ namespace DigitalElectronics.Computers
             {
                 SetControlSignals(ControlSignals.MI);
                 _ram.SetInputS(new BitArray(i));
-                Clock();
+                _ram.Clock();
+                ResetControlLines();
 
                 SetControlSignals(ControlSignals.RI);
                 _ram.SetInputS(new BitArray(image[i]));
-                Clock();
+                _ram.Clock();
+                ResetControlLines();
             }
 
             Reset();
