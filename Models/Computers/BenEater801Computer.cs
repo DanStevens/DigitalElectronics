@@ -34,7 +34,7 @@ namespace DigitalElectronics.Computers
 
         static BenEater801Computer()
         {
-            InitializeMicrocodeROM();
+            InitializeMicrocode();
         }
 
         private readonly ProgramCounter _pc;
@@ -166,5 +166,7 @@ namespace DigitalElectronics.Computers
             _alu.SetInputA(_aRegister.ProbeState());
             _alu.SetInputB(_bRegister.ProbeState());
         }
+
+        internal ROM MicrocodeROM => _microcodeROM;
     }
 }

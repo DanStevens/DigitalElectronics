@@ -53,6 +53,7 @@ namespace DigitalElectronics.Modules.Memory
 
         public BitArray ProbeAddress()
         {
+            // TODO: Trim bits to number sufficient for MaxAddress
             return _bitConverter.GetBits(_address);
         }
 
