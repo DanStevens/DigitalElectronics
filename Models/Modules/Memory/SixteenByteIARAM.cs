@@ -21,7 +21,7 @@ namespace DigitalElectronics.Modules.Memory
     /// address register and a <see cref="SixteenByteDARAM">16 byte DARAM</see> module.
     /// </remarks>
     /// <seealso cref="ISharedAddressable"/>
-    [DebuggerDisplay("Shared A/D RAM: Address={this.ProbeAddress()}")]
+    [DebuggerDisplay("{this.Label,nq}: Addr={this.ProbeAddress()}")]
     public class SixteenByteIARAM : IRAM, ISharedAddressable
     {
         private readonly Register _addressRegister;
@@ -33,6 +33,8 @@ namespace DigitalElectronics.Modules.Memory
             _addressRegister.SetInputE(true);
             _ram = new SixteenByteDARAM();
         }
+
+        public string Label { get; set; } = "Shared A/D RAM";
 
         public int Capacity => ((IRAM)_ram).Capacity;
 
@@ -99,8 +101,11 @@ namespace DigitalElectronics.Modules.Memory
 
         public void ResetAddress()
         {
-            SetInputA(new BitArray(length: AddressSize));
+            SetInputLA(true);
+            SetInputS(new BitArray(length: AddressSize));
             Clock();
+            SetInputLA(false);
+            SetInputLD(false);
         }
 
         void IInputModule.SetInputD(BitArray data) => SetInputS(data);

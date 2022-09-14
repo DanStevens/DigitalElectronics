@@ -13,7 +13,7 @@ namespace DigitalElectronics.Modules.Counters
     /// <summary>
     /// Models a program counter
     /// </summary>
-    [DebuggerDisplay("Program Counter: {this.ProbeState()}")]
+    [DebuggerDisplay("{this.Label,nq}: {this.ProbeState()}")]
     public class ProgramCounter : IProgramCounter
     {
         // TODO: Replace these bool fields with component logic
@@ -49,6 +49,8 @@ namespace DigitalElectronics.Modules.Counters
 
             Sync();
         }
+
+        public string Label { get; set; } = "Program Counter";
 
         /// <summary>
         /// The word size of the program counter in bits

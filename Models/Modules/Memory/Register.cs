@@ -10,7 +10,7 @@ namespace DigitalElectronics.Components.Memory
     /// <summary>
     /// Models a multi-bit register of N bits, where each bit has its own input
     /// </summary>
-    [DebuggerDisplay("Register: {this.ProbeState()}")]
+    [DebuggerDisplay("{this.Label,nq}: {this.ProbeState()}")]
     public class Register : IReadWriteRegister
     {
         private readonly RegisterBit[] _registers;
@@ -44,6 +44,14 @@ namespace DigitalElectronics.Components.Memory
             for (int x = 0; x < upper; x++) SetInputDx(x, data[x]);
         }
 
+        /// <summary>
+        /// Optional label to help identify the register
+        /// </summary>
+        public string Label { get; set; } = "Register";
+
+        /// <summary>
+        /// Value that indicates whether the register is read-only, write-only or read and write
+        /// </summary>
         public RegisterMode Mode { get; }
 
         /// <summary>

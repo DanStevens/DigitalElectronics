@@ -9,13 +9,15 @@ using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Modules.ALUs
 {
-    
-    [DebuggerDisplay("ALU: {this.ProbeState()}")]
+
+    [DebuggerDisplay("{this.Label,nq}: {this.ProbeState()}")]
     public class ArithmeticLogicUnit : IArithmeticLogicUnit, IOutputModule
     {
         private readonly FullAdder[] _adders;
         private readonly TriStateBuffer[] _3SBuffers;
         private readonly XorGate[] _xorGates;
+
+        public string Label { get; set; } = "ALU";
 
         public ArithmeticLogicUnit(int wordSize)
         {

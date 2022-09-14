@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using DigitalElectronics.Concepts;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
+using System.Diagnostics;
 
 namespace DigitalElectronics.Modules.Memory
 {
@@ -12,6 +13,7 @@ namespace DigitalElectronics.Modules.Memory
     /// </summary>
     /// <remarks>The contents of the ROM are specified at creation time as a sequence of bytes of any
     /// arbitrary length. Thereafter the contents can be output (read) but not modified.</remarks>
+    [DebuggerDisplay("{this.Label,nq}: Addr={this.ProbeAddress()}")]
     public class ROM : IOutputModule, IDedicatedAddressable
     {
         private readonly BitConverter _bitConverter = new();
@@ -33,6 +35,8 @@ namespace DigitalElectronics.Modules.Memory
             if (_data.Length == 0)
                 throw new ArgumentException("Argument must contain at least one byte", nameof(data));
         }
+
+        public string Label { get; set; } = "ROM";
 
         public int WordSize => 8;
 

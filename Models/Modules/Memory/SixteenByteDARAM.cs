@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Components.Memory;
@@ -19,6 +20,7 @@ namespace DigitalElectronics.Modules.Memory
     /// <remarks>'Directly addressable' means the module has a dedicated address input,
     /// connected to an integrated address bus, with 4 lines (bits),
     /// which are set via the <see cref="SetInputA"/> method.</remarks>
+    [DebuggerDisplay("{this.Label,nq}")]
     public class SixteenByteDARAM : IRAM, IDedicatedAddressable
     {
         private const int _WordSize = 8; // Bits
@@ -50,11 +52,13 @@ namespace DigitalElectronics.Modules.Memory
             SetInputA(new BitArray(AddressSize));
         }
 
+        public string Label { get; set; } = "Direct Access RAM";
+
         public int AddressSize => 4;
 
         public int MaxAddress => 15;
 
-        BitArray IAddressable.ProbeAddress() => _addressDecoder.OutputY;
+        BitArray IAddressable.ProbeAddress() => throw new NotSupportedException("Not possible to probe the address on this component");
 
         /// <summary>
         /// Sets the 4-bit value of 'Address' inputs  according to the given <see cref="BitArray"/>

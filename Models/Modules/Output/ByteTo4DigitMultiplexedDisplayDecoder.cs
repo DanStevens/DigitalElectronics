@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.Counters;
 using DigitalElectronics.Modules.Memory;
@@ -13,6 +14,7 @@ namespace DigitalElectronics.Modules.Output
     /// decimal for use with a multiplexed 7-segment display. Multiplexed means it
     /// only outputs the segment lines for one of the four digits at a time,
     /// and cycles between them upon each call to <see cref="Clock()"/></remarks>
+    [DebuggerDisplay("{this.Label,nq}: {this.ProbeState()}")]
     public class ByteTo4DigitMultiplexedDisplayDecoder : IInputModule
     {
         private const int CounterSize = 2;
@@ -27,6 +29,8 @@ namespace DigitalElectronics.Modules.Output
             _counter.Set(new BitArray((byte)0));
             Sync();
         }
+
+        public string Label { get; set; } = "Byte To 4-digit Multiplexed Display Decoder";
 
         public BitArray Output => _decoderROM.Output;
 

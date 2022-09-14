@@ -13,6 +13,11 @@ namespace DigitalElectronics.Modules
         /// The word size for data contained in the module, in bits
         /// </summary>
         int WordSize { get; }
+
+        /// <summary>
+        /// Optional label to help identify the module
+        /// </summary>
+        string Label { get; set; }
     }
 
     /// <summary>
