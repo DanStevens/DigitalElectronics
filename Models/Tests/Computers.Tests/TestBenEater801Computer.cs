@@ -14,7 +14,7 @@ namespace DigitalElectronics.Computers.Tests
     {
 
         // Machine code and data for test OperateComputerToAdd30And12AndOutput
-        private readonly byte[] programDataAdd12And30 =
+        private readonly byte[] machineCodeAdd12And30 =
         {
             0x1E, // LDA 14
             0x1F, // ADD 15
@@ -24,7 +24,7 @@ namespace DigitalElectronics.Computers.Tests
         };
 
         // Machine code and data for test ProgramComputerToOutput3TimesTable
-        private readonly byte[] programData3TimesTable =
+        private readonly byte[] machineCode3TimesTable =
         {
             0b0101_0011, // LDI 3
             0b0100_1111, // STA 15
@@ -39,6 +39,8 @@ namespace DigitalElectronics.Computers.Tests
         {
             var computer = new BenEater801Computer();
             computer.Should().NotBeNull();
+            computer.MicrocodeROM.WordSize.Should().Be(8);
+            computer.MicrocodeROM.MaxAddress.Should().Be(255);
         }
 
         /// <summary>
@@ -48,7 +50,7 @@ namespace DigitalElectronics.Computers.Tests
         public void OperateComputerToAdd30And12AndOutput()
         {
             var computer = new BenEater801Computer() {  ManualControlMode = true };
-            computer.LoadRAM(programDataAdd12And30);
+            computer.LoadRAM(machineCodeAdd12And30);
 
             Run();
 
@@ -139,7 +141,7 @@ namespace DigitalElectronics.Computers.Tests
         public void ProgramComputerToOutput3TimesTable()
         {
             var computer = new BenEater801Computer() { ManualControlMode = false };
-            computer.LoadRAM(programData3TimesTable);
+            computer.LoadRAM(machineCode3TimesTable);
             byte pc = 0;
 
             computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(15);
@@ -150,9 +152,13 @@ namespace DigitalElectronics.Computers.Tests
             LDI_0x3(expectedARegister: 3);
             STA_0xF(expectedRAMAddr15: 3);
             LDI_0x0(expectedARegister: 0);
-            ADD_0xF(expectedARegister: 3, expectedBRegister: 3);
-            OUT____(expectedOutRegister: 3);
-            JMP_0x3(expectedPC: 3);
+
+            for (byte i = 3; i <= 36; i += 3)
+            {
+                ADD_0xF(expectedARegister: i, expectedBRegister: 3);
+                OUT____(expectedOutRegister: i);
+                JMP_0x3(expectedPC: 3);
+            }
 
             void LDI_0x3(byte expectedARegister)
             {
@@ -227,10 +233,10 @@ namespace DigitalElectronics.Computers.Tests
                 computer.ProbeInstrRegister().ToByte().Should().Be(0b0010_1111);
                 computer.Clock(); // Step 3 - EO|AI
                 computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(3);
-                computer.ProbeBRegister().ToByte().Should().Be(expectedARegister);
+                computer.ProbeBRegister().ToByte().Should().Be(expectedBRegister);
                 computer.Clock(); // Step 4 - (no op)
                 computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(4);
-                computer.ProbeARegister().ToByte().Should().Be(expectedBRegister);
+                computer.ProbeARegister().ToByte().Should().Be(expectedARegister);
                 computer.Clock(); // Step 5 - (no op)
                 computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(5);
             }

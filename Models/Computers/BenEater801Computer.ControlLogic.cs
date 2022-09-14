@@ -107,7 +107,7 @@ namespace DigitalElectronics.Computers
             { _, c => {} },
         };
 
-        static void InitializeMicrocodeROM()
+        static void InitializeMicrocode()
         {
             for (int i = 0; i < _microprograms.Length; i++)
             {
@@ -211,6 +211,7 @@ namespace DigitalElectronics.Computers
         {
             _pc.SetInputE(false);
             _pc.SetInputCE(false);
+            _pc.SetInputL(false);
             _ram.SetInputE(false);
             _ram.SetInputLA(false);
             _ram.SetInputLD(false);
@@ -221,7 +222,9 @@ namespace DigitalElectronics.Computers
             _bRegister.SetInputE(false);
             _bRegister.SetInputL(false);
             _alu.SetInputEO(false);
+            _alu.SetInputSu(false);
             _outRegister.SetInputL(false);
+            _outRegister.SetInputE(false);
         }
     }
 }
