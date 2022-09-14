@@ -178,8 +178,7 @@ namespace DigitalElectronics.Computers
             var instr = _instrRegister.ProbeState();
             var step = _stepCounter.Output;
 
-            var addr1 = new BitArray(step[0], step[1], step[2], instr[4], instr[5], instr[6], instr[7], false);
-            var addr = addr1;
+            var addr = new BitArray(step[0], step[1], step[2], instr[4], instr[5], instr[6], instr[7], false);
             _microcodeROM.SetInputA(addr);
             var controlWordLowByte = _microcodeROM.Output.ToByte();
 
