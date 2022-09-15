@@ -1,7 +1,7 @@
 ﻿using DigitalElectronics.Concepts;
 using DigitalElectronics.Components.Memory;
 
-namespace DigitalElectronics.Computers
+namespace DigitalElectronics.BenEater.Computers
 {
 
     public partial class BenEater801Computer

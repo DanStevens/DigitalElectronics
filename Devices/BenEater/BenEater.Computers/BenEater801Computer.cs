@@ -7,7 +7,7 @@ using DigitalElectronics.Modules.Comms;
 using DigitalElectronics.Modules.Counters;
 using DigitalElectronics.Modules.Memory;
 
-namespace DigitalElectronics.Computers
+namespace DigitalElectronics.BenEater.Computers
 {
 
     /// <summary>

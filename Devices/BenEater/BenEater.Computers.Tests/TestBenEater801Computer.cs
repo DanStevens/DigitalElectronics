@@ -2,9 +2,9 @@
 using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
-using static DigitalElectronics.Computers.BenEater801Computer;
+using static DigitalElectronics.BenEater.Computers.BenEater801Computer;
 
-namespace DigitalElectronics.Computers.Tests
+namespace DigitalElectronics.BenEater.Computers.Tests
 {
 
     /// <summary>
@@ -39,8 +39,6 @@ namespace DigitalElectronics.Computers.Tests
         {
             var computer = new BenEater801Computer();
             computer.Should().NotBeNull();
-            computer.MicrocodeROM.WordSize.Should().Be(8);
-            computer.MicrocodeROM.MaxAddress.Should().Be(255);
         }
 
         /// <summary>

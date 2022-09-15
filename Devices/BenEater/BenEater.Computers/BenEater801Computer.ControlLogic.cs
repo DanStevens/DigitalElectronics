@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System;
-using static DigitalElectronics.Computers.BenEater801Computer.ControlSignals;
+using static DigitalElectronics.BenEater.Computers.BenEater801Computer.ControlSignals;
 using System.Linq;
 using DigitalElectronics.Modules.Counters;
 using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Concepts;
 
-namespace DigitalElectronics.Computers
+namespace DigitalElectronics.BenEater.Computers
 {
 
     public partial class BenEater801Computer
