@@ -4,7 +4,7 @@ using DigitalElectronics.Components.Memory;
 namespace DigitalElectronics.BenEater.Computers
 {
 
-    public partial class BenEater801Computer
+    public partial class BE801Computer
     {
         /// <summary>
         /// The instruction register for the BE-801 computer

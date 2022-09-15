@@ -2,7 +2,7 @@
 using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
-using static DigitalElectronics.BenEater.Computers.BenEater801Computer;
+using static DigitalElectronics.BenEater.Computers.BE801Computer;
 
 namespace DigitalElectronics.BenEater.Computers.Tests
 {
@@ -10,7 +10,7 @@ namespace DigitalElectronics.BenEater.Computers.Tests
     /// <summary>
     /// Tests for Ben Eater's 8-bit programmable computer
     /// </summary>
-    public class TestBenEater801Computer
+    public class BE801ComputerTests
     {
 
         // Machine code and data for test OperateComputerToAdd30And12AndOutput
@@ -37,7 +37,7 @@ namespace DigitalElectronics.BenEater.Computers.Tests
         [Test]
         public void Create()
         {
-            var computer = new BenEater801Computer();
+            var computer = new BE801Computer();
             computer.Should().NotBeNull();
         }
 
@@ -48,7 +48,7 @@ namespace DigitalElectronics.BenEater.Computers.Tests
         [Test]
         public void OperateComputerToAdd30And12AndOutput()
         {
-            var computer = new BenEater801Computer() {  ManualControlMode = true };
+            var computer = new BE801Computer() {  ManualControlMode = true };
             computer.LoadRAM(machineCodeAdd12And30);
 
             Run();
@@ -138,13 +138,13 @@ namespace DigitalElectronics.BenEater.Computers.Tests
 
         /// <summary>
         /// Tests the computer by loading the machine code for computing the 3 times
-        /// table into memory and calling to <see cref="BenEater801Computer.Clock"/>
+        /// table into memory and calling to <see cref="BE801Computer.Clock"/>
         /// method repeatedly to advance the program
         /// </summary>
         [Test]
         public void ProgramComputerToOutput3TimesTable()
         {
-            var computer = new BenEater801Computer() { ManualControlMode = false };
+            var computer = new BE801Computer() { ManualControlMode = false };
             computer.LoadRAM(machineCode3TimesTable);
             byte pc = 0;
 

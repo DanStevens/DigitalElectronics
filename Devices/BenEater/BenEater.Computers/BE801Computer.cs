@@ -27,12 +27,12 @@ namespace DigitalElectronics.BenEater.Computers
     /// Ben Eater's 8-bit computer on eater.net</seealso>
     /// <seealso cref="https://youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU">
     /// Building an 8-bit breadboard computer! - YouTube Playlist</seealso>
-    public partial class BenEater801Computer
+    public partial class BE801Computer
     {
         private const int AddressSize = 4;
         private const int WordSize = 8;
 
-        static BenEater801Computer()
+        static BE801Computer()
         {
             InitializeMicrocode();
         }
@@ -48,7 +48,7 @@ namespace DigitalElectronics.BenEater.Computers
         private readonly ROM _microcodeROM;
 
 
-        public BenEater801Computer()
+        public BE801Computer()
         {
             _pc = new ProgramCounter(AddressSize);
             _ram = new SixteenByteIARAM();

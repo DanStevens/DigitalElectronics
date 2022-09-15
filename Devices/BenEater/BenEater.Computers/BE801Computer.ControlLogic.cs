@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
-using static DigitalElectronics.BenEater.Computers.BenEater801Computer.ControlSignals;
+using static DigitalElectronics.BenEater.Computers.BE801Computer.ControlSignals;
 using System.Linq;
 using DigitalElectronics.Modules.Counters;
 using DigitalElectronics.Modules.Memory;
@@ -9,10 +9,10 @@ using DigitalElectronics.Concepts;
 namespace DigitalElectronics.BenEater.Computers
 {
 
-    public partial class BenEater801Computer
+    public partial class BE801Computer
     {
         /// <summary>
-        /// Control signal enumerations for <see cref="BenEater801Computer"/>, which when
+        /// Control signal enumerations for <see cref="BE801Computer"/>, which when
         /// combine make a control word.
         /// </summary>
         [Flags]
@@ -55,7 +55,7 @@ namespace DigitalElectronics.BenEater.Computers
         }
 
         /// <summary>
-        /// Microprograms for each of the instructions of the <see cref="BenEater801Computer"/>
+        /// Microprograms for each of the instructions of the <see cref="BE801Computer"/>
         /// </summary>
         /// <remarks>
         /// The BE-801 computer supports an instruction cycle of up to 7 steps, including the fetch
@@ -86,7 +86,7 @@ namespace DigitalElectronics.BenEater.Computers
         /// <summary>
         /// Maps control signals to their corresponding micro operation
         /// </summary>
-        private static readonly Dictionary<ControlSignals, Action<BenEater801Computer>> _controlSignalMap = new()
+        private static readonly Dictionary<ControlSignals, Action<BE801Computer>> _controlSignalMap = new()
         {
             { Halt, c => { /*throw new NotImplementedException();*/ }},
             { MI, c => c._ram.SetInputLA(true) },
