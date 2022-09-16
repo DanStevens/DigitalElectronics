@@ -39,8 +39,11 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Clock"
-                           Margin="0,0,0,10" HorizontalAlignment="Center"  />
+                <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                            HorizontalAlignment="Center" Margin="0,0,0,10">
+                    <TextBlock Text="Clock" Margin="0,0,5,0"  />
+                    <controls:LED HorizontalAlignment="Center" Width="15" Height="15" IsLit="True" />
+                </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical">
                     <Slider Width="200"/>
                     <TextBlock HorizontalAlignment="Center">
