@@ -30,7 +30,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Border Grid.Row="0" Grid.Column="0">
-            <Grid>
+            <Grid x:Name="ClockModuleContainer">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
@@ -58,14 +58,19 @@
             </Grid>
         </Border>
         <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="99">
-            <StackPanel Orientation="Vertical">
+            <StackPanel x:Name="BusModuleContainer" Orientation="Vertical">
                 <TextBlock Text="Bus" HorizontalAlignment="Center" Margin="0,0,0,5" />
                 <Viewbox>
                     <controls:LedStrip LedSize="12" />
                 </Viewbox>
             </StackPanel>
         </Border>
-        <TextBlock Text="Program Counter" Grid.Row="0" Grid.Column="2" />
+        <Border x:Name="ProgramCounterModuleContainer" Grid.Row="0" Grid.Column="2">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Program Counter" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <controls:LedStrip HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
         <TextBlock Text="Address Unit" Grid.Row="1" Grid.Column="0" />
         <TextBlock Text="A Register" Grid.Row="1" Grid.Column="2" />
         <TextBlock Text="RAM" Grid.Row="2" Grid.Column="0" />
