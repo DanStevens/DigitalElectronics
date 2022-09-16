@@ -71,11 +71,31 @@
                 <controls:LedStrip HorizontalAlignment="Center"/>
             </StackPanel>
         </Border>
-        <TextBlock Text="Address Unit" Grid.Row="1" Grid.Column="0" />
-        <TextBlock Text="A Register" Grid.Row="1" Grid.Column="2" />
+        <Border x:Name="AddressUnitContainer" Grid.Row="1" Grid.Column="0">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Address Unit" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <controls:LedStrip HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        <Border x:Name="ARegisterContainer" Grid.Row="1" Grid.Column="2">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="A Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <controls:LedStrip HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        <Border x:Name="ALUContainer" Grid.Row="2" Grid.Column="2">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="ALU" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <controls:LedStrip HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        <Border x:Name="BRegisterContainer" Grid.Row="3" Grid.Column="2">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="B Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <controls:LedStrip HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
         <TextBlock Text="RAM" Grid.Row="2" Grid.Column="0" />
-        <TextBlock Text="ALU" Grid.Row="2" Grid.Column="2" />
-        <TextBlock Text="B Registers" Grid.Row="3" Grid.Column="2" />
         <TextBlock Text="Instruction Register" Grid.Row="4" Grid.Column="0" />
         <TextBlock Text="Output" Grid.Row="4" Grid.Column="2" />
         <TextBlock Text="Microcode ROM" Grid.Row="5" Grid.Column="0" />
