@@ -9,4 +9,9 @@
     <RootNamespace>$(SolutionName).$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Core.csproj" />
+    <ProjectReference Include="..\..\..\Views\DigitalElectronics.UI\DigitalElectronics.UI.csproj" />
+  </ItemGroup>
+
 </Project>
