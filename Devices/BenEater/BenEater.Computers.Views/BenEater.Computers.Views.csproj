@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Core.csproj" />
     <ProjectReference Include="..\..\..\Views\DigitalElectronics.UI\DigitalElectronics.UI.csproj" />
+    <ProjectReference Include="..\BenEater.Computers.ViewModels\BenEater.Computers.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>
