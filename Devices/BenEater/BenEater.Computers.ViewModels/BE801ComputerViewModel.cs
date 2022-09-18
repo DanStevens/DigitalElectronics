@@ -14,7 +14,7 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
 
         public void Clock()
         {
-            // TODO
+            ClockModule.Clock();
         }
 
         public class ClockModuleViewModel : INotifyPropertyChanged
@@ -55,6 +55,10 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
                         ClockSpeedChanged?.Invoke(this, EventArgs.Empty);
                     }
                 }
+            }
+
+            public void Clock()
+            {
             }
 
             public event PropertyChangedEventHandler? PropertyChanged;

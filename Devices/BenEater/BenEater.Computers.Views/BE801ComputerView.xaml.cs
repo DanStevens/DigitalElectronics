@@ -28,6 +28,18 @@ namespace DigitalElectronics.BenEater.Computers.Views
             InitializeComponent();
         }
 
+        public static readonly RoutedEvent ClockTickEvent = EventManager.RegisterRoutedEvent(
+            name: "ClockTick",
+            routingStrategy: RoutingStrategy.Direct,
+            handlerType: typeof(RoutedEventHandler),
+            ownerType: typeof(BE801ComputerView));
+
+        public event RoutedEventHandler ClockTick
+        {
+            add { AddHandler(ClockTickEvent, value); }
+            remove { RemoveHandler(ClockTickEvent, value); }
+        }
+
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
@@ -53,11 +65,17 @@ namespace DigitalElectronics.BenEater.Computers.Views
 
         private void OnClockTick(object? sender, EventArgs e)
         {
-            _viewModel.Clock();
+            Clock();
         }
 
         private void ClockButton_Click(object sender, RoutedEventArgs e)
         {
+            Clock();
+        }
+
+        private void Clock()
+        {
+            RaiseEvent(new RoutedEventArgs(ClockTickEvent));
             _viewModel.Clock();
         }
 

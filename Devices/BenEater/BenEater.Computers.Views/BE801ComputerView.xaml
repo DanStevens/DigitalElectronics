@@ -8,6 +8,19 @@
              xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="800">
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="local:BE801ComputerView.ClockTick">
+            <BeginStoryboard>
+                <Storyboard>
+                    <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsLit" SpeedRatio="1"
+                            Storyboard.Target="{Binding Source={x:Reference ClockTickLED}}">
+                        <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0" />
+                        <DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.1" />
+                    </BooleanAnimationUsingKeyFrames>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
     <Grid x:Name="LayoutRoot">
         <Grid.DataContext>
             <viewModels:BE801ComputerViewModel x:Name="_viewModel" />
@@ -44,10 +57,10 @@
                 <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
                             HorizontalAlignment="Center" Margin="0,0,0,10">
                     <TextBlock Text="Clock" Margin="0,0,5,0"  />
-                    <controls:LED HorizontalAlignment="Center" Width="15" Height="15" IsLit="True" />
+                    <controls:LED x:Name="ClockTickLED" HorizontalAlignment="Center" Width="15" Height="15" IsLit="False" />
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical">
-                    <Slider Width="200" Value="{Binding ClockSpeed}"/>
+                    <Slider Width="200" Value="{Binding ClockSpeed}" IsEnabled="False" />
                     <TextBlock HorizontalAlignment="Center">
                         <Run>Clock Speed:</Run>
                         <Run Text="{Binding ClockSpeed}" />
