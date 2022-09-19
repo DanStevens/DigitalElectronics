@@ -26,12 +26,12 @@ namespace DigitalElectronics.BenEater.Computers.Tests
         // Machine code and data for test ProgramComputerToOutput3TimesTable
         private readonly byte[] machineCode3TimesTable =
         {
-            0b0101_0011, // LDI 3
-            0b0100_1111, // STA 15
-            0b0101_0000, // LDI 0
-            0b0010_1111, // ADD 15
-            0b1110_0000, // OUT
-            0b0110_0011, // JMP 3
+            0x53, // LDI 3
+            0x4F, // STA 15
+            0x50, // LDI 0
+            0x2F, // ADD 15
+            0xE0, // OUT
+            0x63, // JMP 3
         };
 
         [Test]

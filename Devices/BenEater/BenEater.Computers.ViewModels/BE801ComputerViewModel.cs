@@ -40,6 +40,17 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             OutputModule.Clock();
         }
 
+        /// <summary>
+        /// Loads the given data into RAM
+        /// </summary>
+        /// <param name="data">Bytes to load</param>
+        /// <remarks>Only the first 16 bytes of of <paramref name="data"/> are loaded into RAM</remarks>
+        public void LoadRAM(byte[] data)
+        {
+            _computer.LoadRAM(data);
+            MemoryModule.Clock();
+        }
+
         public class ClockModuleViewModel : ModuleViewModel
         {
             private bool isRunning;

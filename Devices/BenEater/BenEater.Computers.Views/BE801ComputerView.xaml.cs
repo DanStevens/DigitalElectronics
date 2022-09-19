@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Microsoft.Win32;
 
 namespace DigitalElectronics.BenEater.Computers.Views
 {
@@ -83,6 +85,21 @@ namespace DigitalElectronics.BenEater.Computers.Views
         {
             _clock.Tick -= OnClockTick;
             _viewModel.ClockModule.IsRunningChanged -= OnComputerRunningStateChanged;
+        }
+
+        private void LoadRAMButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog()
+            {
+                Filter = "Binary files (*.bin)|*.bin|All files (*.*)|*.*",
+                RestoreDirectory = true,
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                byte[] data = File.ReadAllBytes(dialog.FileName);
+                _viewModel.LoadRAM(data);
+            }
         }
     }
 }
