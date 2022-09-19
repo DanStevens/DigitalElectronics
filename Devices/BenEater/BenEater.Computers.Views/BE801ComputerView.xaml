@@ -83,9 +83,9 @@
             </StackPanel>
         </Border>
         <Border x:Name="ProgramCounterModuleContainer" Grid.Row="0" Grid.Column="2">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" DataContext="{Binding ProgramCounterModule}">
                 <TextBlock Text="Program Counter" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center"/>
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding State}" BitOrder="LsbFirst" />
             </StackPanel>
         </Border>
         <Border x:Name="AddressUnitContainer" Grid.Row="1" Grid.Column="0">

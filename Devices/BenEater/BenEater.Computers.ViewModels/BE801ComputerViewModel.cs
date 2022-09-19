@@ -5,19 +5,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DigitalElectronics.BenEater.Computers;
+using DigitalElectronics.Concepts;
+using DigitalElectronics.Modules.Counters;
 
 namespace DigitalElectronics.BenEater.Computers.ViewModels
 {
     public class BE801ComputerViewModel
     {
-        public ClockModuleViewModel ClockModule { get; } = new ClockModuleViewModel();
+        private readonly BE801Computer _computer;
+        
+        public ClockModuleViewModel ClockModule { get; }
+        public ProgramCounterViewModel ProgramCounterModule { get; }
+
+        public BE801ComputerViewModel()
+        {
+            _computer = new();
+            ClockModule = new();
+            ProgramCounterModule = new(_computer);
+        }
 
         public void Clock()
         {
-            ClockModule.Clock();
+            _computer.Clock();
+            ProgramCounterModule.Clock();
         }
 
-        public class ClockModuleViewModel : INotifyPropertyChanged
+        public class ClockModuleViewModel : ModuleViewModel
         {
             private bool isRunning;
 
@@ -29,8 +43,8 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
                     if (isRunning != value)
                     {
                         isRunning = value;
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRunning)));
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanStep)));
+                        RaisePropertyChanged(nameof(IsRunning));
+                        RaisePropertyChanged(nameof(CanStep));
                         IsRunningChanged?.Invoke(this, EventArgs.Empty);
                     }
                 }
@@ -51,21 +65,32 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
                     if (clockSpeed != value)
                     {
                         clockSpeed = value;
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ClockSpeed)));
+                        RaisePropertyChanged(nameof(ClockSpeed));
                         ClockSpeedChanged?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }
 
-            public void Clock()
-            {
-            }
-
-            public event PropertyChangedEventHandler? PropertyChanged;
-
             public event EventHandler? IsRunningChanged;
 
             public event EventHandler? ClockSpeedChanged;
+        }
+
+        public class ProgramCounterViewModel : ModuleViewModel
+        {
+            private readonly BE801Computer _computer;
+            
+            public ProgramCounterViewModel(BE801Computer computer)
+            {
+                _computer = computer ?? throw new ArgumentNullException(nameof(computer));
+            }
+
+            public BitArray State => _computer.ProbePC();
+
+            public void Clock()
+            {
+                RaisePropertyChanged(nameof(State));
+            }
         }
     }
 }
