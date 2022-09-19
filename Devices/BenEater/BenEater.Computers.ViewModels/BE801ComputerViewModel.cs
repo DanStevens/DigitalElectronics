@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.BenEater.Computers.ViewModels
@@ -10,6 +11,7 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
         public ClockModuleViewModel ClockModule { get; }
         public BusViewModel BusModule { get; }
         public ProgramCounterViewModel ProgramCounterModule { get; }
+        public MemoryModuleViewModel MemoryModule { get; }
 
         public BE801ComputerViewModel()
         {
@@ -17,12 +19,16 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             ClockModule = new();
             BusModule = new(_computer);
             ProgramCounterModule = new(_computer);
+            MemoryModule = new(_computer);
         }
 
         public void Clock()
         {
             _computer.Clock();
+            ClockModule.Clock();
+            BusModule.Clock();
             ProgramCounterModule.Clock();
+            MemoryModule.Clock();
         }
 
         public class ClockModuleViewModel : ModuleViewModel
@@ -101,6 +107,29 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             public override void Clock()
             {
                 RaisePropertyChanged(nameof(State));
+            }
+        }
+
+        public class MemoryModuleViewModel : ModuleViewModel
+        {
+            private readonly BE801Computer _computer;
+
+            public MemoryModuleViewModel(BE801Computer computer)
+            {
+                _computer = computer ?? throw new ArgumentNullException(nameof(computer));
+            }
+
+            /// <summary>
+            /// Contents of Memory Address Register (MAR)
+            /// </summary>
+            public BitArray MAR => _computer.ProbeMAR();
+
+            public IList<BitArray> MemoryContents => _computer.ProbeRAM();
+
+            public override void Clock()
+            {
+                RaisePropertyChanged(nameof(MAR));
+                RaisePropertyChanged(nameof(MemoryContents));
             }
         }
     }
