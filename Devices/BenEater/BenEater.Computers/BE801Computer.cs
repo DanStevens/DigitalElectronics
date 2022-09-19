@@ -173,6 +173,11 @@ namespace DigitalElectronics.BenEater.Computers
         /// <returns></returns>
         public IList<BitArray> ProbeRAM() => _ram.ProbeState();
 
+        /// <summary>
+        /// Returns the internal state of the ALU
+        /// </summary>
+        public BitArray ProbeALU() => _alu.ProbeState();
+
         private void SyncALU()
         {
             _alu.SetInputA(_aRegister.ProbeState());

@@ -12,6 +12,7 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
         public BusViewModel BusModule { get; }
         public ProgramCounterViewModel ProgramCounterModule { get; }
         public MemoryModuleViewModel MemoryModule { get; }
+        public ALUViewModel ALUModule { get; }
 
         public BE801ComputerViewModel()
         {
@@ -20,6 +21,7 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             BusModule = new(_computer);
             ProgramCounterModule = new(_computer);
             MemoryModule = new(_computer);
+            ALUModule = new(_computer);
         }
 
         public void Clock()
@@ -29,6 +31,7 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             BusModule.Clock();
             ProgramCounterModule.Clock();
             MemoryModule.Clock();
+            ALUModule.Clock();
         }
 
         public class ClockModuleViewModel : ModuleViewModel
@@ -124,12 +127,38 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             /// </summary>
             public BitArray MAR => _computer.ProbeMAR();
 
+            /// <summary>
+            /// Contents of the 16-byte RAM
+            /// </summary>
             public IList<BitArray> MemoryContents => _computer.ProbeRAM();
 
             public override void Clock()
             {
                 RaisePropertyChanged(nameof(MAR));
                 RaisePropertyChanged(nameof(MemoryContents));
+            }
+        }
+
+        public class ALUViewModel : ModuleViewModel
+        {
+            private readonly BE801Computer _computer;
+
+            public ALUViewModel(BE801Computer computer)
+            {
+                _computer = computer ?? throw new ArgumentNullException(nameof(computer));
+            }
+
+            public BitArray ARegister => _computer.ProbeARegister();
+
+            public BitArray ALU => _computer.ProbeALU();
+
+            public BitArray BRegister => _computer.ProbeBRegister();
+
+            public override void Clock()
+            {
+                RaisePropertyChanged(nameof(ARegister));
+                RaisePropertyChanged(nameof(ALU));
+                RaisePropertyChanged(nameof(BRegister));
             }
         }
     }
