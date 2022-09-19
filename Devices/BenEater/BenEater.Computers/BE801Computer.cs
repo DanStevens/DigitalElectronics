@@ -161,6 +161,12 @@ namespace DigitalElectronics.BenEater.Computers
         /// </summary>
         public BitArray ProbeOutRegister() => _outRegister.ProbeState();
 
+        /// <summary>
+        /// Returns the state of the Bus
+        /// </summary>
+        /// <returns></returns>
+        public BitArray? ProbeBus() => _bus.Output;
+
         private void SyncALU()
         {
             _alu.SetInputA(_aRegister.ProbeState());

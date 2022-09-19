@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DigitalElectronics.BenEater.Computers.Views"
              xmlns:viewModels="clr-namespace:DigitalElectronics.BenEater.Computers.ViewModels;assembly=BenEater.Computers.ViewModels"
-             xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+             xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI" xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="800">
     <UserControl.Triggers>
@@ -31,6 +31,9 @@
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="Margin" Value="5" />
                 <Setter Property="Padding" Value="5" />
+            </Style>
+            <Style TargetType="{x:Type controls:LedStrip}">
+                <Setter Property="BitOrder" Value="LsbFirst" />
             </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -75,17 +78,27 @@
             </Grid>
         </Border>
         <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="99">
-            <StackPanel x:Name="BusModuleContainer" Orientation="Vertical">
+            <StackPanel x:Name="BusModuleContainer" Orientation="Vertical" DataContext="{Binding BusModule}">
                 <TextBlock Text="Bus" HorizontalAlignment="Center" Margin="0,0,0,5" />
                 <Viewbox>
-                    <controls:LedStrip LedSize="12" />
+                    <Grid>
+                        <TextBlock TextAlignment="Center" Padding="10,0,10,0"
+                                   Visibility="{Binding State, Converter={converters:NullToVisibilityConverter
+                                                                          NullVisibility=Visible, NonNullVisibility=Collapsed}}">
+                            <Run Text="Z State" />
+                            <LineBreak />
+                            <Run Text="(high impedance)" />
+                        </TextBlock>
+                        <controls:LedStrip Visibility="{Binding State, Converter={converters:NullToVisibilityConverter}}"
+                                           Lines="{Binding State}" LedSize="12" />
+                    </Grid>
                 </Viewbox>
             </StackPanel>
         </Border>
         <Border x:Name="ProgramCounterModuleContainer" Grid.Row="0" Grid.Column="2">
             <StackPanel Orientation="Vertical" DataContext="{Binding ProgramCounterModule}">
                 <TextBlock Text="Program Counter" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding State}" BitOrder="LsbFirst" />
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding State}" LitLedColor="Lime" />
             </StackPanel>
         </Border>
         <Border x:Name="AddressUnitContainer" Grid.Row="1" Grid.Column="0">

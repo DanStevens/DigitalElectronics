@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using DigitalElectronics.BenEater.Computers;
 using DigitalElectronics.Concepts;
-using DigitalElectronics.Modules.Counters;
 
 namespace DigitalElectronics.BenEater.Computers.ViewModels
 {
@@ -16,12 +8,14 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
         private readonly BE801Computer _computer;
         
         public ClockModuleViewModel ClockModule { get; }
+        public BusViewModel BusModule { get; }
         public ProgramCounterViewModel ProgramCounterModule { get; }
 
         public BE801ComputerViewModel()
         {
             _computer = new();
             ClockModule = new();
+            BusModule = new(_computer);
             ProgramCounterModule = new(_computer);
         }
 
@@ -87,7 +81,24 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
 
             public BitArray State => _computer.ProbePC();
 
-            public void Clock()
+            public override void Clock()
+            {
+                RaisePropertyChanged(nameof(State));
+            }
+        }
+
+        public class BusViewModel : ModuleViewModel
+        {
+            private readonly BE801Computer _computer;
+
+            public BusViewModel(BE801Computer computer)
+            {
+                _computer = computer ?? throw new ArgumentNullException(nameof(computer));
+            }
+
+            public BitArray? State => _computer.ProbeBus();
+
+            public override void Clock()
             {
                 RaisePropertyChanged(nameof(State));
             }
