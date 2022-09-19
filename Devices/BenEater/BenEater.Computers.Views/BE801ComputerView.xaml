@@ -15,7 +15,7 @@
                     <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsLit" SpeedRatio="1"
                             Storyboard.Target="{Binding Source={x:Reference ClockTickLED}}">
                         <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0" />
-                        <DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.1" />
+                        <DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.3" />
                     </BooleanAnimationUsingKeyFrames>
                 </Storyboard>
             </BeginStoryboard>
@@ -137,15 +137,15 @@
             </StackPanel>
         </Border>
         <Border x:Name="InstructionRegisterContainer" Grid.Row="2" Grid.Column="0">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" DataContext="{Binding InstrRegisterModule}">
                 <TextBlock Text="Instruction Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center"/>
+                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="DeepSkyBlue" Lines="{Binding State}"/>
             </StackPanel>
         </Border>
         <Border x:Name="OutputRegisterContainer" Grid.Row="2" Grid.Column="2">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" DataContext="{Binding OutputModule}">
                 <TextBlock Text="Output Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center"/>
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding OutRegister}"/>
             </StackPanel>
         </Border>
         <TextBlock Text="Microcode ROM" Grid.Row="3" Grid.Column="0" />

@@ -13,6 +13,8 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
         public ProgramCounterViewModel ProgramCounterModule { get; }
         public MemoryModuleViewModel MemoryModule { get; }
         public ALUViewModel ALUModule { get; }
+        public InstrRegisterViewModel InstrRegisterModule { get; }
+        public OutputModuleViewModel OutputModule { get; }
 
         public BE801ComputerViewModel()
         {
@@ -22,6 +24,8 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             ProgramCounterModule = new(_computer);
             MemoryModule = new(_computer);
             ALUModule = new(_computer);
+            InstrRegisterModule = new(_computer);
+            OutputModule = new(_computer);
         }
 
         public void Clock()
@@ -32,6 +36,8 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             ProgramCounterModule.Clock();
             MemoryModule.Clock();
             ALUModule.Clock();
+            InstrRegisterModule.Clock();
+            OutputModule.Clock();
         }
 
         public class ClockModuleViewModel : ModuleViewModel
@@ -160,6 +166,41 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
                 RaisePropertyChanged(nameof(ALU));
                 RaisePropertyChanged(nameof(BRegister));
             }
+        }
+
+        public class InstrRegisterViewModel : ModuleViewModel
+        {
+            private readonly BE801Computer _computer;
+
+            public InstrRegisterViewModel(BE801Computer computer)
+            {
+                _computer = computer ?? throw new ArgumentNullException(nameof(computer));
+            }
+
+            public BitArray State => _computer.ProbeInstrRegister();
+
+            public override void Clock()
+            {
+                RaisePropertyChanged(nameof(State));
+            }
+        }
+
+        public class OutputModuleViewModel : ModuleViewModel
+        {
+            private readonly BE801Computer _computer;
+
+            public OutputModuleViewModel(BE801Computer computer)
+            {
+                _computer = computer ?? throw new ArgumentNullException(nameof(computer));
+            }
+
+            public BitArray OutRegister => _computer.ProbeOutRegister();
+
+            public override void Clock()
+            {
+                RaisePropertyChanged(nameof(OutRegister));
+            }
+
         }
     }
 }
