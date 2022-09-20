@@ -86,6 +86,7 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
                     {
                         currentClockSpeed = value;
                         RaisePropertyChanged(nameof(CurrentClockSpeed));
+                        RaisePropertyChanged(nameof(ClockCycleDuration));
                         ClockSpeedChanged?.Invoke(this, EventArgs.Empty);
                     }
                 }
@@ -111,6 +112,11 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             {
                 CurrentClockSpeed = NewClockSpeed;
             }
+
+            /// <summary>
+            /// The time duration between clock cycles
+            /// </summary>
+            public TimeSpan ClockCycleDuration => TimeSpan.FromSeconds(1.0 / CurrentClockSpeed);
 
             public event EventHandler? IsRunningChanged;
 
