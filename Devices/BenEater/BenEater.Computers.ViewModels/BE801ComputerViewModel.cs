@@ -72,23 +72,44 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
 
             public bool CanStep => !IsRunning;
 
-            private double clockSpeed = 1;
+            private double currentClockSpeed = 1;
 
             /// <summary>
             /// Clock speed in ticks per second (Hertz)
             /// </summary>
-            public double ClockSpeed
+            public double CurrentClockSpeed
             {
-                get => clockSpeed;
+                get => currentClockSpeed;
                 set
                 {
-                    if (clockSpeed != value)
+                    if (currentClockSpeed != value)
                     {
-                        clockSpeed = value;
-                        RaisePropertyChanged(nameof(ClockSpeed));
+                        currentClockSpeed = value;
+                        RaisePropertyChanged(nameof(CurrentClockSpeed));
                         ClockSpeedChanged?.Invoke(this, EventArgs.Empty);
                     }
                 }
+            }
+
+
+            private double newClockSpeed = 1;
+
+            public double NewClockSpeed
+            {
+                get => newClockSpeed;
+                set
+                {
+                    if (newClockSpeed != value)
+                    {
+                        newClockSpeed = value;
+                        RaisePropertyChanged(nameof(NewClockSpeed));
+                    }
+                }
+            }
+
+            public void ApplyNewClockSpeed()
+            {
+                CurrentClockSpeed = NewClockSpeed;
             }
 
             public event EventHandler? IsRunningChanged;
@@ -213,5 +234,6 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             }
 
         }
+
     }
 }

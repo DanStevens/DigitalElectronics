@@ -46,7 +46,7 @@ namespace DigitalElectronics.BenEater.Computers.Views
         {
             base.OnInitialized(e);
 
-            _clock.Interval = TimeSpan.FromSeconds(_viewModel.ClockModule.ClockSpeed);
+            _clock.Interval = TimeSpan.FromSeconds(_viewModel.ClockModule.CurrentClockSpeed);
             _clock.Tick += OnClockTick;
             _viewModel.ClockModule.IsRunningChanged += OnComputerRunningStateChanged;
             _viewModel.ClockModule.ClockSpeedChanged += OnClockSpeedChanged;
@@ -54,7 +54,7 @@ namespace DigitalElectronics.BenEater.Computers.Views
 
         private void OnClockSpeedChanged(object? sender, EventArgs e)
         {
-            _clock.Interval = TimeSpan.FromSeconds(_viewModel.ClockModule.ClockSpeed);
+            _clock.Interval = TimeSpan.FromSeconds(_viewModel.ClockModule.CurrentClockSpeed);
         }
 
         private void OnComputerRunningStateChanged(object? sender, EventArgs e)
@@ -100,6 +100,11 @@ namespace DigitalElectronics.BenEater.Computers.Views
                 byte[] data = File.ReadAllBytes(dialog.FileName);
                 _viewModel.LoadRAM(data);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.ClockModule.ApplyNewClockSpeed();
         }
     }
 }
