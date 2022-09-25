@@ -28,6 +28,11 @@ namespace DigitalElectronics.BenEater.Computers.ViewModels
             OutputModule = new(_computer);
         }
 
+        public Task ClockAsync()
+        {
+            return Task.Run(Clock);
+        }
+
         public void Clock()
         {
             _computer.Clock();

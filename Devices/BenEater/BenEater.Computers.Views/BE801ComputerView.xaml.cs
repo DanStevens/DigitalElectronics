@@ -78,7 +78,7 @@ namespace DigitalElectronics.BenEater.Computers.Views
         private void Clock()
         {
             RaiseEvent(new RoutedEventArgs(ClockTickEvent));
-            _viewModel.Clock();
+            _viewModel.ClockAsync();
         }
 
         public void Dispose()
