@@ -15,7 +15,7 @@
                     <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsLit" SpeedRatio="1"
                             Storyboard.Target="{Binding Source={x:Reference ClockTickLED}}">
                         <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0" />
-                        <DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.3" />
+                        <DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.1" />
                     </BooleanAnimationUsingKeyFrames>
                 </Storyboard>
             </BeginStoryboard>
@@ -67,7 +67,7 @@
                     <controls:LED x:Name="ClockTickLED" HorizontalAlignment="Center" Width="15" Height="15" IsLit="False" />
                 </StackPanel>
                 <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Width="200" Value="{Binding NewClockSpeed}"
-                        Minimum="1.0" Maximum="5000" LargeChange="100" SmallChange="1" />
+                        Minimum="1.0" Maximum="100000" LargeChange="10" SmallChange="1" />
                 <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Text="New Clock Speed:" />
                 <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding NewClockSpeed, StringFormat=\{0:F0\} Hz}" />
                 <Button Grid.Row="2" Grid.Column="2" Content="Apply" Margin="5,0,0,0" Click="Button_Click" />
@@ -82,34 +82,17 @@
             </Grid>
         </Border>
         <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="99">
-            <StackPanel x:Name="BusModuleContainer" Orientation="Vertical" DataContext="{Binding BusModule}">
+            <StackPanel x:Name="BusModuleContainer" Orientation="Vertical">
                 <TextBlock Text="Bus" HorizontalAlignment="Center" Margin="0,0,0,5" />
-                <Viewbox>
-                    <Grid>
-                        <TextBlock TextAlignment="Center" Padding="10,0,10,0"
-                                   Visibility="{Binding State, Converter={converters:NullToVisibilityConverter
-                                                                          NullVisibility=Visible, NonNullVisibility=Collapsed}}">
-                            <Run Text="Z State" />
-                            <LineBreak />
-                            <Run Text="(high impedance)" />
-                        </TextBlock>
-                        <controls:LedStrip Visibility="{Binding State, Converter={converters:NullToVisibilityConverter}}"
-                                           Lines="{Binding State}" LedSize="12" />
-                    </Grid>
-                </Viewbox>
             </StackPanel>
         </Border>
         <Border x:Name="ProgramCounterModuleContainer" Grid.Row="0" Grid.Column="2">
-            <StackPanel Orientation="Vertical" DataContext="{Binding ProgramCounterModule}">
+            <StackPanel Orientation="Vertical">
                 <TextBlock Text="Program Counter" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding State}" LitLedColor="Lime" />
             </StackPanel>
         </Border>
         <Border x:Name="MemoryModuleContainer" Grid.Row="1" Grid.Column="0">
-            <StackPanel Orientation="Vertical" DataContext="{Binding MemoryModule}"
-                        HorizontalAlignment="Stretch">
-                <TextBlock Text="Memory Address Register" HorizontalAlignment="Center" />
-                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="Gold" Lines="{Binding MAR}" />
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
                 <TextBlock Text="16-Byte RAM" HorizontalAlignment="Center" Margin="0,10,0,0" />
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -117,43 +100,22 @@
                         <ColumnDefinition Width="200" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding MemoryContents}" Height="80"
-                              AlternationCount="{Binding MemoryContents.Count}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Vertical" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"  Margin="5,0, 5, 0">
-                                    <TextBlock FontSize="8" Height="9" Width="10" TextAlignment="Right"  Margin="0,0,1,0"
-                                               Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource TemplatedParent}}" FontFamily="Consolas" />
-                                    <controls:LedStrip Lines="{Binding}" LedSize="8" BitOrder="LsbFirst" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Button Grid.Column="0" Height="25" Width="50" Content="Load..."
+                    <Button Grid.Column="1" Height="25" Width="50" Content="Load..."
                             Click="LoadRAMButton_Click"
                             ToolTip="Load contents of a file into RAM" />
                 </Grid>
             </StackPanel>
         </Border>
         <Border x:Name="ARegisterContainer" Grid.Row="1" Grid.Column="2">
-            <StackPanel Orientation="Vertical" DataContext="{Binding ALUModule}">
+            <StackPanel Orientation="Vertical">
                 <TextBlock Text="A Register" HorizontalAlignment="Center" Margin="0,0,0,0" />
-                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding ARegister}" />
                 <TextBlock Text="ALU" HorizontalAlignment="Center" Margin="0,5,0,0" />
-                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding ALU}" />
-                <controls:LedStrip HorizontalAlignment="Center" Margin="0,20,0,0" Lines="{Binding BRegister}" />
                 <TextBlock Text="B Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
             </StackPanel>
         </Border>
         <Border x:Name="InstructionRegisterContainer" Grid.Row="2" Grid.Column="0">
-            <StackPanel Orientation="Vertical" DataContext="{Binding InstrRegisterModule}">
+            <StackPanel Orientation="Vertical">
                 <TextBlock Text="Instruction Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="DeepSkyBlue" Lines="{Binding State}"/>
             </StackPanel>
         </Border>
         <Border x:Name="OutputRegisterContainer" Grid.Row="2" Grid.Column="2">
