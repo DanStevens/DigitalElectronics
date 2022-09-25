@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,7 +24,7 @@ namespace DigitalElectronics.BenEater.Computers.Views
     /// </summary>
     public sealed partial class BE801ComputerView : UserControl, IDisposable
     {
-        private DispatcherTimer _clock = new();
+        private readonly Timer _clock = new();
 
         public BE801ComputerView()
         {
@@ -46,15 +47,15 @@ namespace DigitalElectronics.BenEater.Computers.Views
         {
             base.OnInitialized(e);
 
-            _clock.Interval = _viewModel.ClockModule.ClockCycleDuration;
-            _clock.Tick += OnClockTick;
+            _clock.Interval = _viewModel.ClockModule.ClockCycleDuration.TotalMilliseconds;
+            _clock.Elapsed += OnClockTick;
             _viewModel.ClockModule.IsRunningChanged += OnComputerRunningStateChanged;
             _viewModel.ClockModule.ClockSpeedChanged += OnClockSpeedChanged;
         }
 
         private void OnClockSpeedChanged(object? sender, EventArgs e)
         {
-            _clock.Interval = _viewModel.ClockModule.ClockCycleDuration;
+            _clock.Interval = _viewModel.ClockModule.ClockCycleDuration.TotalMilliseconds;
         }
 
         private void OnComputerRunningStateChanged(object? sender, EventArgs e)
@@ -77,13 +78,13 @@ namespace DigitalElectronics.BenEater.Computers.Views
 
         private void Clock()
         {
-            RaiseEvent(new RoutedEventArgs(ClockTickEvent));
-            _viewModel.ClockAsync();
+            Dispatcher.InvokeAsync(() => RaiseEvent(new RoutedEventArgs(ClockTickEvent)));
+            _viewModel.Clock();
         }
 
         public void Dispose()
         {
-            _clock.Tick -= OnClockTick;
+            _clock.Elapsed -= OnClockTick;
             _viewModel.ClockModule.IsRunningChanged -= OnComputerRunningStateChanged;
         }
 
