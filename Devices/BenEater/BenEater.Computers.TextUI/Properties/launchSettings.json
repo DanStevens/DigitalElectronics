@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BenEater.Computers.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\danst\\source\\repos\\DigitalElectronics\\_GitIgnore\\Programs\\BE801\\CountUp.bin"
+    }
+  }
+}
