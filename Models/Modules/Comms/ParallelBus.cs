@@ -65,8 +65,8 @@ namespace DigitalElectronics.Modules.Comms
         /// Performs a bus transfer
         /// </summary>
         /// <remarks>A 'bus transfer' takes the value of the <see cref="Output"/> property and
-        /// invokes <see cref="IInputModule.SetInputD"/> method on all input
-        /// /// modules attached to the bus.</remarks>
+        /// invokes <see cref="IInputModule.SetInputD"/> method on all input modules attached
+        /// to the bus.</remarks>
         public void Transfer()
         {
             var output = Output;

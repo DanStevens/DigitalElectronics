@@ -160,7 +160,7 @@ namespace DigitalElectronics.BenEater.Computers
         }
 
         /// <summary>
-        /// Returns the state of the internal microintruction step counter
+        /// Returns the state of the internal microinstruction step counter
         /// </summary>
         /// <returns></returns>
         public BitArray ProbeMicroinstrStepCounter() => _stepCounter.Output;

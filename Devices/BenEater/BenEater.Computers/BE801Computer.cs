@@ -21,7 +21,7 @@ namespace DigitalElectronics.BenEater.Computers
     ///   - 16 byte RAM
     ///   - 16-bit control word
     ///   
-    /// The BE-801 is not turning complete as it lacks condition jump instruction
+    /// The BE-801 is not turning complete as it lacks conditional jump instruction
     /// </remarks>
     /// <seealso cref="https://eater.net/8bit">
     /// Ben Eater's 8-bit computer on eater.net</seealso>
@@ -102,7 +102,7 @@ namespace DigitalElectronics.BenEater.Computers
         /// <param name="image">An array of bytes to load</param>
         /// <exception cref="ArgumentNullException">when <paramref name="image"/> is null</exception>
         /// <remarks>
-        /// Loads the bytes from address 0 overwriting memory address upto length of
+        /// Loads the bytes from address 0 overwriting memory address up to length of
         /// <paramref name="image"/>.
         /// </remarks>
         public void LoadRAM(byte[] image)

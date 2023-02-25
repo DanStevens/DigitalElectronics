@@ -17,10 +17,11 @@ namespace DigitalElectronics.Modules.Counters
     public class ProgramCounter : IProgramCounter
     {
         // TODO: Replace these bool fields with component logic
-        // Ideally we shouldn't be using a bool field here, but have some other components
-        // (e.g. logic gates, latches, flip-flops) that implement this, but unfortunately
-        // Ben Eater didn't cover this in his videos. He used a DM74LS163A chip as the PC
-        // and skipped over creating a PC from a binary counter.
+        // To be in-keeping with the spirit of the project, we shouldn't be using a bool
+        // field here, but have some other components (e.g. logic gates, latches,
+        // flip-flops, etc.) to implement this, but unfortunately Ben Eater didn't cover
+        // this in his videos. He used a DM74LS163A chip as the PC and skipped over
+        // creating a PC from a binary counter.
         private bool _countEnabledInputState;
         private bool _loadInputState;
         private BitArray _jumpAddress;
@@ -71,7 +72,7 @@ namespace DigitalElectronics.Modules.Counters
         /// </summary>
         /// <param name="value">Set to `true` to enable output and `false` to disable output</param>
         /// <remarks>
-        /// The `Enabled` input determines whether the register outputs the currently latched value,
+        /// The 'Enabled' input determines whether the register outputs the currently latched value,
         /// or `null`, which represents the Z (high impedance) state.
         /// 
         /// When using a register in a bus configuration, keep 'Enabled' input low except when
