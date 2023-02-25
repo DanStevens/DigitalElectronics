@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "BenEater.Computers.Console": {
+    "BenEater.Computers.TextUI": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\danst\\source\\repos\\DigitalElectronics\\_GitIgnore\\Programs\\BE801\\CountUp.bin"
+      "commandLineArgs": "C:\\Users\\danst\\source\\repos\\DigitalElectronics\\_GitIgnore\\Programs\\BE801\\ThreeTimesTable.bin"
     }
   }
 }
