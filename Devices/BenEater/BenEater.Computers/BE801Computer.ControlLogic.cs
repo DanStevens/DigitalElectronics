@@ -54,6 +54,19 @@ namespace DigitalElectronics.BenEater.Computers
             _ = 0,
         }
 
+        public enum Opcodes : byte
+        {
+            NOP,
+            LDA,
+            ADD,
+            SUB,
+            STA,
+            LDI,
+            JMP,
+            OUT = 14,
+            HLT = 15,
+        }
+
         /// <summary>
         /// Microprograms for each of the instructions of the <see cref="BE801Computer"/>
         /// </summary>

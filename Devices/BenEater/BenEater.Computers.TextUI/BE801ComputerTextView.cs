@@ -11,20 +11,39 @@ namespace BenEater.Computers.TextUI;
 public class BE801ComputerTextView : IDisposable
 {
     private readonly BE801Computer _computer;
-    bool haltRequested;
+    private bool haltRequested;
+    private bool clockLedState;
 
     private const string InterfaceHeader = """
-        ╔═════════════════════════════════╗
-        ║         BE801 Computer          ║
-        ║ Program:                        ║
+        ╔═════════════════════════════════════════════════════════════════════════════╗
+        ║                               BE801 Computer                                ║
+        ║ Program:                                                                    ║
+        ╠═════════════════════════════════╦═════════╦═════════════════════════════════╣
         """;
 
     private const string InterfaceMain = """
-        ╠═════════════════════════════════╣
-        ║         Output Register         ║
-        ║         ● ● ● ● ● ● ● ●         ║
-        ║         0xFF  -128  255         ║
-        ╚═════════════════════════════════╝
+        ║             Clock ◌             ║   Bus   ║         Program Counter         ║
+        ║                                 ║         ║             ● ● ● ●             ║
+        ║      Clock speed:  10000Hz      ║         ║             0xF  15             ║
+        ╠═════════════════════════════════╣         ╠═════════════════════════════════╣
+        ║     Memory Address Register     ║         ║                                 ║
+        ║            ● ● ● ●              ║         ║            A Register           ║
+        ║            0xF  15              ║         ║         ● ● ● ● ● ● ● ●         ║
+        ╟─────────────────────────────────╢         ║         0xFF  -128  255         ║
+        ║           16-Byte RAM           ║         ╟─────────────────────────────────╢
+        ║ 0:●●●●●●●● 255   8:●●●●●●●● 255 ║         ║               ALU               ║
+        ║ 1:●●●●●●●● 255   9:●●●●●●●● 255 ║         ║         ◌ ◌ ◌ ◌ ◌ ◌ ◌ ◌         ║
+        ║ 2:●●●●●●●● 255  10:●●●●●●●● 255 ║         ║         0x00     0    0         ║
+        ║ 3:●●●●●●●● 255  11:●●●●●●●● 255 ║         ╟─────────────────────────────────╢
+        ║ 4:●●●●●●●● 255  12:●●●●●●●● 255 ║         ║            B Register           ║
+        ║ 5:●●●●●●●● 255  13:●●●●●●●● 255 ║         ║         ● ● ● ● ● ● ● ●         ║
+        ║ 6:●●●●●●●● 255  14:●●●●●●●● 255 ║         ║         0xFF  -128  255         ║
+        ║ 7:●●●●●●●● 255  15:●●●●●●●● 255 ║         ║                                 ║
+        ╠═════════════════════════════════╣         ╠═════════════════════════════════╣
+        ║      Instruction Register       ║         ║         Output Register         ║
+        ║       ● ● ● ●     ● ● ● ●       ║         ║         ● ● ● ● ● ● ● ●         ║
+        ║       HLT  15     0xF  15       ║         ║         0xFF  -128  255         ║
+        ╚═════════════════════════════════╩═════════╩═════════════════════════════════╝
         """;
 
     /// <summary>
@@ -71,7 +90,7 @@ public class BE801ComputerTextView : IDisposable
                 Task.Delay(1).Wait();
         }
 
-        Console.SetCursorPosition(0, 8);
+        Console.SetCursorPosition(0, 27);
         Console.WriteLine("Did {0} clock cycles in {1}ms which is about {2:F3}Hz",
             clockCycles, sw.ElapsedMilliseconds, clockCycles / (sw.ElapsedMilliseconds / 1000.0));
     }
@@ -82,34 +101,100 @@ public class BE801ComputerTextView : IDisposable
         Console.WriteLine(InterfaceHeader);
         
         // Write program name to UI
-        WriteAtPosition(ProgramName, 11, 2, 17);
+        WriteAtPosition(ProgramName, 11, 2, 66);
     }
 
     void OutputComputerUI()
     {
-        Console.SetCursorPosition(0, 3);
+        Console.SetCursorPosition(0, 4);
         Console.WriteLine(InterfaceMain);
 
-        // Write output register to UI
-        var outRegister = _computer.ProbeOutRegister();
+        // Alternate the Clock LED
+        clockLedState = !clockLedState;
+        Console.SetCursorPosition(20, 4);
+        Console.Write(ToLED(clockLedState));
 
-        // As binary 'LEDs'
-        WriteAtPosition(ToLEDs(outRegister), 10, 5, 15); 
-        
-        // As unsigned Hex
-        WriteAtPosition("0x" + outRegister.ToString(NumberFormat.UnsignedHexadecimal),
-            10, 6, 4);
-
-        // As signed decimal
-        WriteAtPosition(outRegister.ToString(NumberFormat.SignedDecimal).PadLeft(4),
-            16, 6, 4);
-
-        // As unsigned decimal
-        WriteAtPosition(outRegister.ToString(NumberFormat.UnsignedDecimal).PadLeft(3),
-            22, 6, 3);
+        OutputHalfRegisterValue(_computer.ProbePC(), 58, 5);
+        OutputHalfRegisterValue(_computer.ProbeMAR(), 13, 9);
+        OutputFullRegisterValue(_computer.ProbeARegister(), 54, 10);
+        OutputFullRegisterValue(_computer.ProbeALU(), 54, 14);
+        OutputFullRegisterValue(_computer.ProbeBRegister(), 54, 18);
+        OutputInstructionRegister();
+        OutputFullRegisterValue(_computer.ProbeOutRegister(), 54, 23);
     }
 
-    void WriteAtPosition(string text, int left, int top, int length)
+    private void OutputInstructionRegister()
+    {
+        var instrRegister = _computer.ProbeInstrRegister();
+        var opcode = new BitArray(instrRegister.TakeLast(4));
+        var operand = new BitArray(instrRegister.Take(4));
+
+        OutputOpcode(opcode, 8, 23);
+        OutputOperand(operand, 20, 23);
+
+        void OutputOpcode(BitArray opcode, int left, int top)
+        {
+            // As binary 'LEDs'
+            WriteAtPosition(ToLEDs(opcode), left, top, 7);
+
+            // As mnemonics
+            WriteAtPosition(ToMnemonic(opcode.ToByte()), left, top + 1, 3);
+
+            // As unsigned decimal
+            WriteAtPosition(opcode.ToString(NumberFormat.UnsignedDecimal).PadLeft(2),
+                left + 5, top + 1, 2);
+        }
+
+        void OutputOperand(BitArray operand, int left, int top)
+        {
+            OutputHalfRegisterValue(operand, left, top);
+        }
+    }
+
+
+
+    /// <summary>
+    /// Outputs a 8-bit register to the console
+    /// </summary>
+    private void OutputFullRegisterValue(BitArray registerValue, int left, int top)
+    {
+        // As binary 'LEDs'
+        WriteAtPosition(ToLEDs(registerValue), left, top, 15);
+
+        // As unsigned Hex
+        WriteAtPosition("0x" + registerValue.ToString(NumberFormat.UnsignedHexadecimal),
+            left, top + 1, 4);
+
+        // As signed decimal
+        WriteAtPosition(registerValue.ToString(NumberFormat.SignedDecimal).PadLeft(4),
+            left + 6, top + 1, 4);
+
+        // As unsigned decimal
+        WriteAtPosition(registerValue.ToString(NumberFormat.UnsignedDecimal).PadLeft(3),
+            left + 12, top + 1, 3);
+    }
+
+    /// <summary>
+    /// Outputs a 4-bit register to the console
+    /// </summary>
+    private void OutputHalfRegisterValue(BitArray registerValue, int left, int top)
+    {
+        var halfRegister = new BitArray(registerValue.Take(4));
+
+        // As binary 'LEDs'
+        WriteAtPosition(ToLEDs(halfRegister), left, top, 7);
+
+        // As unsigned Hex
+        WriteAtPosition("0x" + halfRegister.ToString(NumberFormat.UnsignedHexadecimal),
+            left, top + 1, 3);
+
+        // As unsigned decimal
+        WriteAtPosition(halfRegister.ToString(NumberFormat.UnsignedDecimal).PadLeft(2),
+            left + 5, top + 1, 2);
+    }
+
+
+    private void WriteAtPosition(string text, int left, int top, int length)
     {
         Console.SetCursorPosition(left, top);
         var adjustedText = text.Length <= length
@@ -117,15 +202,20 @@ public class BE801ComputerTextView : IDisposable
         Console.Write(adjustedText);
     }
 
-    void OnCancel(object? sender, ConsoleCancelEventArgs e)
+    private void OnCancel(object? sender, ConsoleCancelEventArgs e)
     {
         e.Cancel = true;
         haltRequested = true;
     }
 
-    string ToLEDs(BitArray ba)
+    private string ToLEDs(BitArray ba)
     {
-        return string.Join(' ', ba.Reverse().Select(b => b ? '●' : '◌'));
+        return string.Join(' ', ba.Reverse().Select(ToLED));
+    }
+
+    private static char ToLED(bool b)
+    {
+        return b ? '●' : '◌';
     }
 
     string Truncate(string s, int length)
@@ -134,6 +224,11 @@ public class BE801ComputerTextView : IDisposable
             return s;
 
         return s.Substring(0, length - 1) + "…";
+    }
+
+    private static string ToMnemonic(byte opcode)
+    {
+        return Enum.GetName((BE801Computer.Opcodes)opcode) ?? "???";
     }
 
     public void Dispose()
