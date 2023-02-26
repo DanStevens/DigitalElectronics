@@ -94,7 +94,7 @@ public class BE801ComputerTextView : IDisposable
         int clockCycles = 0;
         var sw = Stopwatch.StartNew();
 
-        while (!haltRequested)
+        while (!haltRequested && !_computer.HaltFlag)
         {
             OutputComputerUI();
             _computer.Clock();
@@ -105,6 +105,8 @@ public class BE801ComputerTextView : IDisposable
         }
 
         Console.SetCursorPosition(0, 27);
+        if (_computer.HaltFlag)
+            Console.WriteLine("Computer was halted by HLT instruction");
         Console.WriteLine("Did {0} clock cycles in {1}ms which is about {2:F3}Hz",
             clockCycles, sw.ElapsedMilliseconds, clockCycles / (sw.ElapsedMilliseconds / 1000.0));
     }

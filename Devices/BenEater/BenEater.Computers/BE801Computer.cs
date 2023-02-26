@@ -79,8 +79,16 @@ namespace DigitalElectronics.BenEater.Computers
             ResetControlLogic();
         }
 
+        /// <summary>
+        /// Performs a clock cycle
+        /// </summary>
+        /// <remarks>This method does nothing when computer is in 'halted' state
+        /// (<see cref="HaltFlag"/> is `true`)</remarks>
         public void Clock()
         {
+            if (HaltFlag)
+                return;
+            
             PerformControlLogic();
 
             _bus.Transfer();

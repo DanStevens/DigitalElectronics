@@ -101,7 +101,7 @@ namespace DigitalElectronics.BenEater.Computers
         /// </summary>
         private static readonly Dictionary<ControlSignals, Action<BE801Computer>> _controlSignalMap = new()
         {
-            { Halt, c => { /*throw new NotImplementedException();*/ }},
+            { Halt, c => c.HaltFlag = true },
             { MI, c => c._ram.SetInputLA(true) },
             { RI, c => c._ram.SetInputLD(true) },
             { RO, c => c._ram.SetInputE(true) },
@@ -147,6 +147,13 @@ namespace DigitalElectronics.BenEater.Computers
         /// memory address 0.
         /// </summary>
         public bool ManualControlMode { get; set; }
+
+        /// <summary>
+        /// When `true` computer is in 'halted' state, meaning that calling <see cref="Clock"/> does
+        /// nothing.
+        /// </summary>
+        /// <remarks>The `HLT` instructions causes this flag to be set to `true`</remarks>
+        public bool HaltFlag { get; set; }
 
         /// <summary>
         /// Sets the given control signal high
@@ -218,6 +225,7 @@ namespace DigitalElectronics.BenEater.Computers
         {
             _stepCounter.Reset();
             ResetControlLines();
+            HaltFlag = false;
         }
 
         private void ResetControlLines()

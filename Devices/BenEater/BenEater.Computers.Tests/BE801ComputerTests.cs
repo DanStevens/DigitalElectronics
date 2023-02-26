@@ -17,7 +17,7 @@ namespace DigitalElectronics.BenEater.Computers.Tests
         private readonly byte[] machineCodeAdd12And30 =
         {
             0x1E, // LDA 14
-            0x1F, // ADD 15
+            0x2F, // ADD 15
             0xE0, // OUT
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // Unused
             30, 12 // Data
@@ -135,6 +135,36 @@ namespace DigitalElectronics.BenEater.Computers.Tests
                 computer.Clock();
             }
         }
+
+        /// <summary>
+        /// Tests the computer by loading the machine code for adding 12 and 30
+        /// into memory and calling to <see cref="BE801Computer.Clock"/>
+        /// method repeatedly to advance the program
+        /// </summary>
+        [Test]
+        public void ProgramComputerToAdd30And12AndOutput()
+        {
+            var computer = new BE801Computer { ManualControlMode = false };
+            computer.LoadRAM(machineCodeAdd12And30);
+            byte pc = 0;
+
+            computer.ProbeMicroinstrStepCounter().ToByte().Should().Be(15);
+            computer.ProbeMAR().ToByte().Should().Be(0);
+            computer.ProbePC().ToByte().Should().Be(pc);
+            computer.ProbeOutRegister().ToByte().Should().Be(255);
+
+            while (!computer.HaltFlag)
+            {
+                computer.Clock();
+            }
+
+            computer.ProbeOutRegister().ToByte().Should().Be(42);
+
+            computer.Reset();
+            computer.HaltFlag.Should().BeFalse();
+            computer.ProbeOutRegister().ToByte().Should().Be(255);
+        }
+
 
         /// <summary>
         /// Tests the computer by loading the machine code for computing the 3 times
