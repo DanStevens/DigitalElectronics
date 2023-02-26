@@ -151,7 +151,7 @@ namespace DigitalElectronics.BenEater.Computers
         /// <summary>
         /// Sets the given control signal high
         /// </summary>
-        /// <param name="controlWord">The control signal</param>
+        /// <param name="controlSignal">The control signal</param>
         public void SetControlSignal(ControlSignals controlSignal)
         {
             System.Diagnostics.Debug.WriteLine("Set control signal {0}", controlSignal);

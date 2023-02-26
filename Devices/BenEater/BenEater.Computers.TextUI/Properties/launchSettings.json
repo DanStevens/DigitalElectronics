@@ -2,7 +2,7 @@
   "profiles": {
     "BenEater.Computers.TextUI": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\danst\\source\\repos\\DigitalElectronics\\_GitIgnore\\Programs\\BE801\\ThreeTimesTable.bin"
+      "commandLineArgs": "C:\\Users\\danst\\source\\repos\\DigitalElectronics\\_GitIgnore\\Programs\\BE801\\ThreeTimesTable.bin /wait:50"
     }
   }
 }

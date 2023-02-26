@@ -14,6 +14,14 @@ public class BE801ComputerTextView : IDisposable
     private bool haltRequested;
     private bool clockLedState;
 
+    public static string Usage => $"""
+        Usage: {AppDomain.CurrentDomain.FriendlyName} <program> [/turbo | /wait:50]"
+        
+        <program>     Path to a binary file containing a program to run in machine code
+        /turbo        Runs the computer as fast as possible
+        /wait:<ms>    Wait time between clock cycles in milliseconds (default: 50)
+        """;
+
     private const string InterfaceHeader = """
         ╔═════════════════════════════════════════════════════════════════════════════╗
         ║                               BE801 Computer                                ║
@@ -47,16 +55,22 @@ public class BE801ComputerTextView : IDisposable
         """;
 
     /// <summary>
-    /// By default, a 1ms wait it placed between each call to
-    /// <see cref="Clock"/>. When this is set to <c>true</c>, there is no wait
-    /// and so the computer runs as fast as possible.
+    /// When set to <c>true</c>, disables waiting between clock cycles, meaning
+    /// the BE801 will run at the fastest speed possible, otherwise there is a
+    /// delay between clock cycles as defined by <see cref="WaitTimeBetweenClockCycles"/>
     /// </summary>
     public bool Turbo { get; set; }
 
     /// <summary>
     /// The name of the program to display in the header
     /// </summary>
-    public string ProgramName { get; set; }
+    public string ProgramName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Time to wait between clock cycles in milliseconds
+    /// </summary>
+    public int WaitTimeBetweenClockCycles { get; set; } = 50;
+
 
     public BE801ComputerTextView(BE801Computer computer)
     {
@@ -87,7 +101,7 @@ public class BE801ComputerTextView : IDisposable
             clockCycles++;
 
             if (!Turbo)
-                Task.Delay(1).Wait();
+                Task.Delay(WaitTimeBetweenClockCycles).Wait();
         }
 
         Console.SetCursorPosition(0, 27);
