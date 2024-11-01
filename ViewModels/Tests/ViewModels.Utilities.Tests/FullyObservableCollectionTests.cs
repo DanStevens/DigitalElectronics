@@ -13,8 +13,8 @@ using NUnit.Framework;
 namespace DigitalElectronics.ViewModels.Utilities.Tests
 {
     [TestFixture]
-    [Obsolete("Legacy test code that inherits obsolete class `AssertionHelper`")]
-    public class FullyObservableCollectionTests : AssertionHelper
+    //[Obsolete("Legacy test code that inherits obsolete class `AssertionHelper`")]
+    public class FullyObservableCollectionTests
     {
         public class NotifyingTestClass : INotifyPropertyChanged
         {
@@ -89,11 +89,11 @@ namespace DigitalElectronics.ViewModels.Utilities.Tests
         {
             TestCollection[0].Id = 7;
 
-            Expect(CollectionEventList.Count, Is.EqualTo(0));
+            Assert.That(CollectionEventList.Count, Is.EqualTo(0));
 
-            Expect(ItemEventList.Count, Is.EqualTo(1), "IPC count");
-            Expect(ItemEventList[0].PropertyName, Is.EqualTo(nameof(Fred.Id)), "Field Name");
-            Expect(ItemEventList[0].CollectionIndex, Is.EqualTo(0), "Collection Index");
+            Assert.That(ItemEventList.Count, Is.EqualTo(1), "IPC count");
+            Assert.That(ItemEventList[0].PropertyName, Is.EqualTo(nameof(Fred.Id)), "Field Name");
+            Assert.That(ItemEventList[0].CollectionIndex, Is.EqualTo(0), "Collection Index");
         }
 
 
@@ -103,25 +103,25 @@ namespace DigitalElectronics.ViewModels.Utilities.Tests
         {
             TestCollection.Add(Betty);
 
-            Expect(TestCollection.Count, Is.EqualTo(4));
-            Expect(TestCollection[3].Name, Is.EqualTo("Betty"));
+            Assert.That(TestCollection.Count, Is.EqualTo(4));
+            Assert.That(TestCollection[3].Name, Is.EqualTo("Betty"));
 
-            Expect(ItemEventList.Count, Is.EqualTo(0), "Item Event count");
+            Assert.That(ItemEventList.Count, Is.EqualTo(0), "Item Event count");
 
-            Expect(CollectionEventList.Count, Is.EqualTo(1), "Collection Event count");
-            Expect(CollectionEventList[0].Action, Is.EqualTo(NotifyCollectionChangedAction.Add), "Action (add)");
-            Expect(CollectionEventList[0].OldItems, Is.Null, "OldItems count");
-            Expect(CollectionEventList[0].NewItems.Count, Is.EqualTo(1), "NewItems count");
-            Expect(CollectionEventList[0].NewItems[0], Is.EqualTo(Betty), "NewItems[0] dereference");
+            Assert.That(CollectionEventList.Count, Is.EqualTo(1), "Collection Event count");
+            Assert.That(CollectionEventList[0].Action, Is.EqualTo(NotifyCollectionChangedAction.Add), "Action (add)");
+            Assert.That(CollectionEventList[0].OldItems, Is.Null, "OldItems count");
+            Assert.That(CollectionEventList[0].NewItems.Count, Is.EqualTo(1), "NewItems count");
+            Assert.That(CollectionEventList[0].NewItems[0], Is.EqualTo(Betty), "NewItems[0] dereference");
 
             CollectionEventList.Clear();      // Empty for next operation
             ItemEventList.Clear();
 
             TestCollection[3].Id = 7;
-            Expect(CollectionEventList.Count, Is.EqualTo(0), "Collection Event count");
+            Assert.That(CollectionEventList.Count, Is.EqualTo(0), "Collection Event count");
 
-            Expect(ItemEventList.Count, Is.EqualTo(1), "Item Event count");
-            Expect(TestCollection[ItemEventList[0].CollectionIndex], Is.EqualTo(Betty), "Collection Index dereference");
+            Assert.That(ItemEventList.Count, Is.EqualTo(1), "Item Event count");
+            Assert.That(TestCollection[ItemEventList[0].CollectionIndex], Is.EqualTo(Betty), "Collection Index dereference");
         }
 
 
@@ -131,23 +131,23 @@ namespace DigitalElectronics.ViewModels.Utilities.Tests
         {
             TestCollection.Remove(Fred);
 
-            Expect(TestCollection.Count, Is.EqualTo(2));
-            Expect(TestCollection.IndexOf(Fred), Is.Negative);
+            Assert.That(TestCollection.Count, Is.EqualTo(2));
+            Assert.That(TestCollection.IndexOf(Fred), Is.Negative);
 
-            Expect(ItemEventList.Count, Is.EqualTo(0), "Item Event count (pre change)");
+            Assert.That(ItemEventList.Count, Is.EqualTo(0), "Item Event count (pre change)");
 
-            Expect(CollectionEventList.Count, Is.EqualTo(1), "Collection Event count (pre change)");
-            Expect(CollectionEventList[0].Action, Is.EqualTo(NotifyCollectionChangedAction.Remove), "Action (remove)");
-            Expect(CollectionEventList[0].OldItems.Count, Is.EqualTo(1), "OldItems count");
-            Expect(CollectionEventList[0].NewItems, Is.Null, "NewItems count");
-            Expect(CollectionEventList[0].OldItems[0], Is.EqualTo(Fred), "OldItems[0] dereference");
+            Assert.That(CollectionEventList.Count, Is.EqualTo(1), "Collection Event count (pre change)");
+            Assert.That(CollectionEventList[0].Action, Is.EqualTo(NotifyCollectionChangedAction.Remove), "Action (remove)");
+            Assert.That(CollectionEventList[0].OldItems.Count, Is.EqualTo(1), "OldItems count");
+            Assert.That(CollectionEventList[0].NewItems, Is.Null, "NewItems count");
+            Assert.That(CollectionEventList[0].OldItems[0], Is.EqualTo(Fred), "OldItems[0] dereference");
 
             CollectionEventList.Clear();      // Empty for next operation
             ItemEventList.Clear();
 
             Fred.Id = 7;
-            Expect(CollectionEventList.Count, Is.EqualTo(0), "Collection Event count (post change)");
-            Expect(ItemEventList.Count, Is.EqualTo(0), "Item Event count (post change)");
+            Assert.That(CollectionEventList.Count, Is.EqualTo(0), "Collection Event count (post change)");
+            Assert.That(ItemEventList.Count, Is.EqualTo(0), "Item Event count (post change)");
         }
 
 
@@ -157,26 +157,26 @@ namespace DigitalElectronics.ViewModels.Utilities.Tests
         {
             TestCollection.Move(0, 1);
 
-            Expect(TestCollection.Count, Is.EqualTo(3));
-            Expect(TestCollection.IndexOf(Fred), Is.GreaterThan(0));
+            Assert.That(TestCollection.Count, Is.EqualTo(3));
+            Assert.That(TestCollection.IndexOf(Fred), Is.GreaterThan(0));
 
-            Expect(ItemEventList.Count, Is.EqualTo(0), "Item Event count (pre change)");
+            Assert.That(ItemEventList.Count, Is.EqualTo(0), "Item Event count (pre change)");
 
-            Expect(CollectionEventList.Count, Is.EqualTo(1), "Collection Event count (pre change)");
-            Expect(CollectionEventList[0].Action, Is.EqualTo(NotifyCollectionChangedAction.Move), "Action (move)");
-            Expect(CollectionEventList[0].OldItems.Count, Is.EqualTo(1), "OldItems count");
-            Expect(CollectionEventList[0].NewItems.Count, Is.EqualTo(1), "NewItems count");
-            Expect(CollectionEventList[0].OldItems[0], Is.EqualTo(Fred), "OldItems[0] dereference");
-            Expect(CollectionEventList[0].NewItems[0], Is.EqualTo(Fred), "NewItems[0] dereference");
+            Assert.That(CollectionEventList.Count, Is.EqualTo(1), "Collection Event count (pre change)");
+            Assert.That(CollectionEventList[0].Action, Is.EqualTo(NotifyCollectionChangedAction.Move), "Action (move)");
+            Assert.That(CollectionEventList[0].OldItems.Count, Is.EqualTo(1), "OldItems count");
+            Assert.That(CollectionEventList[0].NewItems.Count, Is.EqualTo(1), "NewItems count");
+            Assert.That(CollectionEventList[0].OldItems[0], Is.EqualTo(Fred), "OldItems[0] dereference");
+            Assert.That(CollectionEventList[0].NewItems[0], Is.EqualTo(Fred), "NewItems[0] dereference");
 
             CollectionEventList.Clear();      // Empty for next operation
             ItemEventList.Clear();
 
             Fred.Id = 7;
-            Expect(CollectionEventList.Count, Is.EqualTo(0), "Collection Event count (post change)");
+            Assert.That(CollectionEventList.Count, Is.EqualTo(0), "Collection Event count (post change)");
 
-            Expect(ItemEventList.Count, Is.EqualTo(1), "Item Event count (post change)");
-            Expect(TestCollection[ItemEventList[0].CollectionIndex], Is.EqualTo(Fred), "Collection Index dereference");
+            Assert.That(ItemEventList.Count, Is.EqualTo(1), "Item Event count (post change)");
+            Assert.That(TestCollection[ItemEventList[0].CollectionIndex], Is.EqualTo(Fred), "Collection Index dereference");
         }
 
 
@@ -186,21 +186,21 @@ namespace DigitalElectronics.ViewModels.Utilities.Tests
         {
             TestCollection.Clear();
 
-            Expect(TestCollection.Count, Is.EqualTo(0));
+            Assert.That(TestCollection.Count, Is.EqualTo(0));
 
-            Expect(ItemEventList.Count, Is.EqualTo(0), "Item Event count (pre change)");
+            Assert.That(ItemEventList.Count, Is.EqualTo(0), "Item Event count (pre change)");
 
-            Expect(CollectionEventList.Count, Is.EqualTo(1), "Collection Event count (pre change)");
-            Expect(CollectionEventList[0].Action, Is.EqualTo(NotifyCollectionChangedAction.Reset), "Action (reset)");
-            Expect(CollectionEventList[0].OldItems, Is.Null, "OldItems count");
-            Expect(CollectionEventList[0].NewItems, Is.Null, "NewItems count");
+            Assert.That(CollectionEventList.Count, Is.EqualTo(1), "Collection Event count (pre change)");
+            Assert.That(CollectionEventList[0].Action, Is.EqualTo(NotifyCollectionChangedAction.Reset), "Action (reset)");
+            Assert.That(CollectionEventList[0].OldItems, Is.Null, "OldItems count");
+            Assert.That(CollectionEventList[0].NewItems, Is.Null, "NewItems count");
 
             CollectionEventList.Clear();      // Empty for next operation
             ItemEventList.Clear();
 
             Fred.Id = 7;
-            Expect(CollectionEventList.Count, Is.EqualTo(0), "Collection Event count (post change)");
-            Expect(ItemEventList.Count, Is.EqualTo(0), "Item Event count (post change)");
+            Assert.That(CollectionEventList.Count, Is.EqualTo(0), "Collection Event count (post change)");
+            Assert.That(ItemEventList.Count, Is.EqualTo(0), "Item Event count (post change)");
         }
     }
 }

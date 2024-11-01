@@ -2,6 +2,7 @@
 using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 namespace DigitalElectronics.Modules.Memory.Tests
@@ -43,7 +44,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
             var address = _bitConverter.GetBits(a, NumberOfAddressBits);
             var expectedOutput = _bitConverter.GetBits((int)Math.Pow(2, a), NumberOfOutputs);
             _decoder.SetInputA(address);
-            Assert.AreEqual(expectedOutput, _decoder.OutputY, $"a = {a}");
+            ClassicAssert.AreEqual(expectedOutput, _decoder.OutputY, $"a = {a}");
         }
     }
 }
