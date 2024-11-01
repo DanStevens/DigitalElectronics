@@ -5,36 +5,40 @@ using DigitalElectronics.Components.ALUs;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Concepts;
 
+#nullable enable
+
 namespace DigitalElectronics.Modules.ALUs
 {
-    
-    [DebuggerDisplay("ALU: {this.ProbeState()}")]
-    public class ArithmeticLogicUnit : IArithmeticLogicUnit
+
+    [DebuggerDisplay("{this.Label,nq}: {this.ProbeState()}")]
+    public class ArithmeticLogicUnit : IArithmeticLogicUnit, IOutputModule
     {
         private readonly FullAdder[] _adders;
-        private readonly TriStateBuffer[] _3Sbuffers;
+        private readonly TriStateBuffer[] _3SBuffers;
         private readonly XorGate[] _xorGates;
 
-        public ArithmeticLogicUnit(int numberOfBits)
-        {
-            if (numberOfBits <= 0)
-                throw new ArgumentOutOfRangeException(nameof(numberOfBits), "Argument must be greater than 0");
-            
-            _adders = new FullAdder[numberOfBits];
-            _3Sbuffers = new TriStateBuffer[numberOfBits];
-            _xorGates = new XorGate[numberOfBits];
+        public string Label { get; set; } = "ALU";
 
-            for (int x = 0; x < BitCount; x++)
+        public ArithmeticLogicUnit(int wordSize)
+        {
+            if (wordSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(wordSize), "Argument must be greater than 0");
+            
+            _adders = new FullAdder[wordSize];
+            _3SBuffers = new TriStateBuffer[wordSize];
+            _xorGates = new XorGate[wordSize];
+
+            for (int x = 0; x < WordSize; x++)
             {
                 _adders[x] = new FullAdder();
-                _3Sbuffers[x] = new TriStateBuffer();
+                _3SBuffers[x] = new TriStateBuffer();
                 _xorGates[x] = new XorGate();
             }
 
-            for (int x = 0; x < BitCount; x++) SyncBit(x);
+            for (int x = 0; x < WordSize; x++) SyncBit(x);
         }
 
-        public int BitCount => _adders.Length;
+        public int WordSize => _adders.Length;
 
         /// <summary>
         /// Sets value for A input
@@ -44,7 +48,7 @@ namespace DigitalElectronics.Modules.ALUs
         {
             if (data == null) return;
             
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < WordSize; x++)
             {
                 _adders[x].SetInputA(data[x]);
                 SyncBit(x);
@@ -59,7 +63,7 @@ namespace DigitalElectronics.Modules.ALUs
         {
             if (data == null) return;
 
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < WordSize; x++)
             {
                 _xorGates[x].SetInputA(data[x]);
                 SyncBit(x);
@@ -73,9 +77,9 @@ namespace DigitalElectronics.Modules.ALUs
         /// to disable the 'Sum' output</param>
         public void SetInputEO(bool value)
         {
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < WordSize; x++)
             {
-                _3Sbuffers[x].SetInputB(value);
+                _3SBuffers[x].SetInputB(value);
                 SyncBit(x);
             }
         }
@@ -89,7 +93,7 @@ namespace DigitalElectronics.Modules.ALUs
         {
             _adders[0].SetInputC(value);
             
-            for (int x = 0; x < BitCount; x++)
+            for (int x = 0; x < WordSize; x++)
             {
                 _xorGates[x].SetInputB(value);
                 SyncBit(x);
@@ -100,18 +104,19 @@ namespace DigitalElectronics.Modules.ALUs
         /// Gets state of 'Sum' (∑) output
         /// </summary>
         /// <return>The sum of 'A' input and 'B' input</return>
-        public BitArray OutputE
+        public BitArray? OutputE
         {
             get
             {
-                if (!_3Sbuffers[0].OutputC.HasValue)
+                if (!_3SBuffers[0].OutputC.HasValue)
                     return null;
                 
-                var result = new BitArray(BitCount);
-                for (int x = 0; x < BitCount; x++) result[x] = _3Sbuffers[x].OutputC.Value;
+                var result = new BitArray(WordSize);
+                for (int x = 0; x < WordSize; x++) result[x] = _3SBuffers[x].OutputC!.Value;
                 return result;
             }
         }
+
 
         /// <summary>
         /// Returns the internal state of the ALU
@@ -126,8 +131,12 @@ namespace DigitalElectronics.Modules.ALUs
         private void SyncBit(int x)
         {
             _adders[x].SetInputB(_xorGates[x].OutputQ);
-            if (x < BitCount - 1) _adders[x + 1].SetInputC(_adders[x].OutputC);
-            _3Sbuffers[x].SetInputA(_adders[x].OutputE);
+            if (x < WordSize - 1) _adders[x + 1].SetInputC(_adders[x].OutputC);
+            _3SBuffers[x].SetInputA(_adders[x].OutputE);
         }
+
+        BitArray? IOutputModule.Output => OutputE;
+
+        void IOutputModule.SetInputE(bool value) => this.SetInputEO(value);
     }
 }

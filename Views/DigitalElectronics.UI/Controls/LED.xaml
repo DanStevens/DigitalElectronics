@@ -6,21 +6,22 @@
              mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="20">
     <Grid x:Name="_layoutRoot">
         <Grid.Resources>
-            <SolidColorBrush x:Key="OnBrush" Color="{Binding OnColor}" />
-            <SolidColorBrush x:Key="OffBrush" Color="{Binding OffColor}" />
+            <SolidColorBrush x:Key="LitBrush" Color="{Binding LitColor}" />
+            <SolidColorBrush x:Key="UnlitBrush" Color="{Binding UnlitColor}" />
         </Grid.Resources>
         <Ellipse Stroke="{Binding Stroke}" d:Stroke="Black">
             <Ellipse.Style>
                 <Style TargetType="{x:Type Ellipse}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsLit}" Value="true">
-                            <Setter Property="Fill" Value="{DynamicResource OnBrush}" />
+                            <Setter Property="Fill" Value="{DynamicResource LitBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
-                    <Setter Property="Fill" Value="{DynamicResource OffBrush}" />
+                    <Setter Property="Fill" Value="{DynamicResource UnlitBrush}" />
                 </Style>
             </Ellipse.Style>
         </Ellipse>
-        <TextBlock Padding="1" Text="{Binding Text}" TextAlignment="Center" />
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
+                   Text="{Binding Text}" Padding="0,0,0,2" />
     </Grid>
 </UserControl>

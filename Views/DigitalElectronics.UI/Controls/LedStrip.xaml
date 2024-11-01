@@ -4,24 +4,48 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DigitalElectronics.UI.Controls"
-             mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="150">
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="200">
     <Grid x:Name="_layoutRoot">
         <Grid.Resources>
-            <RelativeSource x:Key="ThisRelativeSource" Mode="FindAncestor" AncestorType="{x:Type local:LedStrip}" />
+            <RelativeSource x:Key="This" Mode="FindAncestor" AncestorType="{x:Type local:LedStrip}" />
         </Grid.Resources>
-        <ItemsControl ItemsSource="{Binding Lines}">
+        <ItemsControl ItemsSource="{Binding Lines}" AlternationCount="{Binding Lines.Count}" d:AlternationCount="8">
+            <d:ItemsControl.Items>
+                <system:Boolean>False</system:Boolean>
+                <system:Boolean>False</system:Boolean>
+                <system:Boolean>True</system:Boolean>
+                <system:Boolean>False</system:Boolean>
+                <system:Boolean>True</system:Boolean>
+                <system:Boolean>False</system:Boolean>
+                <system:Boolean>True</system:Boolean>
+                <system:Boolean>True</system:Boolean>
+            </d:ItemsControl.Items>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="{Binding Orientation}" />
+                    <ItemsPanelTemplate.Resources>
+                        <ResourceDictionary Source="..\Common.xaml" />
+                    </ItemsPanelTemplate.Resources>
+                    <DockPanel LastChildFill="false" ToolTip="{Binding Value}" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="DockPanel.Dock" Value="{Binding Dock, RelativeSource={StaticResource This}}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <local:LED Width="{Binding LedSize, RelativeSource={StaticResource ThisRelativeSource}}"
-                               Height="{Binding LedSize, RelativeSource={StaticResource ThisRelativeSource}}"
-                               Margin="{Binding Spacing, RelativeSource={StaticResource ThisRelativeSource}}"
-                               OnColor="{Binding LedColorWhenLit, RelativeSource={StaticResource ThisRelativeSource}}"
-                               IsLit="{Binding}" />
+                <DataTemplate DataType="{x:Type local:LedStrip}">
+                    <local:LED x:Name="led" IsLit="{Binding}"
+                               Width="{Binding LedSize, RelativeSource={StaticResource This}, FallbackValue=20}"
+                               Height="{Binding LedSize, RelativeSource={StaticResource This}, FallbackValue=20}"
+                               Margin="{Binding Spacing, RelativeSource={StaticResource This}, FallbackValue=0.5}"
+                               LitColor="{Binding LitLedColor, RelativeSource={StaticResource This}}" />
+                    <DataTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter TargetName="led" Property="Text" Value="•" />
+                        </Trigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

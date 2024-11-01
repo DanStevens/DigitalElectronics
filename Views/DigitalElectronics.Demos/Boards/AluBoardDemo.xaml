@@ -1,0 +1,73 @@
+﻿<Window x:Class="DigitalElectronics.Demos.Boards.AluBoardDemo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigitalElectronics.Demos.Boards"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        xmlns:boards="clr-namespace:DigitalElectronics.Boards;assembly=Boards"
+        xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
+        mc:Ignorable="d"
+        Title="Bus Transfer Demo" SizeToContent="WidthAndHeight">
+    <Window.DataContext>
+        <boards:AluBoard x:Name="_viewModel" />
+    </Window.DataContext>
+    <Grid Margin="10" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition  />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="120" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,10,0,0">
+            <CheckBox Margin="7.5" Content="Enable" IsChecked="{Binding RegisterA.Enable}"/>
+            <CheckBox Margin="7.5" Content="Load" IsChecked="{Binding RegisterA.Load}" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical">
+            <Border BorderBrush="Black" BorderThickness="1" Height="70" Margin="10" Padding="5">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">Register A</TextBlock>
+                    <controls:LedStrip Lines="{Binding RegisterA.Probe}" LedSize="15" BitOrder="LsbFirst" />
+                </StackPanel>
+            </Border>
+            <controls:DipSwitch Lines="{Binding RegisterA.Data}" BitOrder="LsbFirst" HorizontalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,10,0,0">
+            <CheckBox Margin="7.5" Content="Enable" IsChecked="{Binding ALU.Enable}"/>
+            <CheckBox Margin="7.5" Content="Subtract" IsChecked="{Binding ALU.Subtract}" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical">
+            <Border BorderBrush="Black" BorderThickness="1" Height="70" Margin="10" Padding="5">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">Arithmetic Logic Unit</TextBlock>
+                    <controls:LedStrip Lines="{Binding ALU.Probe}" LedSize="15" BitOrder="LsbFirst" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        <Button Grid.Column="2" Grid.Row="0" Content="Clock" Height="30" Width="100" Click="ClockButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Bus" TextAlignment="Center" Margin="0,0,0,5"/>
+            <TextBlock TextAlignment="Center" MinWidth="170" Text="[Z state (high impedance)]"
+                       Visibility="{Binding BusState, Converter={converters:NullToVisibilityConverter NullVisibility=Visible, NonNullVisibility=Collapsed}}" />
+            <controls:LedStrip Visibility="{Binding BusState, Converter={converters:NullToVisibilityConverter}}"
+                               Lines="{Binding BusState}" LedSize="20" LitLedColor="Gold" BitOrder="LsbFirst" />
+        </StackPanel>
+        <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,30,0,0">
+            <CheckBox Margin="7.5" Content="Enable" IsChecked="{Binding RegisterB.Enable}"/>
+            <CheckBox Margin="7.5" Content="Load" IsChecked="{Binding RegisterB.Load}" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical" Margin="0,15,0,0">
+            <Border BorderBrush="Black" BorderThickness="1" Height="70" Margin="10" Padding="5">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">Register B</TextBlock>
+                    <controls:LedStrip Lines="{Binding RegisterB.Probe}" LedSize="15" BitOrder="LsbFirst" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Window>

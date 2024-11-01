@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
@@ -11,15 +12,16 @@ namespace DigitalElectronics.Boards.Tests
 {
     public class BusTransferBoardTests
     {
-        private readonly BitConverter _bitConverter = new BitConverter();
+        private readonly BitConverter _bitConverter = new();
 
         [Test]
-        [Ignore("TODO come back to this")]
         public void InitialState()
         {
-            using var objUT = new BusTransferBoard();
-            objUT.RegisterA.Should().BeOfType<IRegisterViewModel>();
-            objUT.RegisterB.Should().BeOfType<IRegisterViewModel>();
+            var registerAMock = Substitute.For<IRegisterViewModel>();
+            var registerBMock = Substitute.For<IRegisterViewModel>();
+            using var objUT = new BusTransferBoard(registerAMock, registerBMock);
+            objUT.RegisterA.Should().BeSameAs(registerAMock);
+            objUT.RegisterB.Should().BeSameAs(registerBMock);
             objUT.BusState.Should().BeNull();
         }
 
@@ -46,8 +48,8 @@ namespace DigitalElectronics.Boards.Tests
             registerAMock.Enable = true;
             registerBMock.Enable = true;
 
-            var ex = Assert.Throws<BusCollisionException>(() => objUT.Clock());
-            ex.Message.Should().Be("Register A and Register B should not be enabled at the same time.");
+            var ex = Assert.Throws<BusContentionException>(() => objUT.Clock());
+            ex!.Message.Should().Be("Register A and Register B should not be enabled at the same time.");
         }
 
         [Test]
@@ -58,7 +60,7 @@ namespace DigitalElectronics.Boards.Tests
             using var objUT = new BusTransferBoard(registerAMock, registerBMock);
             registerAMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerAMock.Output.Returns(binary42.ToList<bool>());
+            registerAMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
             objUT.BusState.Should().BeNull();
 
             registerAMock.Enable = true;
@@ -78,7 +80,7 @@ namespace DigitalElectronics.Boards.Tests
             using var objUT = new BusTransferBoard(registerAMock, registerBMock);
             registerBMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerBMock.Output.Returns(binary42.ToList<bool>());
+            registerBMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
             objUT.BusState.Should().BeNull();
 
             registerBMock.Enable = true;
@@ -101,7 +103,7 @@ namespace DigitalElectronics.Boards.Tests
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.BusState);
             registerAMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerAMock.Output.Returns(binary42.ToList<bool>());
+            registerAMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
             objUT.BusState.Should().BeNull();
 
             registerAMock.Enable = true;
@@ -130,7 +132,7 @@ namespace DigitalElectronics.Boards.Tests
             void LoadBinary42IntoRegisterA()
             {
                 registerA.Load = true;
-                registerA.Data = new ObservableCollection<Bit>(binary42);
+                registerA.Data = new ObservableCollection<Bit>(binary42.AsEnumerable<Bit>());
                 objUT.Clock();
                 registerA.Probe.Should().BeEquivalentTo(binary42.ToList<bool>());
                 registerA.Load = false;
@@ -150,7 +152,7 @@ namespace DigitalElectronics.Boards.Tests
             {
                 registerA.Load = true;
                 var binary0 = _bitConverter.GetBits((byte) 0);
-                var registerAData = new ObservableCollection<Bit>(binary0);
+                var registerAData = new ObservableCollection<Bit>(binary0.AsEnumerable<Bit>());
                 registerA.Data = registerAData;
                 objUT.Clock();
                 registerA.Load = false;

@@ -3,10 +3,8 @@ using BitArray = DigitalElectronics.Concepts.BitArray;
 
 namespace DigitalElectronics.Modules.ALUs
 {
-    public interface IArithmeticLogicUnit
+    public interface IArithmeticLogicUnit : IModule
     {
-        int BitCount { get; }
-
         /// <summary>
         /// Gets state of 'Sum' (∑) output
         /// </summary>

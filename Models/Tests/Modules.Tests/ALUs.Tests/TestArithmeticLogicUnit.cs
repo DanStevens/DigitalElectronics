@@ -24,7 +24,7 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         }
 
         [Test]
-        public void Constructor_GivenZeroNumberOfBits_ShouldThrow()
+        public void Constructor_GivenZeroForSizeInBitArg_ShouldThrow()
         {
             Assert.Throws<System.ArgumentOutOfRangeException>(() => new ArithmeticLogicUnit(0));
         }
@@ -32,7 +32,7 @@ namespace DigitalElectronics.Modules.ALUs.Tests
         [Test]
         public void BitCount_ShouldBeN()
         {
-            _4bitAlu.BitCount.Should().Be(N);
+            _4bitAlu.WordSize.Should().Be(N);
         }
 
         [Test]

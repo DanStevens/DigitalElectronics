@@ -1,45 +1,36 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
-using BitArray = DigitalElectronics.Concepts.BitArray;
-using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 namespace DigitalElectronics.ViewModels.Modules.Tests
 {
     public class EightBitRegisterViewModelTests
     {
-        private const int NumberOfBits = 8;
-
         private static readonly BitConverter BitConverter = new ();
         private static readonly BitArray minByte = BitConverter.GetBits(byte.MinValue);
         private static readonly BitArray maxByte = BitConverter.GetBits(byte.MaxValue);
-        private static readonly ObservableCollection<Bit> BitCollectionFor255 = CreateObservableBitCollection(byte.MaxValue);
-        private static readonly ObservableCollection<Bit> BitCollectionFor0 = CreateObservableBitCollection((byte)0);
-        private static readonly ObservableCollection<bool> BoolCollectionFor255 = CreateObservableBoolCollection(byte.MaxValue);
-        private static readonly ObservableCollection<bool> BoolCollectionFor0 = CreateObservableBoolCollection((byte)0);
+        private static readonly ReadOnlyObservableCollection<Bit> BitCollectionFor255 =   new (CreateObservableBitCollection(byte.MaxValue));
+        private static readonly ReadOnlyObservableCollection<bool> BoolCollectionFor255 = new (CreateObservableBoolCollection(byte.MaxValue));
 
-        private readonly BitArrayComparer _baComparer = new();
+        private static readonly BitArrayComparer BitArrayComparer = new();
 
-        private static IRegister CreateRegisterMock()
+        #region Helper methods
+
+        private static IReadWriteRegister CreateRegisterMock()
         {
-            var registerMock = Substitute.For<IRegister>();
+            var registerMock = Substitute.For<IReadWriteRegister>();
             registerMock.ProbeState().Returns(maxByte);
             return registerMock;
         }
 
         private static ObservableCollection<Bit> CreateObservableBitCollection(byte value)
         {
-            return new ObservableCollection<Bit>(BitConverter.GetBits(value));
+            return new ObservableCollection<Bit>(BitConverter.GetBits(value).Select(b => new Bit(b)).ToList());
         }
 
         private static ObservableCollection<bool> CreateObservableBoolCollection(byte value)
@@ -47,11 +38,18 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             return new ObservableCollection<bool>(BitConverter.GetBits(value));
         }
 
-
-        private BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
+        private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
         {
-            return Arg.Is<BitArray>(arg => _baComparer.Compare(arg, expectedValue) == 0);
+            return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
         }
+
+        private static void AssertSetInputDWasCalled(IReadWriteRegister registerMock, BitArray bitArray)
+        {
+            var expectedArg = CreateExpectedBitArrayArg(bitArray);
+            registerMock.Received(1).SetInputD(expectedArg);
+        }
+
+        #endregion
 
         [Test]
         public void InitialState()
@@ -66,64 +64,20 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             objUT.Output.Should().BeNull();
         }
 
-
         [Test]
         public void Data_ShouldCallSetInputDMethodOnRegister_WhenSet()
         {
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
+            registerMock.ClearReceivedCalls();
 
             // Set to zero
-            objUT.Data = BitCollectionFor0;
-            AssertSetInputDWasCalled(minByte);
+            objUT.Data = CreateObservableBitCollection(0);
+            AssertSetInputDWasCalled(registerMock, minByte);
 
             // Set to 255
-            objUT.Data = BitCollectionFor255;
-            AssertSetInputDWasCalled(maxByte);
-
-            void AssertSetInputDWasCalled(BitArray bitArray)
-            {
-                var expectedArg = CreateExpectedBitArrayArg(bitArray);
-                registerMock.Received(1).SetInputD(expectedArg);
-            }
-        }
-
-        [Test]
-        public void Data_ShouldBeSetToZeroBitArray_WhenSetToNull()
-        {
-            var registerMock = CreateRegisterMock();
-            var objUT = new EightBitRegisterViewModel(registerMock);
-            objUT.Data = null;
-            objUT.Data.Should().BeEquivalentTo(BitCollectionFor0);
-        }
-
-        [Test]
-        public void Data_WhenChangingABit_ShouldCallSetInputDMethodOnRegister()
-        {
-            var binary254 = BitConverter.GetBits((byte)254);
-            var registerMock = CreateRegisterMock();
-            var objUT = new EightBitRegisterViewModel(registerMock);
-            objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
-
-            objUT.Data[0] = false;
-
-            var expectedArg = CreateExpectedBitArrayArg(binary254);
-            registerMock.Received().SetInputD(expectedArg);
-        }
-
-        [Test]
-        public void Data_WhenChangingABit_AfterAssigningNewValue_ShouldCallSetInputDMethdOnRegister()
-        {
-            var binary1 = BitConverter.GetBits((byte)1);
-            var registerMock = CreateRegisterMock();
-            var objUT = new EightBitRegisterViewModel(registerMock);
-            objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
-
-            objUT.Data = BitCollectionFor0;
-            objUT.Data[0] = true;
-
-            var expectedArg = CreateExpectedBitArrayArg(binary1);
-            registerMock.Received().SetInputD(expectedArg);
+            objUT.Data = CreateObservableBitCollection(255);
+            AssertSetInputDWasCalled(registerMock, maxByte);
         }
 
         [Test]
@@ -142,27 +96,6 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
-        public void Output_ShouldBeNull_WhenEnableIsFalse()
-        {
-            var registerMock = CreateRegisterMock();
-            var objUT = new EightBitRegisterViewModel(registerMock);
-            
-            objUT.Enable.Should().Be(false);
-            objUT.Output.Should().BeNull();
-        }
-
-        [Test]
-        public void Output_ShouldBeProbe_WhenEnableIsTrue()
-        {
-            var registerMock = CreateRegisterMock();
-            var objUT = new EightBitRegisterViewModel(registerMock);
-
-            objUT.Enable = true;
-            objUT.Output.Should().BeEquivalentTo(objUT.Probe);
-        }
-
-
-        [Test]
         public void Enable_ShouldCallSetInputLMethodOnRegister_WhenSet()
         {
             var registerMock = CreateRegisterMock();
@@ -178,51 +111,104 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
+        public void Output_ShouldBeNull_WhenEnableIsFalse()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+            
+            objUT.Enable.Should().Be(false);
+            objUT.Output.Should().BeNull();
+        }
+
+        [Test]
+        public void Output_ShouldBeProbe_WhenEnableIsTrue()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+
+            registerMock.Output.Returns(maxByte);
+            objUT.Enable = true;
+            objUT.Output.Should().NotBeNull();
+            objUT.Output.Should().BeEquivalentTo(objUT.Probe);
+        }
+        
+        [Test]
         public void Clock_ShouldCallClockOnRegister_WhenCalled()
         {
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
             objUT.Clock();
+            registerMock.Received(1).Clock();
+        }
+
+        [Test]
+        public void Clock_ShouldCallSetInputDOnRegister_WhenCalled()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+            registerMock.ClearReceivedCalls();
+            objUT.Clock();
+            AssertSetInputDWasCalled(registerMock, maxByte);
+        }
+
+        [Test]
+        public void Output_ShouldUpdateToMatchData_WhenClockIsCalledAndLoadIsTrue()
+        {
+            var registerMock = CreateRegisterMock();
+            var objUT = new EightBitRegisterViewModel(registerMock);
+
+            registerMock.Output.Returns(maxByte);
+            objUT.Enable = true;
+            objUT.Output.Should().BeEquivalentTo(BoolCollectionFor255);
+            objUT.Enable = false;
+
+            objUT.Data = CreateObservableBitCollection(42);
+            objUT.Load = true;
+            objUT.Clock();
+            objUT.Load = false;
+
+            registerMock.Output.Returns(new BitArray((byte)42));
+            objUT.Enable = true;
+            objUT.Output.Should().BeEquivalentTo(CreateObservableBoolCollection(42));
         }
 
         [Test]
         public void Clock_ThrowsInvalidOperationException_WhenLoadAndEnableAreTrue()
         {
             var objUT = new EightBitRegisterViewModel { Enable = true, Load = true };
-            var ex = Assert.Throws<InvalidOperationException>(() => objUT.Clock());
-            ex.Message.Should().Be("Load and Enable should not both be set high at the same time");
+            var ex = Assert.Throws<System.InvalidOperationException>(() => objUT.Clock());
+            ex!.Message.Should().Be("Load and Enable should not both be set high at the same time");
         }
 
         [Test]
-        [Ignore("TODO come back to this")]
-        public void PropertyChanged_ShouldBeRaisedChangedForDataProperty_WhenDataPropertyIsChanged()
+        public void PropertyChanged_ShouldBeRaisedForDataProperty_WhenDataPropertyIsChanged()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Data);
 
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(true);
             raised = false;
 
             // Set to 0 again (using different `BitArray` object representing the same value)
-            objUT.Data = CreateObservableBitCollection((byte)0);
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(false);
             raised = false;
 
             // Set to 255
-            objUT.Data = BitCollectionFor255;
+            objUT.Data = CreateObservableBitCollection(255);
             raised.Should().Be(true);
             raised = false;
 
             // Set to 255 again (using different `BitArray` object representing the same value)
-            objUT.Data = CreateObservableBitCollection((byte)255);
+            objUT.Data = CreateObservableBitCollection(255);
             raised.Should().Be(false);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedChangedForLoadProperty_WhenLoadPropertyIsSet()
+        public void PropertyChanged_ShouldBeRaisedForLoadProperty_WhenLoadPropertyIsSet()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
@@ -249,7 +235,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedChangedForEnableProperty_WhenEnablePropertyIsSet()
+        public void PropertyChanged_ShouldBeRaisedForEnableProperty_WhenEnablePropertyIsSet()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
@@ -276,22 +262,22 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedForProbe_UponClockCalled_WhenLoadIsTrue()
+        public void PropertyChanged_ShouldBeRaisedForProbeProperty_UponClockCalled_WhenLoadIsTrue()
         {
-            bool raised = false;
+            bool raisedForProbe = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock) { Load = true };
-            objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Probe);
+            objUT.PropertyChanged += (s, e) => raisedForProbe |= e.PropertyName == nameof(objUT.Probe);
 
             objUT.Data.Should().BeEquivalentTo(BitCollectionFor255);
             objUT.Clock();
-            raised.Should().Be(true);
+            raisedForProbe.Should().Be(true);
 
-            raised = false;
-            objUT.Data = BitCollectionFor0;
-            raised.Should().Be(false);
+            raisedForProbe = false;
+            objUT.Data = CreateObservableBitCollection(0);
+            raisedForProbe.Should().Be(false);
             objUT.Clock();
-            raised.Should().Be(true);
+            raisedForProbe.Should().Be(true);
         }
 
         [Test]
@@ -307,14 +293,14 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             raised.Should().Be(false);
 
             raised = false;
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(false);
             objUT.Clock();
             raised.Should().Be(false);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedForOutput_UponEnableSetToTrue()
+        public void PropertyChanged_ShouldBeRaisedForOutput_WhenEnableIsChanged()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
@@ -322,57 +308,58 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
             objUT.Enable = true;
+            raised.Should().Be(true);
 
+            raised = false;
+            objUT.Enable = false;
             raised.Should().Be(true);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeNotRaisedForOutput_WhenEnableIsFalse()
+        public void PropertyChanged_ShouldBeNotRaisedForOutput_WhenDataIsChangedAndEnableIsFalse()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock) { Enable = false };
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(false);
 
             raised = false;
-            objUT.Data = BitCollectionFor255;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(false);
         }
 
         [Test]
-        public void PropertyChanged_ShouldBeRaisedForOutput_WhenEnableIsTrue()
+        public void PropertyChanged_ShouldBeRaisedForOutput_WhenDataIsChangedAndEnableIsTrue()
         {
             bool raised = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock) { Enable = true };
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Output);
 
-            objUT.Data = BitCollectionFor0;
+            objUT.Data = CreateObservableBitCollection(0);
             raised.Should().Be(true);
 
             raised = false;
-            objUT.Data = BitCollectionFor255;
+            objUT.Data = CreateObservableBitCollection(255);
             raised.Should().Be(true);
         }
 
         [Test]
-        public void DataChanged_ShouldBeRaised_WhenDataPropertyChanges()
+        public void EnableChanged_ShouldBeRaised_WhenEnablePropertyIsChanged()
         {
-            var raised = false;
+            bool raised = false;
             var registerMock = CreateRegisterMock();
             var objUT = new EightBitRegisterViewModel(registerMock);
-            objUT.DataChanged += (s, e) => raised = true;
+            objUT.EnableChanged += (s, e) => raised = true;
 
-            objUT.Data = BitCollectionFor0;
-
+            objUT.Enable = true;
             raised.Should().Be(true);
 
             raised = false;
-            objUT.Data[0] = true;
-
+            objUT.Enable = false;
             raised.Should().Be(true);
         }
     }

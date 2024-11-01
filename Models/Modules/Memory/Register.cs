@@ -3,34 +3,36 @@ using System.Diagnostics;
 using System.Linq;
 using DigitalElectronics.Concepts;
 
+#nullable enable
+
 namespace DigitalElectronics.Components.Memory
 {
     /// <summary>
     /// Models a multi-bit register of N bits, where each bit has its own input
     /// </summary>
-    [DebuggerDisplay("Register: {this.ProbeState()}")]
-    public class Register : IRegister
+    [DebuggerDisplay("{this.Label,nq}: {this.ProbeState()}")]
+    public class Register : IReadWriteRegister
     {
-
-        private RegisterBit[] _registers;
+        private readonly RegisterBit[] _registers;
 
         /// <summary>
-        /// Constructs a multi-bit register with the given number of bits
+        /// Constructs a multi-bit register with the given size
         /// </summary>
-        /// <param name="numberOfBits"></param>
-        public Register(int numberOfBits)
+        /// <param name="wordSize">The word size of the register in bits</param>
+        public Register(int wordSize, RegisterMode mode = RegisterMode.ReadWrite)
         {
-            if (numberOfBits <= 0)
-                throw new ArgumentOutOfRangeException(nameof(numberOfBits), "Argument must be greater than 0");
+            if (wordSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(wordSize), "Argument must be greater than 0");
 
-            _registers = new RegisterBit[numberOfBits];
-            for (int x = 0; x < numberOfBits; x++) _registers[x] = new RegisterBit();
+            Mode = mode;
+            _registers = new RegisterBit[wordSize];
+            for (int x = 0; x < wordSize; x++) _registers[x] = new RegisterBit();
         }
 
         /// <summary>
         /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
         /// </summary>
-        /// <param name="inputs">A <see cref="BitArray"/> containing values to set the register to,
+        /// <param name="data">A <see cref="BitArray"/> containing values to set the register to,
         /// starting with the low-order bit. If the BitArray contains less elements than the number
         /// of bits in the register, the higher-order bits remain unchanged. If the BitArray contains
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
@@ -43,9 +45,19 @@ namespace DigitalElectronics.Components.Memory
         }
 
         /// <summary>
+        /// Optional label to help identify the register
+        /// </summary>
+        public string Label { get; set; } = "Register";
+
+        /// <summary>
+        /// Value that indicates whether the register is read-only, write-only or read and write
+        /// </summary>
+        public RegisterMode Mode { get; }
+
+        /// <summary>
         /// The number of bits in the register (N)
         /// </summary>
-        public int BitCount => _registers.Length;
+        public int WordSize => _registers.Length;
 
         /// <summary>
         /// Sets value for 'Enabled' input
@@ -60,7 +72,9 @@ namespace DigitalElectronics.Components.Memory
         /// </remarks>
         public void SetInputE(bool value)
         {
-            for (int x = 0; x < BitCount; x++) _registers[x].SetInputE(value);
+            if (IsReadable)
+                for (int x = 0; x < WordSize; x++)
+                    _registers[x].SetInputE(value);
         }
 
         /// <summary>
@@ -79,7 +93,7 @@ namespace DigitalElectronics.Components.Memory
         /// otherwise loading is disabled</param>
         public void SetInputL(bool value)
         {
-            for (int x = 0; x < BitCount; x++) _registers[x].SetInputL(value);
+            for (int x = 0; x < WordSize; x++) _registers[x].SetInputL(value);
         }
 
         /// <summary>
@@ -90,30 +104,51 @@ namespace DigitalElectronics.Components.Memory
         /// <see cref="SetInputD(BitArray)"/> is loaded into the registry.</remarks>
         public void Clock()
         {
-            for (int x = 0; x < BitCount; x++) _registers[x].Clock();
+            for (int x = 0; x < WordSize; x++) _registers[x].Clock();
         }
 
         /// <summary>
-        /// The output of the register
+        /// The tri-state output of the register
         /// </summary>
-        public BitArray Output
-        {
-            get
-            {
-                return !_registers[0].OutputQ.HasValue ?
-                    null :
-                    new BitArray(_registers.Select(_ => _.OutputQ.Value).ToArray());
-            }
-        }
+        /// <returns>If the output is enabled (see <see cref="SetInputE"/>,
+        /// <see cref="BitArray"/> representing the current value; otherwise `null`,
+        /// which represents the Z (high impedance) state</returns>
+        public BitArray? Output => IsReadable && _registers[0].OutputQ.HasValue ?
+                new BitArray(_registers.Select(_ => _.OutputQ!.Value)) : null;
 
         /// <summary>
         /// Returns the internal state of the register
         /// </summary>
-        /// <remarks>Consumers can use this to get the register's output without have to set
+        /// <remarks>Consumers can use this to get the register's state without have to set
         /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState()
         {
-            return new BitArray(_registers.Select(_ => _.ProbeState()).ToArray());
+            return new BitArray(_registers.Select(_ => _.ProbeState()));
+        }
+
+        /// <summary>
+        /// Whether or not the register is readable
+        /// </summary>
+        /// <return>`true` if the register can be read; otherwise `false`</return>
+        /// A register is readable when the <see cref="RegisterMode.Read"/> flag is set.
+        /// When a register is not readable, <see cref="Output"/> will always return
+        /// `null` since setting the <see cref="SetInputE">enable signal></see> to
+        /// `true` has no affect.
+        public bool IsReadable => Mode.HasFlag(RegisterMode.Read);
+
+        /// <summary>
+        /// Resets the register, setting all bits to 1 and disabling output
+        /// </summary>
+        public void Reset()
+        {
+            foreach (var registerBit in _registers)
+            {
+                registerBit.SetInputL(true);
+                registerBit.SetInputD(true);
+                registerBit.Clock();
+                registerBit.SetInputL(false);
+                registerBit.SetInputE(false);
+            }
         }
     }
 }

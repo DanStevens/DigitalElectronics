@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <StartupObject>DigitalElectronics.BenEater.Computers.Views.App</StartupObject>
+    <RootNamespace>$(SolutionName).$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Core.csproj" />
+    <ProjectReference Include="..\..\..\Views\DigitalElectronics.UI\DigitalElectronics.UI.csproj" />
+    <ProjectReference Include="..\BenEater.Computers.ViewModels\BenEater.Computers.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>

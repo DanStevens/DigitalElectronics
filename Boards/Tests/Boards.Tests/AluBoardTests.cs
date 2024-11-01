@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
@@ -15,11 +17,10 @@ namespace DigitalElectronics.Boards.Tests;
 public class AluBoardTests
 {
     private static readonly BitConverter _bitConverter = new ();
-    private static readonly BitArrayComparer _baComparer = new();
 
-    private BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
+    private static IEnumerable<T> CreateExpectedEnumerableArg<T>(IEnumerable<T> expectedValue)
     {
-        return Arg.Is<BitArray>(arg => _baComparer.Compare(arg, expectedValue) == 0);
+        return Arg.Is<IEnumerable<T>>(p => p.SequenceEqual(expectedValue));
     }
 
     [Test]
@@ -27,11 +28,81 @@ public class AluBoardTests
     {
         var mocks = new Mocks();
         using var objUT = CreateObjectUnderTest(mocks);
-        objUT.RegisterAVM.Should().BeSameAs(mocks.registerAVM);
-        objUT.RegisterBVM.Should().BeSameAs(mocks.registerBVM);
-        objUT.ALU.Should().BeSameAs(mocks.alu);
+        objUT.RegisterA.Should().BeSameAs(mocks.registerAVM);
+        objUT.RegisterB.Should().BeSameAs(mocks.registerBVM);
+        objUT.ALU.Should().BeSameAs(mocks.aluVM);
     }
 
+    [Test]
+    public void Ctor_ShouldSyncAluWithRegisters()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+
+        // Register A
+        var expectedArgA = CreateExpectedEnumerableArg(mocks.registerAVM.Probe);
+        mocks.aluVM.Received(1).SetInputA(expectedArgA);
+
+        // Register B
+        var expectedArgB = CreateExpectedEnumerableArg(mocks.registerBVM.Probe);
+        mocks.aluVM.Received(1).SetInputB(expectedArgB);
+    }
+
+    [Test]
+    public void BusState_ShouldMatchOutputOfRegisterA_WhenRegisterAIsEnabled()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        mocks.registerAVM.Enable.Should().Be(false);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.registerAVM.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
+        objUT.BusState.Should().BeNull();
+
+        mocks.registerAVM.Enable = true;
+        mocks.registerAVM.EnableChanged += Raise.Event();
+        objUT.BusState.Should().BeEquivalentTo(mocks.registerAVM.Output);
+
+        mocks.registerAVM.Enable = false;
+        mocks.registerAVM.EnableChanged += Raise.Event();
+        objUT.BusState.Should().BeNull();
+    }
+
+    [Test]
+    public void BusState_ShouldMatchOutputOfRegisterB_WhenRegisterBIsEnabled()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        mocks.registerBVM.Enable.Should().Be(false);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.registerBVM.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
+        objUT.BusState.Should().BeNull();
+
+        mocks.registerBVM.Enable = true;
+        mocks.registerBVM.EnableChanged += Raise.Event();
+        objUT.BusState.Should().BeEquivalentTo(mocks.registerBVM.Output);
+
+        mocks.registerBVM.Enable = false;
+        mocks.registerBVM.EnableChanged += Raise.Event();
+        objUT.BusState.Should().BeNull();
+    }
+
+    [Test]
+    public void BusState_ShouldMatchOutputEOfAlu_WhenAluIsEnabled()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        objUT.BusState.Should().BeNull();
+
+        mocks.aluVM.OutputE.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        objUT.BusState.Should().BeEquivalentTo(binary42.ToList<bool>());
+
+        mocks.aluVM.Enable = false;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        objUT.BusState.Should().BeNull();
+    }
 
     [Test]
     public void Clock_ShouldCallClockOnRegisterAAndRegisterB()
@@ -45,45 +116,212 @@ public class AluBoardTests
         mocks.registerBVM.Received(1).Clock();
     }
 
-    [Test]
-    public void Clock_ShouldBusCollisionException_WhenRegisterAAndRegisterBAreBothEnabled()
+    [TestCase(false, false, false, false)]
+    [TestCase(true, false, false, false)]
+    [TestCase(false, true, false, false)]
+    [TestCase(false, false, true, false)]
+    [TestCase(true, true, true, true)]
+    [TestCase(false, true, true, true)]
+    [TestCase(true, true, true, true)]
+    public void Clock_ShouldBusCollisionException_WhenMoreThanOneComponentIsEnabled(
+        bool registerAEnabled,
+        bool registerBEnabled,
+        bool aluEnabled,
+        bool busCollisionExpected)
     {
         var mocks = new Mocks();
         using var objUT = CreateObjectUnderTest(mocks);
+
+        mocks.registerAVM.Enable = registerAEnabled;
+        mocks.registerBVM.Enable = registerBEnabled;
+        mocks.aluVM.Enable = aluEnabled;
+
+        if (busCollisionExpected)
+        {
+            var ex = Assert.Throws<BusContentionException>(() => objUT.Clock());
+            ex!.Message.Should().Be(BusContentionException.DefaultMessage);
+        }
+        else
+        {
+            Assert.DoesNotThrow(() => objUT.Clock());
+        }
+    }
+
+    [Test]
+    public void Clock_ShouldSyncInputAOnAluWithRegisterA()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        objUT.RegisterA.Data = binary42.AsEnumerable<Bit>().ToList();
+
+        objUT.Clock();
+
+        var expectedArgs = CreateExpectedEnumerableArg(objUT.RegisterA.Probe);
+        mocks.aluVM.Received(1).SetInputA(expectedArgs);
+    }
+
+    [Test]
+    public void Clock_ShouldSyncInputBOnAluWithRegisterB()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        objUT.RegisterB.Data = binary42.AsEnumerable<Bit>().ToList();
+
+        objUT.Clock();
+
+        var expectedArgs = CreateExpectedEnumerableArg(objUT.RegisterB.Probe);
+        mocks.aluVM.Received(1).SetInputB(expectedArgs);
+    }
+
+    [Test]
+    public void Clock_ShouldSyncRegisterAWithAlu_WhenAluOutputIsEnabled_AndRegisterAIsLoading()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.registerAVM.Load = true;
+
+        objUT.Clock();
+
+        mocks.registerAVM.Data.Should().BeEquivalentTo(binary42);
+    }
+
+    [Test]
+    public void Clock_ShouldTriggerBusTransferFromRegisterAtoAluShould_WhenAluOutputIsEnabled_AndRegisterAIsNotLoading()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var current = mocks.registerAVM.Data;
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.registerAVM.Load = false;
+
+        objUT.Clock();
+
+        mocks.registerAVM.Data.Should().BeSameAs(current);
+    }
+
+    [Test]
+    public void Clock_ShouldTriggerBusTransferFromRegisterBToAlu_WhenAluOutputIsEnabled_AndRegisterBIsLoading()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.registerBVM.Data = Substitute.For<IList<Bit>>();
+        mocks.registerBVM.Data.Count.Returns(8);
+        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.registerBVM.Load = true;
+
+        objUT.Clock();
+
+        for (int i = 0; i < binary42.Length; i++)
+        {
+            mocks.registerBVM.Data.Received(1)[i] = binary42[i];
+        }
+    }
+
+    [Test]
+    public void Clock_ShouldNotTriggerBusTransferFromRegisterBToAlu_WhenAluOutputIsEnabled_AndRegisterBIsNotLoading()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var current = mocks.registerBVM.Data;
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.registerBVM.Load = false;
+
+        objUT.Clock();
+
+        mocks.registerBVM.Data.Should().BeSameAs(current);
+    }
+
+    [Test]
+    public void Clock_ShouldSyncBusWithAlu_WhenALUIsEnabled()
+    {
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        var binary1 = _bitConverter.GetBits((byte)1);
+        mocks.aluVM.Enable = true;
+        mocks.aluVM.EnableChanged += Raise.Event();
+        mocks.aluVM.OutputE.Returns(binary1);
+
+        objUT.Clock();
+
+        objUT.BusState.Should().BeEquivalentTo(binary1);
+    }
+
+    [Test]
+    public void PropertyChanged_ShouldBeRaisedForBusState_WhenBusStateChanges()
+    {
+        bool raised = false;
+        var mocks = new Mocks();
+        using var objUT = CreateObjectUnderTest(mocks);
+        objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.BusState);
+        mocks.registerAVM.Enable.Should().Be(false);
+        var binary42 = _bitConverter.GetBits((byte)42);
+        mocks.registerAVM.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
+        objUT.BusState.Should().BeNull();
 
         mocks.registerAVM.Enable = true;
-        mocks.registerBVM.Enable = true;
+        mocks.registerAVM.EnableChanged += Raise.Event();
+        raised.Should().Be(true);
+        raised = false;
 
-        var ex = Assert.Throws<BusCollisionException>(() => objUT.Clock());
-        ex.Message.Should().Be("Register A and Register B should not be enabled at the same time.");
+        mocks.registerAVM.Enable = true;
+        mocks.registerAVM.EnableChanged += Raise.Event();
+        raised.Should().Be(true);
     }
 
     [Test]
-    public void WhenRegisterAViewModelRaisesDataChanged_SetInputAIsCalledOnALU()
+    public void Addition()
     {
-        var mocks = new Mocks();
-        using var objUT = CreateObjectUnderTest(mocks);
+        for (int a = 0; a < 25; a++)
+            for (int b = 0; b < 25; b++)
+                DoTest(a, b, a + b);
 
-        var binary42 = _bitConverter.GetBits((byte)42);
-        objUT.RegisterAVM.Data = binary42.AsEnumerable<Bit>().ToList();
-        mocks.registerAVM.DataChanged += Raise.Event();
+        void DoTest(int a, int b, int expectedSum)
+        {
+            using var objUT = new AluBoard();
+            var binaryA = new BitArray((byte) a);
+            var binaryB = new BitArray((byte) b);
+            var binaryExpectedSum = new BitArray((byte) expectedSum);
 
-        var expectedArgs = CreateExpectedBitArrayArg(binary42);
-        objUT.ALU.Received(1).SetInputA(expectedArgs);
-    }
+            LoadRegisterA(binaryB);
+            TransferRegisterAToRegisterB();
+            objUT.RegisterB.Probe.Should().BeEquivalentTo(binaryB.AsReadOnlyList<bool>());
+            LoadRegisterA(binaryA);
+            objUT.RegisterA.Probe.Should().BeEquivalentTo(binaryA.AsReadOnlyList<bool>());
+            objUT.ALU.Probe.Should().BeEquivalentTo(binaryExpectedSum.AsReadOnlyList<bool>());
 
-    [Test]
-    public void WhenRegisterBViewModelRaisesDataChanged_SetInputBIsCalledOnALU()
-    {
-        var mocks = new Mocks();
-        using var objUT = CreateObjectUnderTest(mocks);
+            void LoadRegisterA(BitArray value)
+            {
+                objUT.RegisterA.Load = true;
+                objUT.RegisterA.Data = value.AsEnumerable<Bit>().ToList();
+                objUT.Clock();
+                objUT.RegisterA.Load = false;
+                objUT.RegisterA.Probe.Should().BeEquivalentTo(value.AsReadOnlyList<bool>());
+            }
 
-        var binary42 = _bitConverter.GetBits((byte)42);
-        objUT.RegisterBVM.Data = binary42.AsEnumerable<Bit>().ToList();
-        mocks.registerBVM.DataChanged += Raise.Event();
-
-        var expectedArgs = CreateExpectedBitArrayArg(binary42);
-        objUT.ALU.Received(1).SetInputB(expectedArgs);
+            void TransferRegisterAToRegisterB()
+            {
+                objUT.RegisterA.Enable = true;
+                objUT.RegisterB.Load = true;
+                objUT.Clock();
+                objUT.RegisterB.Load = false;
+                objUT.RegisterA.Enable = false;
+            }
+        }
     }
 
     #region Helpers
@@ -91,26 +329,23 @@ public class AluBoardTests
     private static AluBoard CreateObjectUnderTest(Mocks mocks)
     {
         _ = mocks ?? throw new ArgumentNullException(nameof(mocks));
-        return new AluBoard(
-            mocks.registerAVM,
-            mocks.registerA,
-            mocks.registerBVM,
-            mocks.registerB,
-            mocks.alu);
+        return new AluBoard(mocks.aluVM, mocks.registerAVM, mocks.registerBVM);
     }
 
     private class Mocks
     {
+        public readonly IAluViewModel aluVM = Substitute.For<IAluViewModel>();
         public readonly IRegisterViewModel registerAVM = Substitute.For<IRegisterViewModel>();
-        public readonly IRegister registerA = Substitute.For<IRegister>();
         public readonly IRegisterViewModel registerBVM = Substitute.For<IRegisterViewModel>();
-        public readonly IRegister registerB = Substitute.For<IRegister>();
-        public readonly IArithmeticLogicUnit alu = Substitute.For<IArithmeticLogicUnit>();
 
         public Mocks()
         {
-            registerA.ProbeState().Returns(_ => registerAVM.Data.ToBitArray());
-            registerB.ProbeState().Returns(_ => registerBVM.Data.ToBitArray());
+            var zero = Enumerable.Repeat(new Bit(), 8);
+            registerAVM.Data = zero.ToList();
+            registerBVM.Data = zero.ToList();
+
+            registerAVM.Probe.Returns(_ => new ReadOnlyCollection<bool>(registerAVM.Data.Select(bit => bit.Value).ToList()));
+            registerBVM.Probe.Returns(_ => new ReadOnlyCollection<bool>(registerBVM.Data.Select(bit => bit.Value).ToList()));
         }
     }
 

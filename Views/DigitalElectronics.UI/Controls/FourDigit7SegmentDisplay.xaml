@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="DigitalElectronics.UI.Controls.FourDigit7SegmentDisplay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DigitalElectronics.UI.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="225" d:DesignWidth="500">
+    <Viewbox>
+        <StackPanel x:Name="_layoutRoot" Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type local:SevenSegmentDigit}">
+                    <Setter Property="Padding" Value="{Binding DigitPadding}" />
+                    <Setter Property="SegmentsLitColor" Value="{Binding SegmentsLitColor}" />
+                    <Setter Property="SegmentsUnlitColor" Value="{Binding SegmentsUnlitColor}" />
+                </Style>
+            </StackPanel.Resources>
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit3}" IsActive="{Binding Digit3IsActive}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit2}" IsActive="{Binding Digit2IsActive}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit1}" IsActive="{Binding Digit1IsActive}" />
+            <local:SevenSegmentDigit d:Padding="5" Lines="{Binding LinesForDigit0}" IsActive="{Binding Digit0IsActive}" />
+        </StackPanel>
+    </Viewbox>
+</UserControl>

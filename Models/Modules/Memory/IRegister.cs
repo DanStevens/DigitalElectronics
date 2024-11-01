@@ -1,42 +1,25 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using DigitalElectronics.Modules;
 using BitArray = DigitalElectronics.Concepts.BitArray;
+
+#nullable enable
 
 namespace DigitalElectronics.Components.Memory
 {
-    public interface IRegister
+    [Flags]
+    public enum RegisterMode
     {
-        /// <summary>
-        /// Sets the 'Data' inputs according to the given <see cref="BitArray"/>
-        /// </summary>
-        /// <param name="inputs">A <see cref="BitArray"/> containing values to set the register to,
-        /// starting with the low-order bit. If the BitArray contains less elements than the number
-        /// of bits in the register, the higher-order bits remain unchanged. If the BitArray contains
-        /// more elements than the number of bits in the register, the excess elements are unused.</param>
-        void SetInputD(BitArray data);
+        None = 0,
+        Read = 1,
+        Write = 2,
+        ReadWrite = 3
+    }
 
-        /// <summary>
-        /// The number of bits in the register (N)
-        /// </summary>
-        int BitCount { get; }
+    public interface IReadWriteRegister : IWritableRegister, IReadableRegister { }
 
-        /// <summary>
-        /// The output of the register
-        /// </summary>
-        BitArray Output { get; }
-
-        /// <summary>
-        /// Sets value for 'Enabled' input
-        /// </summary>
-        /// <param name="value">Set to `true` to enable output and `false` to disable output</param>
-        /// <remarks>
-        /// The `Enabled` input determines whether the register outputs the currently latched value,
-        /// or `null`, which represents the Z (high impedance) state.
-        /// 
-        /// When using a register in a bus configuration, keep 'Enabled' input low except when
-        /// performing a bus transfer.
-        /// </remarks>
-        void SetInputE(bool value);
-
+    public interface IWritableRegister : IRegister, IInputModule
+    {
         /// <summary>
         /// Sets value for 'Load' input
         /// </summary>
@@ -51,6 +34,21 @@ namespace DigitalElectronics.Components.Memory
         /// <see cref="Register.SetInputL">'Load' input</see> is `true`, the data set via
         /// <see cref="Register.SetInputD"/> is loaded into the registry.</remarks>
         void Clock();
+
+        /// <summary>
+        /// Resets the register, setting all bits to 1 and disabling output
+        /// </summary>
+        void Reset();
+    }
+
+    public interface IReadableRegister : IRegister, IOutputModule { }
+
+    public interface IRegister : IModule
+    {
+        /// <summary>
+        /// Indicates whether this register supports reading, writing or both
+        /// </summary>
+        RegisterMode Mode { get; }
 
         /// <summary>
         /// Returns the internal state of the register

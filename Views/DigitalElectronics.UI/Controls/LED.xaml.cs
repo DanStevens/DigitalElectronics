@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Ink;
 using System.Windows.Media;
+using DP = System.Windows.DependencyProperty;
+using DPMetadata = System.Windows.FrameworkPropertyMetadata;
+using DPMetadataOptions = System.Windows.FrameworkPropertyMetadataOptions;
 
 namespace DigitalElectronics.UI.Controls
 {
@@ -16,56 +19,91 @@ namespace DigitalElectronics.UI.Controls
             _layoutRoot.DataContext = this;
         }
 
+        #region IsLit dependency property
+
+        [Category("Appearance")]
         public bool IsLit
         {
             get { return (bool)GetValue(IsLitProperty); }
             set { SetValue(IsLitProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsLit.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsLitProperty =
-            DependencyProperty.Register("IsLit", typeof(bool), typeof(LED), new PropertyMetadata(false));
+        public static readonly DP IsLitProperty =
+            DP.Register(nameof(IsLit),
+                typeof(bool),
+                typeof(LED),
+                new DPMetadata(false,
+                    DPMetadataOptions.AffectsRender | DPMetadataOptions.SubPropertiesDoNotAffectRender));
 
-        public Stroke Stroke
+        #endregion
+
+        #region Stroke depdency property
+
+        [Category(nameof(Brush))]
+        public Brush Stroke
         {
-            get { return (Stroke)GetValue(StrokeProperty); }
+            get { return (Brush)GetValue(StrokeProperty); }
             set { SetValue(StrokeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty StrokeProperty =
-            DependencyProperty.Register("Stroke", typeof(Brush), typeof(LED), new PropertyMetadata(Brushes.Black));
+        public static readonly DP StrokeProperty =
+            DP.Register(nameof(Stroke),
+                typeof(Brush),
+                typeof(LED),
+                new DPMetadata(Brushes.Black,
+                    DPMetadataOptions.AffectsRender | DPMetadataOptions.SubPropertiesDoNotAffectRender));
 
-        public Color OffColor
+        #endregion
+
+        #region UnlitColor dependency property
+
+        [Category("Brush")]
+        public Color UnlitColor
         {
-            get { return (Color)GetValue(OffColorProperty); }
-            set { SetValue(OffColorProperty, value); }
+            get { return (Color)GetValue(UnlitColorProperty); }
+            set { SetValue(UnlitColorProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Color.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty OffColorProperty =
-            DependencyProperty.Register("OffColor", typeof(Color), typeof(LED), new PropertyMetadata(Colors.Transparent));
+        public static readonly DP UnlitColorProperty =
+            DP.Register(nameof(UnlitColor),
+                typeof(Color),
+                typeof(LED),
+                new DPMetadata(Colors.Transparent,
+                    DPMetadataOptions.AffectsRender | DPMetadataOptions.SubPropertiesDoNotAffectRender));
 
-        public Color OnColor
+        #endregion
+
+        #region LitColor dependency property
+
+        [Category("Brush")]
+        public Color LitColor
         {
-            get { return (Color)GetValue(OnColorProperty); }
-            set { SetValue(OnColorProperty, value); }
+            get { return (Color)GetValue(LitColorProperty); }
+            set { SetValue(LitColorProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for color.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty OnColorProperty =
-            DependencyProperty.Register("OnColor", typeof(Color), typeof(LED), new PropertyMetadata(Colors.OrangeRed));
+        public static readonly DP LitColorProperty =
+            DP.Register(nameof(LitColor),
+                typeof(Color),
+                typeof(LED),
+                new DPMetadata(Colors.OrangeRed,
+                    DPMetadataOptions.AffectsRender | DPMetadataOptions.SubPropertiesDoNotAffectRender));
 
+        #endregion
+
+        #region Text dependency propery
+
+        [Category("Appearance")]
         public string Text
         {
             get { return (string)GetValue(TextProperty); }
             set { SetValue(TextProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(LED), new PropertyMetadata(string.Empty));
+        public static readonly DP TextProperty =
+            DP.Register(nameof(Text), typeof(string), typeof(LED), new PropertyMetadata(string.Empty));
 
+        #endregion
 
     }
 }

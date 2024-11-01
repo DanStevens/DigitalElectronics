@@ -9,7 +9,7 @@
         xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
         xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
-        Title="8-bit Register Demo" Height="170" Width="470">
+        Title="8-bit Register Demo" Height="170" Width="500">
     <Window.DataContext>
         <components:EightBitRegisterViewModel x:Name="_viewModel" d:Enable="false" />
     </Window.DataContext>
@@ -33,17 +33,17 @@
             <Border BorderBrush="Black" BorderThickness="1" Height="70" Margin="10" Padding="5">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Margin="0,0,0,5" HorizontalAlignment="Center" VerticalAlignment="Center">8-bit Register</TextBlock>
-                    <controls:LedStrip Lines="{Binding Probe}" LedSize="15" />
+                    <controls:LedStrip Lines="{Binding Probe}" LedSize="15" BitOrder="LsbFirst" />
                 </StackPanel>
             </Border>
-            <controls:DipSwitch Lines="{Binding Data}" />
+            <controls:DipSwitch Lines="{Binding Data}" HorizontalAlignment="Center" BitOrder="LsbFirst"/>
         </StackPanel>
-        <StackPanel Grid.Column="2" Orientation="Vertical" Margin="10,23,10,10" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <StackPanel Grid.Column="2" Orientation="Vertical" Margin="10,23,10,10" VerticalAlignment="Top" HorizontalAlignment="Center">
             <TextBlock Text="Output" TextAlignment="Center" Margin="0,0,0,5"/>
             <TextBlock TextAlignment="Center" MinWidth="170" Text="[Z state (high impedance)]"
                        Visibility="{Binding Output, Converter={converters:NullToVisibilityConverter NullVisibility=Visible, NonNullVisibility=Collapsed}}" />
             <controls:LedStrip Visibility="{Binding Output, Converter={converters:NullToVisibilityConverter}}"
-                               Lines="{Binding Output}" LedSize="20" LedColorWhenLit="Lime" />
+                               Lines="{Binding Output}" LedSize="20" LitLedColor="Lime" BitOrder="LsbFirst" />
         </StackPanel>
     </Grid>
 </Window>

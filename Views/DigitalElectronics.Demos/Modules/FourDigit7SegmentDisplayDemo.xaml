@@ -1,0 +1,29 @@
+﻿<Window x:Class="DigitalElectronics.Demos.Modules.FourDigit7SegmentDisplayDemo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigitalElectronics.Demos.Modules"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        xmlns:modules="clr-namespace:DigitalElectronics.ViewModels.Modules;assembly=ViewModels.Modules"
+        mc:Ignorable="d"
+        Title="4 Digit 7 Segment Display Demo" Height="230" Width="300">
+    <Window.DataContext>
+        <modules:FourDigit7SegmentDisplayViewModel x:Name="ViewModel" />
+    </Window.DataContext>
+    <StackPanel HorizontalAlignment="Center">
+        <controls:DipSwitch Margin="20" HorizontalAlignment="Center" Lines="{Binding Value}" BitOrder="LsbFirst" />
+        <controls:FourDigit7SegmentDisplay Margin="10" Width="150" Height="70" Background="Black"
+                                           SegmentsLitColor="OrangeRed" SegmentsUnlitColor="{DynamicResource VeryDarkGray}"
+                                           LinesForDigit0="{Binding LinesForDigit0}"
+                                           LinesForDigit1="{Binding LinesForDigit1}"
+                                           LinesForDigit2="{Binding LinesForDigit2}"
+                                           LinesForDigit3="{Binding LinesForDigit3}" />
+        <Slider Minimum="0" Maximum="2000" Value="{Binding UpdateInterval}" SmallChange="1"
+                TickFrequency="100" TickPlacement="BottomRight" LargeChange="10" />
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Right" Text="{Binding UpdateInterval, StringFormat=\{0:F0\} ms}" />
+            <TextBlock Text="Update interval:" />
+        </DockPanel>
+    </StackPanel>
+</Window>

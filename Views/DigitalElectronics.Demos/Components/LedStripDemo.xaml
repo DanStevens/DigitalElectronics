@@ -1,0 +1,30 @@
+﻿<Window x:Class="DigitalElectronics.Demos.Components.LedStripDemo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigitalElectronics.Demos.Components"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+        mc:Ignorable="d"
+        Title="LED Strip Demo" Height="250" Width="500">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+        <StackPanel.Resources>
+            <x:Array Type="{x:Type sys:Boolean}" x:Key="BinaryNegative42">
+                <sys:Boolean>False</sys:Boolean>
+                <sys:Boolean>True</sys:Boolean>
+                <sys:Boolean>True</sys:Boolean>
+                <sys:Boolean>False</sys:Boolean>
+                <sys:Boolean>True</sys:Boolean>
+                <sys:Boolean>False</sys:Boolean>
+                <sys:Boolean>True</sys:Boolean>
+                <sys:Boolean>True</sys:Boolean>
+            </x:Array>
+        </StackPanel.Resources>
+
+        <controls:LedStrip Margin="10" Lines="{StaticResource BinaryNegative42}" />
+        <controls:LedStrip Margin="10" Lines="{StaticResource BinaryNegative42}" BitOrder="LsbFirst" />
+        <controls:LedStrip Margin="10" Lines="{StaticResource BinaryNegative42}" Orientation="Vertical" />
+        <controls:LedStrip Margin="10" Lines="{StaticResource BinaryNegative42}" Orientation="Vertical" BitOrder="LsbFirst" />
+    </StackPanel>
+</Window>

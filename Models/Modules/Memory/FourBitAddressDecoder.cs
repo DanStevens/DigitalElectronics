@@ -8,7 +8,7 @@ namespace DigitalElectronics.Modules.Memory
 {
 
     /// <summary>
-    /// A 4-to-16 line address decoder
+    /// A 4-to-16 line address decoder (digital demultiplexer)
     /// </summary>
     /// <remarks>The 4-to-16 line address decoder converts a 4-bit address (4 lines)
     /// to 16-line output, of which only one line corresponding with the given address
@@ -19,10 +19,10 @@ namespace DigitalElectronics.Modules.Memory
         public const int NumberOfAddressBits = 4;
         public const int NumberOfOutputs = 16;
 
-        private Inverter[] _notA;
-        private QuadInputAndGate[] _andY;
+        private readonly Inverter[] _notA;
+        private readonly QuadInputAndGate[] _andY;
 
-        private BitConverter _bitConverter = new(Endianness.Little);
+        private readonly BitConverter _bitConverter = new(Endianness.Little);
 
         public FourBitAddressDecoder()
         {

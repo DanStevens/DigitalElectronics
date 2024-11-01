@@ -1,8 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>$(NetVersion)</TargetFramework>
     <RootNamespace>$(SolutionName)</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Concepts\ISharedAddrInput - Copy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.12.1" />
+  </ItemGroup>
 
 </Project>

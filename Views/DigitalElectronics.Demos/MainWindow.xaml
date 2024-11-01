@@ -12,21 +12,28 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <GroupBox Grid.Column="0" Header="Component Demos">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Grid.Column="0" Header="Component Demos">
             <StackPanel Orientation="Vertical">
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Margin" Value="2.5" />
                     </Style>
                 </StackPanel.Resources>
+                <Button Content="LED Strip Demo" Click="Button_Click" Tag="Components.LedStripDemo" />
+                <Button Content="DIP Switch Demo" Click="Button_Click" Tag="Components.DipSwitchDemo" />
                 <Button Content="S-R Latch Demo" Click="Button_Click" Tag="Components.SRLatchDemo" />
                 <Button Content="Gated S-R Latch Demo" Click="Button_Click" Tag="Components.GatedSRLatchDemo"/>
                 <Button Content="Gated D Latch Demo" Click="Button_Click" Tag="Components.GatedDLatchDemo" />
                 <Button Content="D Flip-Flop Demo" Click="Button_Click" Tag="Components.DFlipFlopDemo" />
                 <Button Content="1-bit Register Demo" Click="Button_Click" Tag="Components.OneBitRegisterDemo" />
+                <Button Content="7 Segment Digit" Click="Button_Click" Tag="Components.SevenSegmentDigitDemo" />
             </StackPanel>
         </GroupBox>
-        <GroupBox Grid.Column="1" Header="Module Demos">
+        <GroupBox Grid.Row="0" Grid.Column="1" Header="Module Demos">
             <StackPanel Orientation="Vertical">
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
@@ -35,7 +42,12 @@
                 </StackPanel.Resources>
                 <Button Content="8-bit Register Demo" Click="Button_Click" Tag="Modules.EightBitRegisterDemo" />
                 <Button Content="Bus Transfer Demo" Click="Button_Click" Tag="Boards.BusTransferBoardDemo" />
+                <Button Content="ALU Demo" Click="Button_Click" Tag="Boards.AluBoardDemo" />
+                <Button Content="16 Byte RAM Demo" Click="Button_Click" Tag="Modules.SixteenByteRAMDemo" />
+                <Button Content="4 Digit Display Demo" Click="Button_Click" Tag="Modules.FourDigit7SegmentDisplayDemo" />
             </StackPanel>
         </GroupBox>
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom">Framework version:</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="frameworkVersionTextBox" VerticalAlignment="Bottom" />
     </Grid>
 </Window>

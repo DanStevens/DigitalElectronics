@@ -1,0 +1,19 @@
+﻿<Window x:Class="DigitalElectronics.Demos.Components.DipSwitchDemo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigitalElectronics.Demos.Components"
+        xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
+        xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+        xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
+        xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
+        mc:Ignorable="d"
+        Title="DIP Switch Demo" Height="200" Width="400">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+        <controls:DipSwitch Margin="10" Lines="{Binding Lines}" />
+        <controls:DipSwitch Margin="10" Lines="{Binding Lines}" BitOrder="LsbFirst" />
+        <controls:DipSwitch Margin="10" Lines="{Binding Lines}" Orientation="Vertical" />
+        <controls:DipSwitch Margin="10" Lines="{Binding Lines}" Orientation="Vertical" BitOrder="LsbFirst" />
+    </StackPanel>
+</Window>

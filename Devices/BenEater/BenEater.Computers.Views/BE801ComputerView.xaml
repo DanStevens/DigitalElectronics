@@ -1,0 +1,168 @@
+﻿<UserControl x:Class="DigitalElectronics.BenEater.Computers.Views.BE801ComputerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DigitalElectronics.BenEater.Computers.Views"
+             xmlns:viewModels="clr-namespace:DigitalElectronics.BenEater.Computers.ViewModels;assembly=BenEater.Computers.ViewModels"
+             xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI" xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="800">
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="local:BE801ComputerView.ClockTick">
+            <BeginStoryboard>
+                <Storyboard>
+                    <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsLit" SpeedRatio="1"
+                            Storyboard.Target="{Binding Source={x:Reference ClockTickLED}}">
+                        <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0" />
+                        <DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.3" />
+                    </BooleanAnimationUsingKeyFrames>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+    <Grid x:Name="LayoutRoot">
+        <Grid.DataContext>
+            <viewModels:BE801ComputerViewModel x:Name="_viewModel" />
+        </Grid.DataContext>
+        <Grid.Resources>
+            <Style TargetType="{x:Type Border}">
+                <Setter Property="BorderBrush" Value="Black" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+            <Style TargetType="{x:Type controls:LedStrip}">
+                <Setter Property="BitOrder" Value="LsbFirst" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="1.5*" />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Grid.Column="0">
+            <Grid x:Name="ClockModuleContainer" DataContext="{Binding ClockModule}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal"
+                            HorizontalAlignment="Center" Margin="0,0,0,10">
+                    <TextBlock Text="Clock" Margin="0,0,5,0"  />
+                    <controls:LED x:Name="ClockTickLED" HorizontalAlignment="Center" Width="15" Height="15" IsLit="False" />
+                </StackPanel>
+                <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Width="200" Value="{Binding NewClockSpeed}"
+                        Minimum="1.0" Maximum="200" LargeChange="100" SmallChange="1" />
+                <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Text="New Clock Speed:" />
+                <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding NewClockSpeed, StringFormat=\{0:F0\} Hz}" />
+                <Button Grid.Row="2" Grid.Column="2" Content="Apply" Margin="5,0,0,0" Click="Button_Click" />
+                <TextBlock Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" Text="Current Clock Speed:" />
+                <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding CurrentClockSpeed, StringFormat=\{0:F0\} Hz}" />
+                <StackPanel Grid.Row="1" Grid.Column="3" Grid.RowSpan="3" Margin="0,-10,0,0">
+                    <CheckBox Content="Run" Margin="0,0,0,10" HorizontalAlignment="Center"
+                              IsChecked="{Binding IsRunning}" />
+                    <Button Content="Step" Width="50" Height="25" Click="ClockButton_Click"
+                            IsEnabled="{Binding CanStep}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="99">
+            <StackPanel x:Name="BusModuleContainer" Orientation="Vertical" DataContext="{Binding BusModule}">
+                <TextBlock Text="Bus" HorizontalAlignment="Center" Margin="0,0,0,5" />
+                <Viewbox>
+                    <Grid>
+                        <TextBlock TextAlignment="Center" Padding="10,0,10,0"
+                                   Visibility="{Binding State, Converter={converters:NullToVisibilityConverter
+                                                                          NullVisibility=Visible, NonNullVisibility=Collapsed}}">
+                            <Run Text="Z State" />
+                            <LineBreak />
+                            <Run Text="(high impedance)" />
+                        </TextBlock>
+                        <controls:LedStrip Visibility="{Binding State, Converter={converters:NullToVisibilityConverter}}"
+                                           Lines="{Binding State}" LedSize="12" />
+                    </Grid>
+                </Viewbox>
+            </StackPanel>
+        </Border>
+        <Border x:Name="ProgramCounterModuleContainer" Grid.Row="0" Grid.Column="2">
+            <StackPanel Orientation="Vertical" DataContext="{Binding ProgramCounterModule}">
+                <TextBlock Text="Program Counter" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding State}" LitLedColor="Lime" />
+            </StackPanel>
+        </Border>
+        <Border x:Name="MemoryModuleContainer" Grid.Row="1" Grid.Column="0">
+            <StackPanel Orientation="Vertical" DataContext="{Binding MemoryModule}"
+                        HorizontalAlignment="Stretch">
+                <TextBlock Text="Memory Address Register" HorizontalAlignment="Center" />
+                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="Gold" Lines="{Binding MAR}" />
+                <TextBlock Text="16-Byte RAM" HorizontalAlignment="Center" Margin="0,10,0,0" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding MemoryContents}" Height="80"
+                              AlternationCount="{Binding MemoryContents.Count}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"  Margin="5,0, 5, 0">
+                                    <TextBlock FontSize="8" Height="9" Width="10" TextAlignment="Right"  Margin="0,0,1,0"
+                                               Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource TemplatedParent}}" FontFamily="Consolas" />
+                                    <controls:LedStrip Lines="{Binding}" LedSize="8" BitOrder="LsbFirst" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Grid.Column="0" Height="25" Width="50" Content="Load..."
+                            Click="LoadRAMButton_Click"
+                            ToolTip="Load contents of a file into RAM" />
+                </Grid>
+            </StackPanel>
+        </Border>
+        <Border x:Name="ARegisterContainer" Grid.Row="1" Grid.Column="2">
+            <StackPanel Orientation="Vertical" DataContext="{Binding ALUModule}">
+                <TextBlock Text="A Register" HorizontalAlignment="Center" Margin="0,0,0,0" />
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding ARegister}" />
+                <TextBlock Text="ALU" HorizontalAlignment="Center" Margin="0,5,0,0" />
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding ALU}" />
+                <controls:LedStrip HorizontalAlignment="Center" Margin="0,20,0,0" Lines="{Binding BRegister}" />
+                <TextBlock Text="B Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
+            </StackPanel>
+        </Border>
+        <Border x:Name="InstructionRegisterContainer" Grid.Row="2" Grid.Column="0">
+            <StackPanel Orientation="Vertical" DataContext="{Binding InstrRegisterModule}">
+                <TextBlock Text="Instruction Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="DeepSkyBlue" Lines="{Binding State}"/>
+            </StackPanel>
+        </Border>
+        <Border x:Name="OutputRegisterContainer" Grid.Row="2" Grid.Column="2">
+            <StackPanel Orientation="Vertical" DataContext="{Binding OutputModule}">
+                <TextBlock Text="Output Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding OutRegister}"/>
+            </StackPanel>
+        </Border>
+        <TextBlock Text="Microcode ROM" Grid.Row="3" Grid.Column="0" />
+        <TextBlock Text="Control Unit" Grid.Row="3" Grid.Column="2" />
+    </Grid>
+</UserControl>

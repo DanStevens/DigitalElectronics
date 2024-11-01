@@ -1,0 +1,28 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:concepts="clr-namespace:DigitalElectronics.Concepts;assembly=Core"
+                    xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters">
+    <DataTemplate DataType="{x:Type concepts:BitArray}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Signed:" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding
+                               Converter={converters:BitArrayToStringConverter Format=SignedDecimal}}" />
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Unsigned:" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding
+                               Converter={converters:BitArrayToStringConverter Format=UnsignedDecimal}}" />
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Hex:" />
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding
+                               Converter={converters:BitArrayToStringConverter Format=UnsignedHexadecimal}}" />
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

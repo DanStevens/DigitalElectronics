@@ -13,7 +13,7 @@ namespace DigitalElectronics.Components.LogicGates
         private bool _inputB;
 
         /// <summary>
-        /// Sets value for A input
+        /// Sets value for A (data) input
         /// </summary>
         public void SetInputA(bool value)
         {
@@ -21,7 +21,7 @@ namespace DigitalElectronics.Components.LogicGates
         }
 
         /// <summary>
-        /// Sets value for B input
+        /// Sets value for B (enable) input
         /// </summary>
         public void SetInputB(bool value)
         {

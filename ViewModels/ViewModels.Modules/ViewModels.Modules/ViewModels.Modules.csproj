@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>$(NetVersion)</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>$(SolutionName).$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Core.csproj" />
     <ProjectReference Include="..\..\..\Models\Modules\Modules.csproj" />
+    <ProjectReference Include="..\..\ViewModels.Utilities\ViewModels.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

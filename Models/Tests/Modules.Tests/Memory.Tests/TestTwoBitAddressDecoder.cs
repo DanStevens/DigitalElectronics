@@ -8,7 +8,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
 {
     public class TestTwoBitAddressDecoder
     {
-        BitConverter _bitConverter = new BitConverter(Endianness.Little);
+        readonly BitConverter _bitConverter = new(Endianness.Little);
 
         [TestCase(false, false, 0b0001)]
         [TestCase(true, false, 0b0010)]
@@ -24,16 +24,3 @@ namespace DigitalElectronics.Modules.Memory.Tests
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// fluent assertions should beequivalentto class implements IEnumerable<X> and IEnumerable<Y> so cannot determine which on to use for asserting the equivalency of the collection

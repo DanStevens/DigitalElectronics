@@ -11,10 +11,10 @@ namespace DigitalElectronics.Modules.Memory
     {
         public const int NumberOfOutputs = 4;
 
-        private Inverter _notA0 = new Inverter();
-        private Inverter _notA1 = new Inverter();
+        private readonly Inverter _notA0 = new();
+        private readonly Inverter _notA1 = new();
 
-        private AndGate[] _and = new AndGate[NumberOfOutputs];
+        private readonly AndGate[] _and = new AndGate[NumberOfOutputs];
 
         public TwoBitAddressDecoder()
         {

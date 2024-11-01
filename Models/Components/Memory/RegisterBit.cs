@@ -16,11 +16,12 @@ namespace DigitalElectronics.Components.Memory
     [DebuggerDisplay("Register: Q = {OutputQ} (ProbeState = {ProbeState()})")]
     public class RegisterBit : IRegisterBit
     {
-        private DFlipFlop _dFlipFlop;
-        private Inverter _not;
-        private AndGate _and1, _and2;
-        private OrGate _or;
-        private TriStateBuffer _triStateBuffer;
+        private readonly DFlipFlop _dFlipFlop;
+        private readonly Inverter _not;
+        private readonly AndGate _and1;
+        private readonly AndGate _and2;
+        private readonly OrGate _or;
+        private readonly TriStateBuffer _triStateBuffer;
 
         public RegisterBit()
         {
