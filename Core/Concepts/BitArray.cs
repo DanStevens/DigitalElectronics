@@ -9,7 +9,7 @@ using BitConverter = DigitalElectronics.Utilities.BitConverter;
 using DotNetBitArray = System.Collections.BitArray;
 
 #if DEBUG
-[assembly: InternalsVisibleTo("MiscTests")]
+[assembly: InternalsVisibleTo("Core.Tests")]
 #endif
 
 namespace DigitalElectronics.Concepts
