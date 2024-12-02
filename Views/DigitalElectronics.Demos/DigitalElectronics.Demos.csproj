@@ -3,10 +3,8 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <RuntimeFrameworkVersion>6.0.2</RuntimeFrameworkVersion>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <StartupObject>DigitalElectronics.Demos.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
