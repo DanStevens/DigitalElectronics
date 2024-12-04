@@ -7,7 +7,7 @@
         xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI"
         xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
-        Title="D Flip Flop Demo" Height="200" Width="300">
+        Title="1-bit Register Demo" Height="200" Width="300">
     <Window.DataContext>
         <viewModels:OneBitRegisterViewModel x:Name="_viewModel" />
     </Window.DataContext>
