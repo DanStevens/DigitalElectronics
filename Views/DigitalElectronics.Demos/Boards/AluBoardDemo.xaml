@@ -8,7 +8,7 @@
         xmlns:boards="clr-namespace:DigitalElectronics.Boards;assembly=Boards"
         xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
         mc:Ignorable="d"
-        Title="Bus Transfer Demo" SizeToContent="WidthAndHeight">
+        Title="Arithmetic Logic Unit Demo" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <boards:AluBoard x:Name="_viewModel" />
     </Window.DataContext>
