@@ -112,7 +112,7 @@ public class SevenSegmentDigitDemoViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ICollection<bool> SegmentLines => _valueToSegmentsROM.Output.ToArray();
+        public ICollection<bool> SegmentLines => _valueToSegmentsROM.Output!.Value.ToArray();
     }
 
     public class SingleHexDigitWithRegisterDemoViewModel : INotifyPropertyChanged
@@ -130,10 +130,10 @@ public class SevenSegmentDigitDemoViewModel
             Value.ItemPropertyChanged += OnValueBitChanged;
 
             _valueToSegmentsROM.SetInputE(true);
-            _valueToSegmentsROM.SetInputA(new BitArray(length: 4));
+            _valueToSegmentsROM.SetInputA(new BitArray(0, length: 4));
 
             Load = true;
-            _register.SetInputD(_valueToSegmentsROM.Output);
+            _register.SetInputD(_valueToSegmentsROM.Output!.Value);
             _register.Clock();
             _register.SetInputE(true);
 
@@ -197,7 +197,7 @@ public class SevenSegmentDigitDemoViewModel
         {
             var val = new BitArray(Value.ToArray());
             _valueToSegmentsROM.SetInputA(val);
-            _register.SetInputD(_valueToSegmentsROM.Output);
+            _register.SetInputD(_valueToSegmentsROM.Output!.Value);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -100,13 +100,13 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
             programCounter.SetInputCE(true);
             programCounter.Clock();
             programCounter.ProbeState().ToByte().Should().Be(0);
-            programCounter.Output!.ToByte().Should().Be(0);
+            programCounter.Output!.Value.ToByte().Should().Be(0);
             programCounter.Clock();
             programCounter.ProbeState().ToByte().Should().Be(1);
-            programCounter.Output!.ToByte().Should().Be(1);
+            programCounter.Output!.Value.ToByte().Should().Be(1);
             programCounter.Clock();
             programCounter.ProbeState().ToByte().Should().Be(2);
-            programCounter.Output!.ToByte().Should().Be(2);
+            programCounter.Output!.Value.ToByte().Should().Be(2);
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
             programCounter.Output.Should().BeNull();
             programCounter.SetInputE(true);
             programCounter.Output.Should().NotBeNull();
-            programCounter.Output!.ToByte().Should().Be(15);
+            programCounter.Output!.Value.ToByte().Should().Be(15);
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace DigitalElectronics.Modules.Tests.Counters.Tests
             programCounter.Reset();
             programCounter.Output.Should().BeNull();
             programCounter.SetInputE(true);
-            programCounter.Output.ToByte().Should().Be(0);
+            programCounter.Output!.Value.ToByte().Should().Be(0);
         }
     }
 }

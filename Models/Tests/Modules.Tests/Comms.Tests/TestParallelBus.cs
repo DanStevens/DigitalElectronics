@@ -72,7 +72,7 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
             var module3 = Substitute.For<IOutputModule>();
             var bus = new ParallelBus(8, module1, module2, module3);
             module2.Output.Returns(new BitArray((byte)2));
-            bus.Output!.ToByte().Should().Be(2);
+            bus.Output!.Value.ToByte().Should().Be(2);
         }
 
         [Test]
@@ -93,8 +93,8 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
             var module = Substitute.For<IOutputModule>();
             var bus = new ParallelBus(4, module);
             module.Output.Returns(new BitArray((byte)255));
-            bus.Output!.Length.Should().Be(4);
-            bus.Output.ToByte().Should().Be(15);
+            bus.Output!.Value.Length.Should().Be(4);
+            bus.Output!.Value.ToByte().Should().Be(15);
         }
 
         [Test]
@@ -102,9 +102,10 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
         {
             var module = Substitute.For<IOutputModule>();
             var bus = new ParallelBus(8, module);
-            module.Output.Returns(new BitArray(length: 4, true));
-            bus.Output!.Length.Should().Be(8);
-            bus.Output.ToByte().Should().Be(15);
+            var ba = new BitArray(15, length: 4);
+            module.Output.Returns(ba);
+            bus.Output!.Value.Length.Should().Be(8);
+            bus.Output!.Value.ToByte().Should().Be(15);
         }
 
         [Test]
@@ -121,9 +122,9 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
 
             bus.Transfer();
 
-            module1.Received(1).SetInputD(CreateExpectedBitArrayArg(binary42));
-            module2.Received(1).SetInputD(CreateExpectedBitArrayArg(binary42));
-            module3.Received(1).SetInputD(CreateExpectedBitArrayArg(binary42));
+            module1.Received(1).SetInputD(binary42);
+            module2.Received(1).SetInputD(binary42);
+            module3.Received(1).SetInputD(binary42);
         }
 
         [Test]
@@ -143,13 +144,5 @@ namespace DigitalElectronics.Modules.Tests.Comms.Tests
             module2.DidNotReceiveWithAnyArgs().SetInputD(default!);
             module3.DidNotReceiveWithAnyArgs().SetInputD(default!);
         }
-
-        private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
-        {
-            
-            return Arg.Is<BitArray>(arg =>
-                new BitArrayComparer().Compare(arg, new BitArray(expectedValue)) == 0);
-        }
-
     }
 }

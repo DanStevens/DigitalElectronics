@@ -52,7 +52,9 @@ namespace DigitalElectronics.Modules.Comms
                     if (singleModuleEnabledForOutput?.Output == null)
                         return null;
 
-                    return new BitArray(singleModuleEnabledForOutput.Output) { Length = NumberOfChannels };
+                    var result = singleModuleEnabledForOutput.Output.Value;
+                    result.Length = NumberOfChannels;
+                    return result;
                 }
                 catch (InvalidOperationException)
                 {
@@ -72,7 +74,7 @@ namespace DigitalElectronics.Modules.Comms
             var output = Output;
             if (output != null)
                 foreach (var inputModule in _modules.OfType<IInputModule>())
-                    inputModule.SetInputD(output);
+                    inputModule.SetInputD(output.Value);
         }
 
         internal string DebuggerDisplay =>

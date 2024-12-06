@@ -36,7 +36,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
 
         _data = new ObservableCollection<Bit>(CreateBits(_ram.WordSize, true));
 
-        var initialAddressBitArray = new BitArray(new [] { initialAddress }).Trim(AddressLength);
+        var initialAddressBitArray = new BitArray(initialAddress, AddressLength);
         Address = new FullyObservableCollection<Bit>(CreateBits(initialAddressBitArray));
 
         _probe = new ObservableCollection<BitArray>(_ram.ProbeState());
@@ -110,7 +110,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         {
             if (_address?.SequenceEqual(value) != true)
             {
-                var newAddress = value.ToBitArray().Trim(AddressLength);
+                var newAddress = value.ToBitArray(AddressLength);
                 SyncAddress(newAddress);
                 if (_address != null) _address.ItemPropertyChanged -= OnAddressBitChanged;
                 _address = new FullyObservableCollection<Bit>(CreateBits(newAddress));
@@ -121,7 +121,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
     }
 
     private void OnAddressBitChanged(object? sender, ItemPropertyChangedEventArgs e) =>
-        SyncAddress(_address.ToBitArray().Trim(AddressLength));
+        SyncAddress(_address.ToBitArray(AddressLength));
 
     public ReadOnlyObservableCollection<bool>? Output => _output != null ? new ReadOnlyObservableCollection<bool>(_output) : null;
 

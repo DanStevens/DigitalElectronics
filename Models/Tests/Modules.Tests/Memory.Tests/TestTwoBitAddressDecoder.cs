@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DigitalElectronics.Concepts;
+﻿using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 using FluentAssertions;
 using NUnit.Framework;
@@ -9,6 +8,13 @@ namespace DigitalElectronics.Modules.Memory.Tests
     public class TestTwoBitAddressDecoder
     {
         readonly BitConverter _bitConverter = new(Endianness.Little);
+
+        [Test]
+        public void OutputY_ShouldTBD()
+        {
+            var decoder = new TwoBitAddressDecoder();
+            decoder.OutputY.Length.Should().Be(4);
+        }
 
         [TestCase(false, false, 0b0001)]
         [TestCase(true, false, 0b0010)]
@@ -20,7 +26,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
             decoder.SetInputA0(a0);
             decoder.SetInputA1(a1);
             var expectedOutput = _bitConverter.GetBits(expectedY, 4);
-            decoder.OutputY.Should().BeEquivalentTo(expectedOutput.AsReadOnlyList<bool>());
+            decoder.OutputY.Should().BeEquivalentTo(expectedOutput);
         }
     }
 }

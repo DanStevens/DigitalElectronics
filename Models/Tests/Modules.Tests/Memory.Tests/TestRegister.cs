@@ -227,7 +227,7 @@ namespace DigitalElectronics.Components.Memory.Tests
             Clock();
             ReleaseL();
             AssertOutputs(true, false, true, false);
-            _4bitRegister.Output.ToByte().Should().Be(5);
+            _4bitRegister.Output!.Value.ToByte().Should().Be(5);
 
             _4bitRegister.Reset();
             _4bitRegister.Output.Should().BeNull();

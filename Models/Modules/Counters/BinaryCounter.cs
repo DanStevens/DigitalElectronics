@@ -70,8 +70,6 @@ namespace DigitalElectronics.Modules.Counters
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
         public void Set(BitArray value)
         {
-            if (value == null) return;
-
             var upper = Math.Min(value.Length, SizeInBits);
             for (int x = 0; x < upper; x++)
                 Set(x, value[x]);
@@ -91,7 +89,7 @@ namespace DigitalElectronics.Modules.Counters
         /// </summary>
         public void Reset()
         {
-            Set(new BitArray(length: SizeInBits, true));
+            Set(new BitArray((int)Math.Pow(2, SizeInBits) - 1, length: SizeInBits)); // TODO replaced Math.Power with <<
         }
     }
 }

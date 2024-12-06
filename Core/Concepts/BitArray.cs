@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using DigitalElectronics.Utilities;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
-using DotNetBitArray = System.Collections.BitArray;
 
 #if DEBUG
 [assembly: InternalsVisibleTo("Core.Tests")]
@@ -18,51 +16,96 @@ namespace DigitalElectronics.Concepts
     /// Manages a compact array of bit values, which are represented as Booleans, where `true` indicates
     /// that the bit is on (1) and `false` indicates the bit is off (0).
     /// </summary>
-    /// <note>This class is a wrapper for the built-in .NET class <see cref="DotNetBitArray"/>, extending it
+    /// <note>This class is a wrapper for the built-in .NET class <see cref="DotNetBitVector32"/>, extending it
     /// in such a way as to add features like <see cref="IReadOnlyList{Boolean}"/> and
     /// <see cref="IEnumerable{Boolean}"/>.</note>
-    /// <seealso cref="DotNetBitArray"/>
+    /// <seealso cref="DotNetBitVector32"/>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
-    public class BitArray : IList<bool>, IList, ICloneable, IReadOnlyList<bool>
+    public struct BitArray : IList<bool>, IReadOnlyList<bool>, IList
     {
+        private static readonly BitConverter bitConverter = new BitConverter();
+
         /// <summary>
-        /// Casts the <see cref="BitArray"/> to the built-in .NET class <see cref="DotNetBitArray"/>
+        /// Casts the <see cref="BitArray"/> to the built-in .NET class <see cref="DotNetBitVector32"/>
         /// </summary>
         /// <param name="obj">The object to cast</param>
-        public static implicit operator DotNetBitArray(BitArray obj) => obj.bitArray;
+        public static implicit operator BitVector32(BitArray obj) => obj.bitVector;
 
-        public static implicit operator BitArray(bool[] bools) => new (bools);
+        ////public static implicit operator BitArray(bool[] bools) => new (bools);
         
-        private readonly DotNetBitArray bitArray;
+        private BitVector32 bitVector;
+        private int length;
 
-        public BitArray(DotNetBitArray bitArray) => this.bitArray = bitArray ?? throw new ArgumentNullException(nameof(bitArray));
-        public BitArray(params bool[] values) => bitArray = new DotNetBitArray(values ?? throw new ArgumentNullException(nameof(values)));
-        public BitArray(params byte[] bytes) => bitArray = new DotNetBitArray(bytes ?? throw new ArgumentNullException(nameof(bytes)));
-        public BitArray(BitArray bits) => bitArray = new DotNetBitArray(bits.ToArray<bool>());
-        public BitArray(int length) => bitArray = new DotNetBitArray(length);
-        public BitArray(int[] values) => bitArray = new DotNetBitArray(values ?? throw new ArgumentNullException(nameof(values)));
-        public BitArray(int length, bool defaultValue) => bitArray = new DotNetBitArray(length, defaultValue);
-        public BitArray(Bit[] bits) : this(bits.Select(b => b?.Value ?? false).ToArray()) {}
-        public BitArray(IEnumerable<bool> values) => bitArray = new DotNetBitArray(values.ToArray());
+        public BitArray() : this(new BitVector32())
+        { }
+
+        public BitArray(int value, int length = 32) : this (new BitVector32(value))
+        {
+            Length = length;
+        }
+
+        public BitArray(BitVector32 bitArray)
+        {
+            bitVector = bitArray;
+            Length = 32;
+        }
+
+        public BitArray(params bool[] values)
+        {
+            if (values.Length > 32)
+                throw new ArgumentException("Argument length cannot exceed 32", nameof(values));
+
+            bitVector = new BitVector32();
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i])
+                {
+                    bitVector[1 << i] = true;
+                }
+            }
+
+            Length = values.Length;
+        }
+
+
+        public BitArray(params byte[] bytes)
+        {
+            if (bytes.Length > 4)
+                throw new ArgumentException("Byte array must be 4 bytes or fewer.");
+
+            // Combine the bytes into a single 32-bit integer
+            int combinedValue = 0;
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                combinedValue |= bytes[i] << (8 * i);
+            }
+
+            // Create the BitVector32 from the combined integer value
+            bitVector = new BitVector32(combinedValue);
+            Length = bytes.Length * 8;
+        }
+
+        ////public BitArray(int length) => bitVector = new DotNetBitVector32(length);
+        ////public BitArray(int[] values) => bitVector = new DotNetBitVector32(values ?? throw new ArgumentNullException(nameof(values)));
+        //public BitArray(int length, bool defaultValue) => bitVector = new DotNetBitVector32(length, defaultValue);
+        public BitArray(Bit[] bits) : this(bits.Select(b => b?.Value ?? false).ToArray()) { }
+        public BitArray(IEnumerable<bool> values) : this(values.ToArray()) { }
 
         /// <summary>
         /// Gets or sets the value of the bit at a specific position in the BitArray.
         /// </summary>
+        /// <param name="index">The index of the bit to return, starting with least significant bit</param>
         public bool this[int index]
         {
-            get => bitArray[index];
-            set => bitArray[index] = value;
+            // BitVector32 uses mask to specify a bit but we want an index
+            get => bitVector[1 << index];
+            set => bitVector[1 << index] = value;
         }
-
-        /// <summary>
-        /// Gets the number of elements contained in the BitArray.
-        /// </summary>
-        public int Count => bitArray.Count;
 
         /// <summary>
         /// Gets or sets the number of elements in the BitArray.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException">The property is set to a value that is less than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The property is set to a value that is less than zero or greater than 32.</exception>
         /// <remarks>
         /// Length and Count return the same value. Length can be set to a specific value,
         /// but Count is read-only.
@@ -76,17 +119,10 @@ namespace DigitalElectronics.Concepts
         /// Retrieving the value of this property is an O(1) operation. Setting this
         /// property is an O(n) operation.
         /// </remarks>
-        public int Length
-        {
-            get => bitArray.Length;
-            set => bitArray.Length = value;
+        public int Length {
+            get => length;
+            set => length = Math.Max(0, value);
         }
-
-        public bool IsSynchronized => bitArray.IsSynchronized;
-
-        public object SyncRoot => bitArray.SyncRoot;
-
-        public bool IsReadOnly => false;
 
         /// <summary>
         /// Performs the bitwise AND operation between the elements of the current BitArray object
@@ -95,8 +131,7 @@ namespace DigitalElectronics.Concepts
         /// </summary>
         public BitArray And(BitArray value)
         {
-            bitArray.And(value); // Mutates bitArray
-            return this;
+            return And(value.bitVector);
         }
 
         /// <summary>
@@ -104,35 +139,22 @@ namespace DigitalElectronics.Concepts
         /// and the corresponding elements in the specified array. The current BitArray object
         /// will be modified to store the result of the bitwise AND operation.
         /// </summary>
-        public BitArray And(DotNetBitArray value)
+        public BitArray And(BitVector32 value)
         {
-            bitArray.And(value); // Mutates bitArray
-            return this;
+            return new BitArray(new BitVector32(bitVector.Data & value.Data));
         }
-
-        /// <summary>
-        /// Creates a shallow copy of the BitArray.
-        /// </summary>
-        public object Clone() => new BitArray((DotNetBitArray)bitArray.Clone());
-
-        /// <summary>
-        /// Copies the entire BitArray to a compatible one-dimensional Array, starting at the specified index
-        /// of the target array.
-        /// </summary>
-        public void CopyTo(Array array, int index) => bitArray.CopyTo(array, index);
 
         /// <summary>
         /// Gets the value of the bit at a specific position in the BitArray.
         /// </summary>
-        public bool Get(int index) => bitArray.Get(index);
+        public bool Get(int index) => bitVector[index];
 
         /// <summary>
         /// Shifts all the bit values of the current BitArray to the left on <paramref name="count"/> bits.
         /// </summary>
         public BitArray LeftShift(int count)
         {
-            bitArray.LeftShift(count); // Mutates bitArray
-            return this;
+            return new BitArray(new BitVector32(bitVector.Data << count));
         }
 
         /// <summary>
@@ -141,8 +163,7 @@ namespace DigitalElectronics.Concepts
         /// </summary>
         public BitArray Not()
         {
-            bitArray.Not();  // Mutates bitArray
-            return this;
+            return new BitArray(new BitVector32(~bitVector.Data));
         }
 
         /// <summary>
@@ -152,8 +173,7 @@ namespace DigitalElectronics.Concepts
         /// </summary>
         public BitArray Or(BitArray value)
         {
-            bitArray.Or(value);  // Mutates bitArray
-            return this;
+            return Or(value.bitVector);
         }
 
         /// <summary>
@@ -161,27 +181,25 @@ namespace DigitalElectronics.Concepts
         /// the corresponding elements in the specified array. The current BitArray object will be
         /// modified to store the result of the bitwise OR operation.
         /// </summary>
-        public BitArray Or(DotNetBitArray value)
+        public BitArray Or(BitVector32 value)
         {
-            bitArray.Or(value);  // Mutates bitArray
-            return this;
+            return new BitArray(new BitVector32(bitVector.Data | value.Data));
         }
 
         public BitArray RightShift(int count)
         {
-            bitArray.RightShift(count);  // Mutates bitArray
-            return this;
+            return new BitArray(new BitVector32(bitVector.Data >> count));
         }
 
         /// <summary>
         /// Sets the bit at a specific position in the BitArray to the specified value.
         /// </summary>
-        public void Set(int index, bool value) => bitArray.Set(index, value);
+        public void Set(int index, bool value) => bitVector[index] = value;
 
         /// <summary>
         /// Sets all bits in the BitArray to the specified value.
         /// </summary>
-        public void SetAll(bool value) => bitArray.SetAll(value);
+        ////public void SetAll(bool value) => bitVector.SetAll(value);
 
         /// <summary>
         /// Performs the bitwise exclusive OR operation between the elements of the current BitArray object against the
@@ -190,8 +208,7 @@ namespace DigitalElectronics.Concepts
         /// </summary>
         public BitArray Xor(BitArray value)
         {
-            bitArray.Xor(value);  // Mutates bitArray
-            return this;
+            return Xor(value.bitVector);
         }
 
         /// <summary>
@@ -199,15 +216,14 @@ namespace DigitalElectronics.Concepts
         /// corresponding elements in the specified array. The current BitArray object will be modified to store the
         /// result of the bitwise exclusive OR operation.
         /// </summary>
-        public BitArray Xor(DotNetBitArray value)
+        public BitArray Xor(BitVector32 value)
         {
-            bitArray.Xor(value);  // Mutates bitArray
-            return this;
+            return new BitArray(new BitVector32(bitVector.Data ^ value.Data));
         }
 
         public IReadOnlyList<T> AsReadOnlyList<T>()
         {
-            return (IReadOnlyList<T>)this;
+            return (IReadOnlyList<T>)this.ToList();
         }
 
         public byte ToByte()
@@ -215,19 +231,13 @@ namespace DigitalElectronics.Concepts
             if (Length > sizeof(byte) * 8)
                 throw new ArgumentException($"{nameof(BitArray)} is too long to convert to Byte without data loss.");
 
-            byte[] arr = new byte[1];
-            CopyTo(arr, 0);
-            return arr[0];
+            var mask = ((1 << Length) - 1);
+            return (byte)(bitVector.Data & mask);
         }
 
         public int ToInt32()
         {
-            if (Length > sizeof(int) * 8)
-                throw new ArgumentException($"{nameof(BitArray)} is too long to convert to Int32 without data loss.");
-
-            int[] arr = new int[1];
-            CopyTo(arr, 0);
-            return arr[0];
+            return bitVector.Data;
         }
 
         /// <summary>
@@ -241,34 +251,34 @@ namespace DigitalElectronics.Concepts
 
         public string ToString(NumberFormat format)
         {
-            return new BitConverter().ToString(this, format);
+            return bitConverter.ToString(this, format);
         }
 
-        /// <summary>
-        /// Removes 'leading' zeros from the <see cref="BitArray"/>. The current BitArray object
-        /// will be modified to store the result of the Trim operation.
-        /// </summary>
-        /// <returns>A <see cref="BitArray"/> representing the same value but with the leading
-        /// zeros removed. A BitArray representing zero is always trimmed to <see cref="Length"/>
-        /// of 1, never 0.</returns>
-        /// <remarks>From a positional notation perspective, the <see cref="Trim"/> method removes
-        /// any 'leading' zero digits from binary number represented by the <see cref="BitArray"/>.
-        /// For example, a BitArray of <see cref="Length"/> 8 representing the decimal 11
-        /// (which would be `00001011` in binary representation) will be 'trimmed' to a Length
-        /// of 4 (i.e. `1011`).
-        ///
-        /// From a technical perspective, since the BitArray orders bits from most-significant to
-        /// least significant, the method actually trims trailing bits. So with our previous
-        /// example, the decimal 11 would be represented internally with an array of 8 bools
-        /// <c>{true, true, false, true, false, false, false, false}</c>. The method would
-        /// mutate the BitArray to the array <c>{true, true, false, true}</c>
-        ///
-        /// The length of the BitArray is modified by assigning a new length to the
-        /// <see cref="Length"/> property</remarks>
-        public BitArray Trim()
-        {
-            return Trim(1);
-        }
+        /////// <summary>
+        /////// Removes 'leading' zeros from the <see cref="BitArray"/>. The current BitArray object
+        /////// will be modified to store the result of the Trim operation.
+        /////// </summary>
+        /////// <returns>A <see cref="BitArray"/> representing the same value but with the leading
+        /////// zeros removed. A BitArray representing zero is always trimmed to <see cref="Length"/>
+        /////// of 1, never 0.</returns>
+        /////// <remarks>From a positional notation perspective, the <see cref="Trim"/> method removes
+        /////// any 'leading' zero digits from binary number represented by the <see cref="BitArray"/>.
+        /////// For example, a BitArray of <see cref="Length"/> 8 representing the decimal 11
+        /////// (which would be `00001011` in binary representation) will be 'trimmed' to a Length
+        /////// of 4 (i.e. `1011`).
+        ///////
+        /////// From a technical perspective, since the BitArray orders bits from most-significant to
+        /////// least significant, the method actually trims trailing bits. So with our previous
+        /////// example, the decimal 11 would be represented internally with an array of 8 bools
+        /////// <c>{true, true, false, true, false, false, false, false}</c>. The method would
+        /////// mutate the BitArray to the array <c>{true, true, false, true}</c>
+        ///////
+        /////// The length of the BitArray is modified by assigning a new length to the
+        /////// <see cref="Length"/> property</remarks>
+        ////public void Trim()
+        ////{
+        ////    Trim(1);
+        ////}
 
         /// <summary>
         /// Like <see cref="Trim()"/> method but only reduces the length of the <see cref="BitArray"/>
@@ -282,16 +292,15 @@ namespace DigitalElectronics.Concepts
         /// representing decimal 645 will be reduce the Length to 10, since this many bits is needed
         /// to fully represent the decimal value 645.
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="targetLength"/> is less than one</exception>
-        public BitArray Trim(int targetLength)
-        {
-            if (targetLength < 0)
-                throw new ArgumentOutOfRangeException(nameof(targetLength), "Argument must be non-negative");
+        ////public void Trim(int targetLength)
+        ////{
+        ////    if (targetLength < 0)
+        ////        throw new ArgumentOutOfRangeException(nameof(targetLength), "Argument must be non-negative");
 
-            var leadingZerosCount = AsEnumerable<bool>().Reverse().TakeWhile(b => !b).Count();
-            var newLength = Math.Max(targetLength, Length - leadingZerosCount);
-            Length = Math.Max(1, newLength);
-            return this;
-        }
+        ////    var leadingZerosCount = AsEnumerable<bool>().Reverse().TakeWhile(b => !b).Count();
+        ////    var newLength = Math.Max(targetLength, Length - leadingZerosCount);
+        ////    Length = Math.Max(1, newLength);
+        ////}
 
         /// <summary>
         /// Returns this <see cref="BitArray"/> as an enumerable of the given type
@@ -301,11 +310,17 @@ namespace DigitalElectronics.Concepts
         /// returns null if <typeparamref name="T"/> is any other type</returns>
         public IEnumerable<T> AsEnumerable<T>()
         {
-            if (typeof(T) == typeof(bool))
-                return (IEnumerable<T>)bitArray.AsEnumerable();
-            if (typeof(T) == typeof(Bit))
-                return (IEnumerable<T>)this.Select(b => new Bit(b));
-            return null;
+            for (int i = 0; i < Length; i++)
+            {
+                if (typeof(T) == typeof(Bit))
+                {
+                    yield return (T)(object)new Bit(this[i]);
+                }
+                else
+                {
+                    yield return (T)(object)this[i];
+                }
+            }
         }
 
         /// <summary>
@@ -320,7 +335,7 @@ namespace DigitalElectronics.Concepts
 
         int IList<bool>.IndexOf(bool item)
         {
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < Length; i++)
             {
                 if (this[i] == item) return i;
             }
@@ -342,7 +357,7 @@ namespace DigitalElectronics.Concepts
 
         void ICollection<bool>.CopyTo(bool[] array, int arrayIndex)
         {
-            bitArray.CopyTo(array, arrayIndex);
+            ToList<bool>().CopyTo(array, arrayIndex);
         }
 
         bool ICollection<bool>.Remove(bool item)
@@ -351,14 +366,25 @@ namespace DigitalElectronics.Concepts
             return false;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new BitArrayAsBooleanEnumerator(bitArray.GetEnumerator());
-        }
+        IEnumerator IEnumerable.GetEnumerator() => ToList<bool>().GetEnumerator();
 
         #endregion
 
         #region IList, ICollection implementation
+
+        bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => throw new NotSupportedException();
+
+        bool ICollection<bool>.IsReadOnly => false;
+
+        bool IList.IsReadOnly => false;
+
+        int ICollection.Count => Length;
+
+        int ICollection<bool>.Count => Length;
+
+        int IReadOnlyCollection<bool>.Count => Length;
 
         int IList.Add(object value)
         {
@@ -380,7 +406,7 @@ namespace DigitalElectronics.Concepts
 
         void ICollection.CopyTo(Array array, int index)
         {
-            bitArray.CopyTo(array, index);
+            ((ICollection)ToList<bool>()).CopyTo(array, index);
         }
 
         /// <summary>
@@ -410,10 +436,7 @@ namespace DigitalElectronics.Concepts
         /// <summary>
         /// Returns an enumerator that iterates through the BitArray as <see cref="Boolean"/> values.
         /// </summary>
-        IEnumerator<bool> IEnumerable<bool>.GetEnumerator()
-        {
-            return new BitArrayAsBooleanEnumerator(bitArray.GetEnumerator());
-        }
+        IEnumerator<bool> IEnumerable<bool>.GetEnumerator() => ToList<bool>().GetEnumerator();
 
         private class BitArrayAsBooleanEnumerator : IEnumerator<bool>
         {
@@ -442,7 +465,7 @@ namespace DigitalElectronics.Concepts
 
 #if DEBUG
         internal string DebuggerDisplay =>
-            ToString() + (Count <= sizeof(int) * 8 ? $" ({ToInt32()})" : string.Empty);
+            ToString() + (Length <= sizeof(int) * 8 ? $" ({ToInt32()})" : string.Empty);
 
         internal string AsLsbBinaryString => ToString(NumberFormat.LsbBinary);
 

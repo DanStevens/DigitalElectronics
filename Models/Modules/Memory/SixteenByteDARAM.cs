@@ -49,7 +49,7 @@ namespace DigitalElectronics.Modules.Memory
                 _8BitRegisters[x] = new Register(WordSize);
             }
 
-            SetInputA(new BitArray(AddressSize));
+            SetInputA(new BitArray(0, length: AddressSize));
         }
 
         public string Label { get; set; } = "Direct Access RAM";
@@ -147,7 +147,7 @@ namespace DigitalElectronics.Modules.Memory
 
         public IList<BitArray> ProbeState()
         {
-            return _8BitRegisters.Select(r => new BitArray(r.ProbeState())).ToArray();
+            return _8BitRegisters.Select(r => r.ProbeState()).ToArray(); // TODO: Allocation?
         }
 
         public BitArray ProbeState(BitArray address)
@@ -157,7 +157,7 @@ namespace DigitalElectronics.Modules.Memory
 
         public void ResetAddress()
         {
-            SetInputA(new BitArray(length: AddressSize));
+            SetInputA(new BitArray(0, length: AddressSize));
             Clock();
         }
 

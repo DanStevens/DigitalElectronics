@@ -56,7 +56,7 @@ namespace DigitalElectronics.Modules.Memory
         {
             _addressRegister.Clock();
             _ram.Clock();
-            _ram.SetInputA(_addressRegister.Output!);
+            _ram.SetInputA(_addressRegister.Output!.Value);
         }
 
         public IList<BitArray> ProbeState() => _ram.ProbeState();
@@ -102,7 +102,7 @@ namespace DigitalElectronics.Modules.Memory
         public void ResetAddress()
         {
             SetInputLA(true);
-            SetInputS(new BitArray(length: AddressSize));
+            SetInputS(new BitArray(0, length: AddressSize));
             Clock();
             SetInputLA(false);
             SetInputLD(false);

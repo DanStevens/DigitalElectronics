@@ -9,7 +9,7 @@ namespace DigitalElectronics.Modules.ALUs
         /// Gets state of 'Sum' (∑) output
         /// </summary>
         /// <return>The sum of 'A' input and 'B' input</return>
-        BitArray OutputE { get; }
+        BitArray? OutputE { get; }
 
         /// <summary>
         /// Sets value for A input

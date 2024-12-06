@@ -49,5 +49,19 @@ namespace DigitalElectronics.Utilities
         {
             return new BitArray(bits.ToArray());
         }
+
+        public static BitArray ToBitArray(this IEnumerable<Bit> bits, int length)
+        {
+            var result = new BitArray(bits.ToArray());
+            result.Length = length;
+            return result;
+        }
+
+        public static BitArray ToBitArray(this IEnumerable<bool> bits, int length)
+        {
+            var result = new BitArray(bits.ToArray());
+            result.Length = length;
+            return result;
+        }
     }
 }

@@ -73,7 +73,7 @@ namespace DigitalElectronics.Modules.Memory
         {
             get
             {
-                var result = new BitArray(NumberOfOutputs);
+                var result = new BitArray(0, NumberOfOutputs);
 
                 for (int y = 0; y < NumberOfOutputs; y++)
                     result[y] = _andY[y].OutputQ;

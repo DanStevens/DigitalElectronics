@@ -11,18 +11,12 @@ namespace DigitalElectronics.ViewModels.Modules.Tests;
 public class EightBitAluViewModelTests
 {
     private static readonly BitConverter BitConverter = new ();
-    private static readonly BitArrayComparer BitArrayComparer = new();
-    private static readonly ObservableCollection<bool> BoolCollectionFor0 = new (BitConverter.GetBits((byte)0));
-
-    private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
-    {
-        return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
-    }
+    private static readonly ObservableCollection<bool> BoolCollectionFor0 = new (new BitArray((byte)0));
 
     private static IArithmeticLogicUnit CreateAluMock()
     {
         var aluMock = Substitute.For<IArithmeticLogicUnit>();
-        aluMock.ProbeState().Returns(new BitArray(length: 8));
+        aluMock.ProbeState().Returns(new BitArray(0, length: 8));
         return aluMock;
     }
 
@@ -104,10 +98,9 @@ public class EightBitAluViewModelTests
     {
         var aluMock = CreateAluMock();
         var objUT = new EightBitAluViewModel(aluMock);
-        var bitArray = new BitArray(length: 8);
+        var bitArray = new BitArray(0, length: 8);
         objUT.SetInputA(bitArray);
-        var expectedArg = CreateExpectedBitArrayArg(bitArray);
-        aluMock.Received(1).SetInputA(expectedArg);
+        aluMock.Received(1).SetInputA(bitArray);
     }
 
     [Test]
@@ -115,10 +108,9 @@ public class EightBitAluViewModelTests
     {
         var aluMock = CreateAluMock();
         var objUT = new EightBitAluViewModel(aluMock);
-        var bitArray = new BitArray(length: 8);
+        var bitArray = new BitArray(0, length: 8);
         objUT.SetInputB(bitArray);
-        var expectedArg = CreateExpectedBitArrayArg(bitArray);
-        aluMock.Received(1).SetInputB(expectedArg);
+        aluMock.Received(1).SetInputB(bitArray);
     }
 
     [Test]
@@ -150,7 +142,7 @@ public class EightBitAluViewModelTests
         var aluMock = CreateAluMock();
         var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Probe);
-        objUT.SetInputA(new BitArray(length: 8));
+        objUT.SetInputA(new BitArray(0, length: 8));
         raised.Should().Be(true);
     }
 
@@ -161,7 +153,7 @@ public class EightBitAluViewModelTests
         var aluMock = CreateAluMock();
         var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.Probe);
-        objUT.SetInputB(new BitArray(length: 8));
+        objUT.SetInputB(new BitArray(0, length: 8));
         raised.Should().Be(true);
     }
 
@@ -173,7 +165,7 @@ public class EightBitAluViewModelTests
         var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
         objUT.Enable = true;
-        objUT.SetInputA(new BitArray(length: 8));
+        objUT.SetInputA(new BitArray(0, length: 8));
         raised.Should().Be(true);
     }
 
@@ -185,7 +177,7 @@ public class EightBitAluViewModelTests
         var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
         objUT.Enable = false;
-        objUT.SetInputA(new BitArray(length: 8));
+        objUT.SetInputA(new BitArray(0, length: 8));
         raised.Should().Be(false);
     }
 
@@ -197,7 +189,7 @@ public class EightBitAluViewModelTests
         var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
         objUT.Enable = true;
-        objUT.SetInputB(new BitArray(length: 8));
+        objUT.SetInputB(new BitArray(0, length: 8));
         raised.Should().Be(true);
     }
 
@@ -209,7 +201,7 @@ public class EightBitAluViewModelTests
         var objUT = new EightBitAluViewModel(aluMock);
         objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.OutputE);
         objUT.Enable = false;
-        objUT.SetInputB(new BitArray(length: 8));
+        objUT.SetInputB(new BitArray(0, length: 8));
         raised.Should().Be(false);
     }
 

@@ -6,6 +6,8 @@ using NUnit.Framework;
 
 namespace DigitalElectronics.UI.Tests.Converters;
 
+#warning CS8625 disable
+
 public class BitToBoolConverterTest
 {
     [Test]

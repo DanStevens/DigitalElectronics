@@ -44,7 +44,7 @@ namespace DigitalElectronics.Modules.Memory
 
         public int MaxAddress => Capacity - 1;
 
-        public BitArray Output => _enabled ? _bitConverter.GetBits(_data[_address]) : null;
+        public BitArray? Output => _enabled ? _bitConverter.GetBits(_data[_address]) : null;
 
         public void SetInputE(bool value)
         {
