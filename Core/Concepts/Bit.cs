@@ -2,10 +2,12 @@
 
 namespace DigitalElectronics.Concepts
 {
-    
+
     /// <summary>
     /// Represents a binary digit i.e. a 0 (false) or 1 (true)
     /// </summary>
+    /// <remarks>This class enables the binding of a depending property to an instance of value type
+    /// in cases where instance of a reference type is required (see <see cref="Box{T}"/>.</remarks>
     public class Bit : Box<bool>
     {
         public Bit() : this(false)

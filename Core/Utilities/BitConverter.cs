@@ -248,26 +248,6 @@ namespace DigitalElectronics.Utilities
             };
         }
 
-        private static Type InferIntTypeFromLength(int length, bool isSigned)
-        {
-            if (length <= 8)
-                return isSigned ? typeof(sbyte) : typeof(byte);
-            if (length <= 16)
-                return isSigned ? typeof(short) : typeof(ushort);
-            if (length <= 32)
-                return isSigned ? typeof(int) : typeof(uint);
-            if (length <= 64)
-                return isSigned ? typeof(long) : typeof(ulong);
-            throw new NotImplementedException();
-        }
-
-        private static BitArray CreateBitArrayOfLengthAndPopulate(int length, BitArray ba)
-        {
-            var result = new BitArray(length);
-            for (int x = 0; x < length; x++) result.Set(x, ba[x]);
-            return result;
-        }
-
         private static ulong BitArrayToInteger(BitArray value, int length)
         {
             ulong result = 0;

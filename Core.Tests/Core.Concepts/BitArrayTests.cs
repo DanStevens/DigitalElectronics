@@ -16,20 +16,6 @@ namespace DigitalElectronics.Concepts.Tests
     public class BitArrayTests
     {
         [Test]
-        public void BitArray_ShouldBeImplicitlyCastableToDotNetBitArray()
-        {
-            DotNetBitVector32 dnBitArray;
-            Assert.DoesNotThrow(() => dnBitArray = new BitArray(0));
-        }
-
-        [Test]
-        public void BitArray_ShouldBeExplicitlyCastableToDotNetBitArray()
-        {
-            DotNetBitVector32 dnBitArray;
-            Assert.DoesNotThrow(() => dnBitArray = (DotNetBitVector32)new BitArray(0));
-        }
-
-        [Test]
         public void BitArray_ShouldBeCreatableFromDotNetBitArray()
         {
             var dtBitArray = new DotNetBitVector32(0);
@@ -69,6 +55,81 @@ namespace DigitalElectronics.Concepts.Tests
             var ex = Assert.Throws<ArgumentException>(() => new BitArray(enumerable));
             ex.ParamName.Should().Be("values");
             ex.Message.Should().StartWith("Argument cannot contain more than 32 items.");
+        }
+
+
+        [Test]
+        public void BitArray_ShouldThrowWhenCreatedWithByteArrayWithMoreThan4Values()
+        {
+            var bytes = Enumerable.Repeat((byte)0, 5).ToArray();
+            var ex = Assert.Throws<ArgumentException>(() => new BitArray(bytes));
+            ex.ParamName.Should().Be("bytes");
+            ex.Message.Should().StartWith("Argument cannot contain more than 4 items.");
+        }
+
+        [Test]
+        [TestCase(new bool[] {}, 0)]
+        [TestCase(new bool[] { false }, 0)]
+        [TestCase(new bool[] { true }, 1)]
+        [TestCase(new bool[] { true, false }, 1)]
+        [TestCase(new bool[] { true, true }, 3)]
+        [TestCase(new bool[] { false, false, false, false}, 0)]
+        [TestCase(new bool[] { true, false, false, false}, 1)]
+        [TestCase(new bool[] { false, true, false, false}, 2)]
+        [TestCase(new bool[] { false, false, true, false}, 4)]
+        [TestCase(new bool[] { false, false, false, true}, 8)]
+        [TestCase(new bool[] { false, true, true, true}, 14)]
+        public void BitArray_CreateFromBoolArray(bool[] bits, int expected)
+        {
+            using (new AssertionScope())
+            {
+                var bitArray = new BitArray(bits);
+                bitArray.ToInt32().Should().Be(expected);
+                bitArray.Length.Should().Be(bits.Length);
+            }
+        }
+
+        [Test]
+        [TestCase(new bool[] { }, 0)]
+        [TestCase(new bool[] { false }, 0)]
+        [TestCase(new bool[] { true }, 1)]
+        [TestCase(new bool[] { true, false }, 1)]
+        [TestCase(new bool[] { true, true }, 3)]
+        [TestCase(new bool[] { false, false, false, false }, 0)]
+        [TestCase(new bool[] { true, false, false, false }, 1)]
+        [TestCase(new bool[] { false, true, false, false }, 2)]
+        [TestCase(new bool[] { false, false, true, false }, 4)]
+        [TestCase(new bool[] { false, false, false, true }, 8)]
+        [TestCase(new bool[] { false, true, true, true }, 14)]
+        public void BitArray_CreateFromBoolEnumerable(bool[] bits, int expected)
+        {
+            using (new AssertionScope())
+            {
+                var bitArray = new BitArray(bits.AsEnumerable());
+                bitArray.ToInt32().Should().Be(expected);
+                bitArray.Length.Should().Be(bits.Length);
+            }
+        }
+
+        [Test]
+        [TestCase(new byte[] { }, 0)]
+        [TestCase(new byte[] { 0 }, 0)]
+        [TestCase(new byte[] { 255 }, 255)]
+        [TestCase(new byte[] { 255, 0 }, 255)]
+        [TestCase(new byte[] { 0, 1 }, 256)]
+        [TestCase(new byte[] { 0x00, 0x00, 0x00, 0x00 }, 0x00000000)]
+        [TestCase(new byte[] { 0xFF, 0x00, 0x00, 0x00 }, 0x000000FF)]
+        [TestCase(new byte[] { 0x00, 0xFF, 0x00, 0x00 }, 0x0000FF00)]
+        [TestCase(new byte[] { 0x00, 0x00, 0xFF, 0x00 }, 0x00FF0000)]
+        [TestCase(new byte[] { 0x00, 0x00, 0x00, 0xFF }, (int)(~0xFF000000u + 1) * -1)]
+        public void BitArray_CreateFromByteArray_LittleEndian(byte[] bytes, int expected)
+        {
+            using (new AssertionScope())
+            {
+                var bitArray = new BitArray(bytes);
+                bitArray.ToInt32().Should().Be(expected);
+                bitArray.Length.Should().Be(bytes.Length * 8);
+            }
         }
 
         [Test]
@@ -144,8 +205,7 @@ namespace DigitalElectronics.Concepts.Tests
         [TestCase(255, "11111111")]
         public void ToString_WithArg_MsbBinary(int v, string expected)
         {
-            var b = (byte)v;
-            var objUT = new BitArray(b);
+            var objUT = new BitArray((byte)v);
             objUT.ToString(NumberFormat.MsbBinary).Should().Be(expected);
         }
 
