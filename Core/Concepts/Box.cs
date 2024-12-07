@@ -9,12 +9,12 @@ namespace DigitalElectronics.Concepts
     
     /// <summary>
     /// A mutable box for a value type, that provides change notifications.
-    /// For use with WPF where binding a binding to a primitive type is required
-    /// but not supported as an object is required.
     /// </summary>
     /// <typeparam name="T">The type of the boxed value</typeparam>
     /// <note>Warning: As a mutable object, don't use objects of this type
     /// as keys in a hash table.</note>
+    /// <remarks>This class enables the binding of a depending property to an instance of value type
+    /// in cases where instance of a reference type is required.</remarks>
     [DebuggerDisplay("{Value}")]
     public class Box<T> : INotifyPropertyChanged, IComparable<Box<T>>, IComparable<T>, IEquatable<Box<T>>, IEquatable<T>
         where T : struct, IComparable<T>, IEquatable<T>

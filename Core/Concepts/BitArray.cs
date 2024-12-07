@@ -4,9 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
-#if DEBUG
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Core.Tests")]
-#endif
 
 namespace DigitalElectronics.Concepts
 {
@@ -25,24 +23,27 @@ namespace DigitalElectronics.Concepts
     public struct BitArray
     {
         private const string LengthOutOfRangeMessage = "Argument must be between 0 and 32 inclusive.";
-        private const string TooManyItemsMessage = "Argument cannot contain more than 32 items.";
+        private const string TooManyItemsMessageFormat = "Argument cannot contain more than {0} items.";
 
         private static readonly BitConverter bitConverter = new BitConverter();
 
-        /// <summary>
-        /// Casts the <see cref="BitArray"/> to the built-in .NET class <see cref="BitVector32"/>
-        /// </summary>
-        /// <param name="obj">The object to cast</param>
-        public static implicit operator BitVector32(BitArray obj) => obj.bitVector;
-
-        ////public static implicit operator BitArray(bool[] bools) => new (bools);
-        
         private BitVector32 bitVector;
         private int length;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BitArray"/> with a value of 0 and length of 32
+        /// </summary>
         public BitArray() : this(new BitVector32())
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BitArray"/> representing the given integer
+        /// value and length
+        /// </summary>
+        /// <param name="value">The value to represent with the <see cref="BitArray"/></param>
+        /// <param name="length">The length of the <see cref="BitArray"/> (see <see cref="Length"/>)</param>
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="length"/> is less 
+        /// than zero or greater than 32</exception>
         public BitArray(int value, int length = 32) : this (new BitVector32(value))
         {
             if (length < 0 || length > 32)
@@ -51,16 +52,29 @@ namespace DigitalElectronics.Concepts
             Length = length;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BitArray"/> to be equivalent to the given
+        /// <see cref="BitVector32"/>
+        /// </summary>
+        /// <param name="bitArray">The <see cref="BitVector32"/> to initialize this <see cref="BitArray"/></param>
+        /// <remarks>The <see cref="Length"/> of the <see cref="BitArray"/> is set to 32</remarks>
         public BitArray(BitVector32 bitArray)
         {
             bitVector = bitArray;
             Length = 32;
         }
 
+        /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given by array of
+        /// <see cref="bool"/> values, starting with the least-significant bit
+        /// </summary>
+        /// <param name="values">An array of <see cref="bool"/> values in LSB-first order</param>
+        /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
+        /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="values"/></remarks>
         public BitArray(params bool[] values)
         {
             if (values.Length > 32)
-                throw new ArgumentException(TooManyItemsMessage, nameof(values));
+                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, 32), nameof(values));
 
             bitVector = new BitVector32();
             for (int i = 0; i < values.Length; i++)
@@ -74,11 +88,18 @@ namespace DigitalElectronics.Concepts
             Length = values.Length;
         }
 
-
+        /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given by array of
+        /// <see cref="bytes"/> values, in little-endian order
+        /// </summary>
+        /// <param name="bytes">An array of <see cref="byte"/> values in little-endian order</param>
+        /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
+        /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="values"/></remarks>
+        /// <exception cref="ArgumentException">if <paramref name="bytes"/> contains more than 32 items</exception>
         public BitArray(params byte[] bytes)
         {
             if (bytes.Length > 4)
-                throw new ArgumentException("Byte array must be 4 bytes or fewer.");
+                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, 4), nameof(bytes));
 
             // Combine the bytes into a single 32-bit integer
             int combinedValue = 0;
@@ -92,11 +113,24 @@ namespace DigitalElectronics.Concepts
             Length = bytes.Length * 8;
         }
 
-        ////public BitArray(int length) => bitVector = new DotNetBitVector32(length);
-        ////public BitArray(int[] values) => bitVector = new DotNetBitVector32(values ?? throw new ArgumentNullException(nameof(values)));
-        //public BitArray(int length, bool defaultValue) => bitVector = new DotNetBitVector32(length, defaultValue);
+        /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given by array of
+        /// <see cref="Bit"/> objects, starting with the least-significant bit
+        /// </summary>
+        /// <param name="bits">An array of <see cref="Bit"/> objects in LSB-first order</param>
+        /// <exception cref="ArgumentException">if <paramref name="bits"/> contains more than 32 items</exception>
+        /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="bits"/></remarks>
         public BitArray(Bit[] bits) : this(bits.AsEnumerable()) { }
-        
+
+        /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given sequence of
+        /// <see cref="bool"/> values returned by the given enumerable, starting with the least-significant bit
+        /// </summary>
+        /// <param name="values">An sequence returning <see cref="bool"/> values representing the bit pattern
+        /// in LSB-first order</param>
+        /// <exception cref="ArgumentException">if <paramref name="values"/> sequences yields more than 32 items</exception>
+        /// <remarks>The <see cref="Length"/> property is to equal the number of values yielded by<paramref name="values"/>
+        /// up to a maximum of 32</remarks>
         public BitArray(IEnumerable<bool> values)
         {
             int i = 0;
@@ -108,16 +142,25 @@ namespace DigitalElectronics.Concepts
                 i++;
 
                 if (i > 32)
-                    throw new ArgumentException(TooManyItemsMessage, nameof(values));
+                    throw new ArgumentException(string.Format(TooManyItemsMessageFormat, 32), nameof(values));
             }
 
             Length = i;
         }
 
+        /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given sequence of
+        /// <see cref="Bit"/> objects returned by the given enumerable, starting with the least-significant bit
+        /// </summary>
+        /// <param name="bits">An sequence returning <see cref="Bit"/> objects representing the bit pattern
+        /// in LSB-first order</param>
+        /// <exception cref="ArgumentException">if <paramref name="bits"/> sequences yields more than 32 items</exception>
+        /// <remarks>The <see cref="Length"/> property is to equal the number of values yielded by<paramref name="bits"/>
+        /// up to a maximum of 32</remarks>
         public BitArray(IEnumerable<Bit> bits) : this(bits.Select(b => b?.Value ?? false)) { }
 
         /// <summary>
-        /// Gets or sets the value of the bit at a specific position in the BitArray.
+        /// Gets or sets the value of the bit at a specific position in the <see cref="BitArray"/>.
         /// </summary>
         /// <param name="index">The index of the bit to return, starting with least significant bit</param>
         public bool this[int index]
@@ -128,21 +171,13 @@ namespace DigitalElectronics.Concepts
         }
 
         /// <summary>
-        /// Gets or sets the number of elements in the BitArray.
+        /// Gets or sets the length of the <see cref="BitArray"/> in bits
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException">The property is set to a value that is less than zero or greater than 32.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The property is set to a value that is less
+        /// than zero or greater than 32.</exception>
         /// <remarks>
-        /// Length and Count return the same value. Length can be set to a specific value,
-        /// but Count is read-only.
-        /// 
-        /// If Length is set to a value that is less than Count, the BitArray is truncated
-        /// and the elements after the index value -1 are deleted.
-        /// 
-        /// If Length is set to a value that is greater than Count, the new elements are set
-        /// to false.
-        /// 
-        /// Retrieving the value of this property is an O(1) operation. Setting this
-        /// property is an O(n) operation.
+        /// This property affects the values returned by <see cref="ToByte"/> and <see cref="ToInt32"/>
+        /// methods. See these methods for more details.
         /// </remarks>
         public int Length
         {
@@ -156,41 +191,43 @@ namespace DigitalElectronics.Concepts
         }
 
         /// <summary>
-        /// Performs the bitwise AND operation between the elements of the current <see cref="BitArray"/>
-        /// and the corresponding elements in the specified array. The current <see cref="BitArray"/>
-        /// will be modified to store the result of the bitwise AND operation.
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise AND
+        /// operation between the bits of the current <see cref="BitArray"/> with the given
+        /// <see cref="BitArray"/> instance.
         /// </summary>
+        /// <param name="value">The <see cref="BitArray"/> to perform the bitwise operation with the
+        /// current instance</param>
         public BitArray And(BitArray value)
         {
             return And(value.bitVector);
         }
 
         /// <summary>
-        /// Performs the bitwise AND operation between the elements of the current <see cref="BitArray"/>
-        /// and the corresponding elements in the specified array. The current <see cref="BitArray"/>
-        /// will be modified to store the result of the bitwise AND operation.
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise AND
+        /// operation between the bits of the current <see cref="BitArray"/> with the given
+        /// <see cref="BitVector32"/> instance.
         /// </summary>
+        /// <param name="value">The <see cref="BitVector32"/> to perform the bitwise operation with the
+        /// current instance</param>
         public BitArray And(BitVector32 value)
         {
             return new BitArray(new BitVector32(bitVector.Data & value.Data));
         }
 
         /// <summary>
-        /// Gets the value of the bit at a specific position in the BitArray.
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise LEFT-SHIFT
+        /// operation the given number of times against the current <see cref="BitArray"/>.
         /// </summary>
-        public bool Get(int index) => bitVector[index];
-
-        /// <summary>
-        /// Shifts all the bit values of the current BitArray to the left on <paramref name="count"/> bits.
-        /// </summary>
+        /// <param name="count">The number of times to perform the bitwise operation with the
+        /// current instance</param>
         public BitArray LeftShift(int count)
         {
             return new BitArray(new BitVector32(bitVector.Data << count));
         }
 
         /// <summary>
-        /// Inverts all the bit values in the current BitArray, so that elements set to `true` are changed to
-        /// `false`, and elements set to false are changed to true.
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise NOT
+        /// operation against the current <see cref="BitArray"/>.
         /// </summary>
         public BitArray Not()
         {
@@ -198,71 +235,84 @@ namespace DigitalElectronics.Concepts
         }
 
         /// <summary>
-        /// Performs the bitwise OR operation between the elements of the current <see cref="BitArray"/> and
-        /// the corresponding elements in the specified array. The current <see cref="BitArray"/> will be
-        /// modified to store the result of the bitwise OR operation.
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise OR
+        /// operation between the bits of the current <see cref="BitArray"/> with the given
+        /// <see cref="BitArray"/> instance.
         /// </summary>
+        /// <param name="value">The <see cref="BitArray"/> to perform the bitwise operation with the
+        /// current instance</param>
         public BitArray Or(BitArray value)
         {
             return Or(value.bitVector);
         }
 
         /// <summary>
-        /// Performs the bitwise OR operation between the elements of the current <see cref="BitArray"/> and
-        /// the corresponding elements in the specified array. The current <see cref="BitArray"/> will be
-        /// modified to store the result of the bitwise OR operation.
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise OR
+        /// operation between the bits of the current <see cref="BitArray"/> with the given
+        /// <see cref="BitVector32"/> instance.
         /// </summary>
+        /// <param name="value">The <see cref="BitVector32"/> to perform the bitwise operation with the
+        /// current instance</param>
         public BitArray Or(BitVector32 value)
         {
             return new BitArray(new BitVector32(bitVector.Data | value.Data));
         }
 
+        /// <summary>
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise RIGHT-SHIFT
+        /// operation the given number of times against the current <see cref="BitArray"/>.
+        /// </summary>
+        /// <param name="count">The number of times to perform the bitwise operation with the
+        /// current instance</param>
         public BitArray RightShift(int count)
         {
             return new BitArray(new BitVector32(bitVector.Data >> count));
         }
 
         /// <summary>
-        /// Sets the bit at a specific position in the BitArray to the specified value.
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise XOR
+        /// operation between the bits of the current <see cref="BitArray"/> with the given
+        /// <see cref="BitArray"/> instance.
         /// </summary>
-        public void Set(int index, bool value) => bitVector[index] = value;
-
-        /// <summary>
-        /// Sets all bits in the BitArray to the specified value.
-        /// </summary>
-        ////public void SetAll(bool value) => bitVector.SetAll(value);
-
-        /// <summary>
-        /// Performs the bitwise exclusive OR operation between the elements of the current <see cref="BitArray"/> against the
-        /// corresponding elements in the specified array. The current <see cref="BitArray"/> will be modified to store the
-        /// result of the bitwise exclusive OR operation.
-        /// </summary>
+        /// <param name="value">The <see cref="BitArray"/> to perform the bitwise operation with the
+        /// current instance</param>
         public BitArray Xor(BitArray value)
         {
             return Xor(value.bitVector);
         }
 
         /// <summary>
-        /// Performs the bitwise exclusive OR operation between the elements of the current <see cref="BitArray"/> against the
-        /// corresponding elements in the specified array. The current <see cref="BitArray"/> will be modified to store the
-        /// result of the bitwise exclusive OR operation.
+        /// Returns a new <see cref="BitArray"/> containing the result of performing a bitwise XOR
+        /// operation between the bits of the current <see cref="BitArray"/> with the given
+        /// <see cref="BitVector32"/> instance.
         /// </summary>
+        /// <param name="value">The <see cref="BitVector32"/> to perform the bitwise operation with the
+        /// current instance</param>
         public BitArray Xor(BitVector32 value)
         {
             return new BitArray(new BitVector32(bitVector.Data ^ value.Data));
         }
 
+        /// <summary>
+        /// Returns the equivalent <see cref="byte"/> value for the bit pattern represented by
+        /// the <see cref="BitArray"/>
+        /// </summary>
+        /// <remarks>This method simply calls <see cref="ToInt32"/> and cases it to a <see cref="byte"/></remarks>
         public byte ToByte()
         {
-            if (Length > sizeof(byte) * 8)
-                throw new ArgumentException($"{nameof(BitArray)} is too long to convert to Byte without data loss.");
-
             return (byte)ToInt32();
         }
 
+        /// <summary>
+        /// Returns the equivalent <see cref="int"/> value for the bit pattern represented by
+        /// the <see cref="BitArray"/>
+        /// </summary>
+        /// <remarks>The return value is influenced by the <see cref="Length"/> property, which is
+        /// used to generate a mask that is selects the first <see cref="Length"/> number of bits
+        /// starting with the least-significant bit.</remarks>
         public int ToInt32()
         {
-            System.Diagnostics.Debug.Assert(Length > 0 && Length <= 32);
+            System.Diagnostics.Debug.Assert(Length >= 0 && Length <= 32);
 
             if (Length == 32)
                 return bitVector.Data;
@@ -272,73 +322,34 @@ namespace DigitalElectronics.Concepts
         }
 
         /// <summary>
-        /// Returns the binary representation of the BitArray as a string
+        /// Returns the binary representation of the <see cref="BitArray"/> as a string, starting with
+        /// most significant bit
         /// </summary>
-        /// <returns>A string of '1's or '0's representing each bit of the BitArray</returns>
+        /// <returns>A string of '1's or '0's representing each bit of the BitArray in MSB order</returns>
         public override string ToString()
         {
             return ToString(NumberFormat.MsbBinary);
         }
 
+        /// <summary>
+        /// Returns the string representation <see cref="BitArray"/> according to the given
+        /// <see cref="NumberFormat"/>
+        /// </summary>
+        /// <param name="format">The <see cref="NumberFormat"/> to use</param>
         public string ToString(NumberFormat format)
         {
             return bitConverter.ToString(this, format);
         }
 
-        /////// <summary>
-        /////// Removes 'leading' zeros from the <see cref="BitArray"/>. The current <see cref="BitArray"/>
-        /////// will be modified to store the result of the Trim operation.
-        /////// </summary>
-        /////// <returns>A <see cref="BitArray"/> representing the same value but with the leading
-        /////// zeros removed. A BitArray representing zero is always trimmed to <see cref="Length"/>
-        /////// of 1, never 0.</returns>
-        /////// <remarks>From a positional notation perspective, the <see cref="Trim"/> method removes
-        /////// any 'leading' zero digits from binary number represented by the <see cref="BitArray"/>.
-        /////// For example, a BitArray of <see cref="Length"/> 8 representing the decimal 11
-        /////// (which would be `00001011` in binary representation) will be 'trimmed' to a Length
-        /////// of 4 (i.e. `1011`).
-        ///////
-        /////// From a technical perspective, since the BitArray orders bits from most-significant to
-        /////// least significant, the method actually trims trailing bits. So with our previous
-        /////// example, the decimal 11 would be represented internally with an array of 8 bools
-        /////// <c>{true, true, false, true, false, false, false, false}</c>. The method would
-        /////// mutate the BitArray to the array <c>{true, true, false, true}</c>
-        ///////
-        /////// The length of the BitArray is modified by assigning a new length to the
-        /////// <see cref="Length"/> property</remarks>
-        ////public void Trim()
-        ////{
-        ////    Trim(1);
-        ////}
-
-        /// <summary>
-        /// Like <see cref="Trim()"/> method but only reduces the length of the <see cref="BitArray"/>
-        /// at most down to the given <paramref name="targetLength"/>.
-        /// </summary>
-        /// <param name="targetLength">The desired length for the BitArray</param>
-        /// <returns>A <see cref="BitArray"/> of either <see cref="Length"/>
-        /// <paramref name="targetLength"/>targetLength</returns> or the longest length that can represent
-        /// the same value. For example, calling <c>Trim(8)</c> on a BitArray representing decimal 11
-        /// of length 32 will reduce the <see cref="Length"/> to 8, while the same call on a BitArray
-        /// representing decimal 645 will be reduce the Length to 10, since this many bits is needed
-        /// to fully represent the decimal value 645.
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="targetLength"/> is less than one</exception>
-        ////public void Trim(int targetLength)
-        ////{
-        ////    if (targetLength < 0)
-        ////        throw new ArgumentOutOfRangeException(nameof(targetLength), "Argument must be non-negative");
-
-        ////    var leadingZerosCount = AsEnumerable<bool>().Reverse().TakeWhile(b => !b).Count();
-        ////    var newLength = Math.Max(targetLength, Length - leadingZerosCount);
-        ////    Length = Math.Max(1, newLength);
-        ////}
 
         /// <summary>
         /// Returns this <see cref="BitArray"/> as an enumerable of the given type
         /// </summary>
-        /// <typeparam name="T">The type of the enumerable, which can be <see cref="bool"/> or <see cref="Bit"/></typeparam>
-        /// <returns>Returns an <see cref="IEnumerable{T}"/> of bools or Bits;
-        /// returns null if <typeparamref name="T"/> is any other type</returns>
+        /// <typeparam name="T">The type of the items of the enumerable, which can be <see cref="bool"/>
+        /// or <see cref="Bit"/></typeparam>
+        /// <returns>Returns an <see cref="IEnumerable{T}"/> of bools or Bits</returns>
+        /// <<exception cref="InvalidCastException">if <typeparamref name="T"/> is anything besides
+        /// <see cref="bool"/> or <see cref="Bit"/></exception>
         public IEnumerable<T> AsEnumerable<T>()
         {
             for (int i = 0; i < Length; i++)
@@ -354,24 +365,62 @@ namespace DigitalElectronics.Concepts
             }
         }
 
+        /// <summary>
+        /// Returns this <see cref="BitArray"/> as an enumerable of <see cref="bool"/> values
+        /// </summary>
+        /// <returns>An enumerable that yields <see cref="bool"/> values representing the
+        /// bit pattern of the <see cref="BitArray"/> starting with the least-significant bit</returns>
         public IEnumerable<bool> AsEnumerable() => AsEnumerable<bool>();
 
         /// <summary>
-        /// Returns this <see cref="BitArray"/> as an list of the given type
+        /// Returns this <see cref="BitArray"/> as a list of the given type
         /// </summary>
-        /// <typeparam name="T">The type of the list, which can be <see cref="bool"/> or <see cref="Bit"/></typeparam>
-        /// <returns>Returns an <see cref="IEnumerable{T}"/> of bools or Bits;
-        /// returns null if <typeparamref name="T"/> is any other type</returns>
+        /// <typeparam name="T">The type of the items of the list, which can be <see cref="bool"/>
+        /// or <see cref="Bit"/></typeparam>
+        /// <returns>Returns an <see cref="IList{T}"/> of bools or Bits</returns>
+        /// <<exception cref="InvalidCastException">if <typeparamref name="T"/> is anything besides
+        /// <see cref="bool"/> or <see cref="Bit"/></exception>
         public IList<T> ToList<T>() => AsEnumerable<T>().ToList();
-        
+
+        /// <summary>
+        /// Returns this <see cref="BitArray"/> as a list of <see cref="bool"/> values
+        /// </summary>
+        /// <returns>A list of <see cref="bool"/> values representing the
+        /// bit pattern of the <see cref="BitArray"/> starting with the least-significant bit</returns>
         public IList<bool> ToList() => AsEnumerable().ToList();
 
+        /// <summary>
+        /// Returns this <see cref="BitArray"/> as a read-only list of the given type
+        /// </summary>
+        /// <typeparam name="T">The type of the items of the read-only list, which can be <see cref="bool"/>
+        /// or <see cref="Bit"/></typeparam>
+        /// <returns>Returns an <see cref="IList{T}"/> of bools or Bits</returns>
+        /// <<exception cref="InvalidCastException">if <typeparamref name="T"/> is anything besides
+        /// <see cref="bool"/> or <see cref="Bit"/></exception>
         public IReadOnlyList<T> ToReadOnlyList<T>() => (IReadOnlyList<T>)ToList<T>();
 
+        /// <summary>
+        /// Returns this <see cref="BitArray"/> as a read-only list of <see cref="bool"/> values
+        /// </summary>
+        /// <returns>A list of <see cref="bool"/> values representing the
+        /// bit pattern of the <see cref="BitArray"/> starting with the least-significant bit</returns>
         public IReadOnlyList<bool> ToReadOnlyList() => (IReadOnlyList<bool>)ToList();
 
+        /// <summary>
+        /// Returns this <see cref="BitArray"/> as an array of the given type
+        /// </summary>
+        /// <typeparam name="T">The type of the items of the array, which can be <see cref="bool"/>
+        /// or <see cref="Bit"/></typeparam>
+        /// <returns>Returns an array of bools or Bits</returns>
+        /// <<exception cref="InvalidCastException">if <typeparamref name="T"/> is anything besides
+        /// <see cref="bool"/> or <see cref="Bit"/></exception>
         public T[] ToArray<T>() => AsEnumerable<T>().ToArray();
 
+        /// <summary>
+        /// Returns this <see cref="BitArray"/> as an array of <see cref="bool"/> values
+        /// </summary>
+        /// <returns>An array of <see cref="bool"/> values representing the
+        /// bit pattern of the <see cref="BitArray"/> starting with the least-significant bit</returns>
         public bool[] ToArray() => AsEnumerable<bool>().ToArray();
 
 #if DEBUG
@@ -383,7 +432,6 @@ namespace DigitalElectronics.Concepts
         internal string AsSignedDecimal => ToString(NumberFormat.SignedDecimal);
 
         internal string AsHexadecimal => ToString(NumberFormat.UnsignedHexadecimal);
-
 #endif
     }
 }
