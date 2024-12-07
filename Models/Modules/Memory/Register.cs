@@ -111,8 +111,15 @@ namespace DigitalElectronics.Components.Memory
         /// <returns>If the output is enabled (see <see cref="SetInputE"/>,
         /// <see cref="BitArray"/> representing the current value; otherwise `null`,
         /// which represents the Z (high impedance) state</returns>
-        public BitArray? Output => IsReadable && _registers[0].OutputQ.HasValue ?
-                new BitArray(_registers.Select(_ => _.OutputQ!.Value)) : null;
+        public BitArray? Output
+        {
+            get
+            {
+                if (IsReadable && _registers[0].OutputQ.HasValue)
+                    return new BitArray(_registers.Select(_ => _.OutputQ!.Value));
+                return null;
+            }
+        }
 
         /// <summary>
         /// Returns the internal state of the register

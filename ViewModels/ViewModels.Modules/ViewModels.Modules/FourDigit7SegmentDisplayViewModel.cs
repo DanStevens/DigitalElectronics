@@ -36,7 +36,7 @@ namespace DigitalElectronics.ViewModels.Modules
             InitializeRegister(_registerForDigit3);
 
             var initialValue = new BitArray((byte)0);
-            Value = new FullyObservableCollection<Bit>(initialValue.Select(b => new Bit(b)));
+            Value = new FullyObservableCollection<Bit>(initialValue.AsEnumerable<Bit>());
             Value.ItemPropertyChanged += OnValueBitChanged;
 
             SyncValue();
@@ -56,10 +56,10 @@ namespace DigitalElectronics.ViewModels.Modules
 
         public FullyObservableCollection<Bit> Value { get; }
 
-        public IList<bool> LinesForDigit0 => _registerForDigit0.Output!;
-        public IList<bool> LinesForDigit1 => _registerForDigit1.Output!;
-        public IList<bool> LinesForDigit2 => _registerForDigit2.Output!;
-        public IList<bool> LinesForDigit3 => _registerForDigit3.Output!;
+        public IList<bool> LinesForDigit0 => _registerForDigit0.Output!.Value.ToList();
+        public IList<bool> LinesForDigit1 => _registerForDigit1.Output!.Value.ToList();
+        public IList<bool> LinesForDigit2 => _registerForDigit2.Output!.Value.ToList();
+        public IList<bool> LinesForDigit3 => _registerForDigit3.Output!.Value.ToList();
 
         private double updateInterval = 10;
 

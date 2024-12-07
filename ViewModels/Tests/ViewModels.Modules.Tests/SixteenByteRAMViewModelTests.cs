@@ -26,7 +26,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
         private static IEnumerable<Bit> CreateBits(byte value)
         {
-            return BitConverter.GetBits(value).Select(b => new Bit(b));
+            return BitConverter.GetBits(value).AsEnumerable<Bit>();
         }
 
         private static IEnumerable<Bit> CreateBits(int length, bool value)
@@ -54,7 +54,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
         private static ObservableCollection<bool> CreateObservableBoolCollection(byte value)
         {
-            return new ObservableCollection<bool>(new BitArray(value));
+            return new ObservableCollection<bool>(new BitArray(value).AsEnumerable());
         }
 
         private static IRAM CreateRamMock(BitArray? output = null)
@@ -187,15 +187,15 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             // Output current address 1
             objUT.Enable = true;
-            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)1));
+            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)1).AsEnumerable());
 
             // Switch address to 0
             objUT.Address = CreateFullyObservableBitCollection((byte)0);
-            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)0));
+            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)0).AsEnumerable());
 
             // Switch address to 1 by modifying `Address` property (rather than replacing)
             objUT.Address[0].Value = true;
-            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)1));
+            objUT.Output.Should().BeEquivalentTo(new BitArray((byte)1).AsEnumerable());
         }
 
         [Test]
@@ -322,7 +322,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             objUT.Enable = true;
             objUT.Output.Should().NotBeNull();
-            objUT.Output.Should().BeEquivalentTo(initialRamState[0]);
+            objUT.Output.Should().BeEquivalentTo(initialRamState[0].AsEnumerable());
         }
 
         [Test]

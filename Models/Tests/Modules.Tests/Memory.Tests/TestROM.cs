@@ -175,7 +175,7 @@ namespace DigitalElectronics.Modules.Tests.Memory.Tests
 
             for (int a = 0; a < primes.Length; a++)
             {
-                objUT.SetInputA(_bitConverter.GetBits(a));
+                objUT.SetInputA(_bitConverter.GetBits(a, objUT.WordSize));
                 objUT.Output!.Value.ToByte().Should().Be(primes[a]);
             }
         }
