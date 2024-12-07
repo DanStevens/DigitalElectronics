@@ -16,20 +16,6 @@ namespace DigitalElectronics.Concepts.Tests
     public class BitArrayTests
     {
         [Test]
-        public void BitArray_ShouldImplementListOfBoolean()
-        {
-            var objUT = new BitArray(0, length: 8);
-            objUT.Should().BeAssignableTo<IList<bool>>();
-        }
-
-        [Test]
-        public void BitArray_ShouldImplementList()
-        {
-            var objUT = new BitArray(0, length: 8);
-            objUT.Should().BeAssignableTo<IList>();
-        }
-
-        [Test]
         public void BitArray_ShouldBeImplicitlyCastableToDotNetBitArray()
         {
             DotNetBitVector32 dnBitArray;
@@ -43,34 +29,6 @@ namespace DigitalElectronics.Concepts.Tests
             Assert.DoesNotThrow(() => dnBitArray = (DotNetBitVector32)new BitArray(0));
         }
 
-        ////[Test]
-        ////public void CreatingBitArrayFromArrayOfByte_ShouldBeConvertibleToDotNetBitArrayOfSameBytes()
-        ////{
-        ////    byte[] bytesIn = { 1, 2, 3, 4 };
-        ////    bool[] expectedBitsOut =
-        ////    {
-        ////        true, false, false, false, false, false, false, false, false, true, false, false, false, false,
-        ////        false, false, true, true, false, false, false, false, false, false, false, false, true, false,
-        ////        false, false, false, false
-        ////    };
-
-        ////    var objUT = new BitArray(bytesIn);
-        ////    var dnBitArray = (DotNetBitVector32)objUT;
-        ////    dnBitArray.Should().BeEquivalentTo(expectedBitsOut);
-        ////}
-
-        ////[TestCase(false)]
-        ////[TestCase(true)]
-        ////public void CreatingBitArrayOfGivenLengthWithDefaultValues_ShouldBeConvertibleToDotNotBitVectorOfSameValues(bool b)
-        ////{
-        ////    for (int i = 0; i < 8; i++)
-        ////    {
-        ////        var objUT = new BitArray(i, b);
-        ////        var dnBitArray = (DotNetBitVector32)objUT;
-        ////        dnBitArray.Should().BeEquivalentTo(Enumerable.Repeat(b, i));
-        ////    }
-        ////}
-
         [Test]
         public void BitArray_ShouldBeCreatableFromDotNetBitArray()
         {
@@ -83,6 +41,45 @@ namespace DigitalElectronics.Concepts.Tests
         {
             Bit[] bits = {new(false), new(true), new(false), new(true)};
             new BitArray(bits);
+        }
+
+        [Test]
+        [TestCase(-1)]
+        [TestCase(33)]
+        public void BitArray_ShouldThrowWhenLengthNotBetween0And32Inclusive(int length)
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new BitArray(0, length));
+            ex.ParamName.Should().Be("length");
+            ex.Message.Should().StartWith("Argument must be between 0 and 32 inclusive.");
+        }
+
+        [Test]
+        public void BitArray_ShouldThrowWhenCreatedWithArrayWithMoreThan32Values()
+        {
+            var values = Enumerable.Repeat(false, 33).ToArray();
+            var ex = Assert.Throws<ArgumentException>(() => new BitArray(values));
+            ex.ParamName.Should().Be("values");
+            ex.Message.Should().StartWith("Argument cannot contain more than 32 items.");
+        }
+
+        [Test]
+        public void BitArray_ShouldThrowWhenCreatedWithEnumerableWithMoreThan32Values()
+        {
+            var enumerable = Enumerable.Repeat(false, 33);
+            var ex = Assert.Throws<ArgumentException>(() => new BitArray(enumerable));
+            ex.ParamName.Should().Be("values");
+            ex.Message.Should().StartWith("Argument cannot contain more than 32 items.");
+        }
+
+        [Test]
+        [TestCase(-1)]
+        [TestCase(33)]
+        public void Length_ShouldThrowWhenSetToValueNotBetween0And32Inclusive(int newLength)
+        {
+            var objUT = new BitArray(0, 32);
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => objUT.Length = newLength);
+            ex.ParamName.Should().Be("value");
+            ex.Message.Should().StartWith("Argument must be between 0 and 32 inclusive.");
         }
 
         [Test]
@@ -120,7 +117,7 @@ namespace DigitalElectronics.Concepts.Tests
         {
             bool[] bits = { false, false, true, false, true, false, true, false };
             var objUT = new BitArray(bits);
-            IReadOnlyList<bool> listOfBools = objUT.AsReadOnlyList<bool>();
+            IReadOnlyList<bool> listOfBools = objUT.ToReadOnlyList<bool>();
             listOfBools.Should().Equal(bits);
         }
 
@@ -160,22 +157,6 @@ namespace DigitalElectronics.Concepts.Tests
                 var objUT = new BitArray(i);
                 objUT.ToString(NumberFormat.SignedDecimal).Should().Be(i.ToString());
             }
-        }
-
-        [Test]
-        public void IndexOf_ShouldWorkCorrectly()
-        {
-            IList<bool> bitArray1 = new BitArray(false, true, true, false);
-            bitArray1.IndexOf(false).Should().Be(0);
-            bitArray1.IndexOf(true).Should().Be(1);
-
-            IList<bool> bitArray2 = new BitArray((byte)0);
-            bitArray2.IndexOf(false).Should().Be(0);
-            bitArray2.IndexOf(true).Should().Be(-1);
-
-            IList<bool> bitArray3 = new BitArray(byte.MaxValue);
-            bitArray3.IndexOf(false).Should().Be(-1);
-            bitArray3.IndexOf(true).Should().Be(0);
         }
 
         [Test]
@@ -223,94 +204,40 @@ namespace DigitalElectronics.Concepts.Tests
             }
         }
 
-        ////[TestCase(-1, sizeof(int) * 8)]
-        ////[TestCase(0, 1)] // Trim should never reduce length of BitArray below 1
-        ////[TestCase(1, 1)]
-        ////[TestCase(2, 2)]
-        ////[TestCase(3, 2)]
-        ////[TestCase(4, 3)]
-        ////[TestCase(7, 3)]
-        ////[TestCase(255, 8)]
-        ////[TestCase(int.MinValue, sizeof(int) * 8)]
-        ////[TestCase(int.MinValue + 1, sizeof(int) * 8)]
-        ////[TestCase(int.MinValue + 1024, sizeof(int) * 8)]
-        ////public void Trim_WhenGivenBitArrayOfLength32_TrimsToSmallestLengthPossible_WhenGivenNoArgs(int value, int expectedLength)
-        ////{
-        ////    using (new AssertionScope())
-        ////    {
-        ////        var bitConverter = new BitConverter();
-        ////        var bitArray = bitConverter.GetBits((int)value);
-        ////        bitArray.Length.Should().Be(sizeof(int) * 8, "Length not as expected before Trim");
-        ////        bitArray.Trim();
-        ////        bitArray.Length.Should().Be(expectedLength, "Length not as expected afterTrim");
-        ////        bitConverter.ToInt32(bitArray).Should().Be(value);
-        ////    }
-        ////}
+        [Test]
+        [TestCase(0, 1, 0)]
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 1, 0)]
+        [TestCase(3, 1, 1)]
+        [TestCase(14, 4, 14)]
+        [TestCase(15, 4, 15)]
+        [TestCase(16, 4, 0)]
+        [TestCase(17, 4, 1)]
+        [TestCase(254, 8, 254)]
+        [TestCase(255, 8, 255)]
+        [TestCase(256, 8, 0)]
+        [TestCase(257, 8, 1)]
+        [TestCase(int.MaxValue, 32, int.MaxValue)]
+        [TestCase(int.MaxValue, 8, byte.MaxValue)]
+        public void ToInt32_ShouldMaskResultAccordingToLength(int value, int length, int expected)
+        {
+            new BitArray(value, length).ToInt32().Should().Be(expected);
+        }
 
-        ////[TestCase(0, 1)] // Trim should never reduce length of BitArray below 1
-        ////[TestCase(1, 1)]
-        ////[TestCase(2, 2)]
-        ////[TestCase(3, 2)]
-        ////[TestCase(4, 3)]
-        ////[TestCase(7, 3)]
-        ////[TestCase(255, 8)]
-        ////[TestCase(ushort.MinValue, 1)]
-        ////[TestCase(ushort.MinValue + 1, 1)]
-        ////[TestCase(ushort.MinValue + 1024, 11)]
-        ////public void Trim_WhenGivenBitArrayOfLength16_TrimsToSmallestLengthPossible_WhenGivenNoArgs(int value, int expectedLength)
-        ////{
-        ////    var bitConverter = new BitConverter();
-        ////    var bitArray = bitConverter.GetBits((ushort)value);
-        ////    bitArray.Length.Should().Be(sizeof(ushort) * 8);
-        ////    bitArray.Trim();
-        ////    bitArray.Length.Should().Be(expectedLength);
-        ////    bitConverter.ToUInt16(bitArray).Should().Be((ushort)value);
-        ////}
-
-        ////[TestCase(0, 1)] // Trim should never reduce length of BitArray below 1
-        ////[TestCase(1, 1)]
-        ////[TestCase(2, 2)]
-        ////[TestCase(3, 2)]
-        ////[TestCase(4, 3)]
-        ////[TestCase(7, 3)]
-        ////[TestCase(11, 4)]
-        ////[TestCase(byte.MaxValue, 8)]
-        ////public void Trim_WhenGivenBitArrayOfLength8_TrimsToSmallestLengthPossible_WhenGivenNoArgs(int value, int expectedLength)
-        ////{
-        ////    var bitConverter = new BitConverter();
-        ////    var bitArray = bitConverter.GetBits((byte)value);
-        ////    bitArray.Length.Should().Be(sizeof(byte) * 8);
-        ////    bitArray.Trim();
-        ////    bitArray.Length.Should().Be(expectedLength);
-        ////    bitConverter.ToByte(bitArray).Should().Be((byte)value);
-        ////}
-
-        ////[TestCase(-1, 1, sizeof(int) * 8)]
-        ////[TestCase(0, 0, 1)] // Trim should never reduce length of BitArray below 1
-        ////[TestCase(1, 1, 1)]
-        ////[TestCase(2, 1, 2)]
-        ////[TestCase(3, 1, 2)]
-        ////[TestCase(4, 1, 3)]
-        ////[TestCase(7, 1, 3)]
-        ////[TestCase(11, 8, 8)]
-        ////[TestCase(42, 8, 8)]
-        ////[TestCase(645, 8, 10)]
-        ////public void Trim_WhenGivenBitArrayOfLength32_TriesToTrimToGivenLength(int value, int targetLength, int expectedLength)
-        ////{
-        ////    var bitConverter = new BitConverter();
-        ////    var bitArray = bitConverter.GetBits((int)value);
-        ////    bitArray.Length.Should().Be(sizeof(int) * 8);
-        ////    bitArray.Trim(targetLength);
-        ////    bitArray.Length.Should().Be(expectedLength);
-        ////    bitConverter.ToInt32(bitArray).Should().Be(value);
-        ////}
-
-        ////[Test]
-        ////public void Trim_ThrowsArgumentOutOfRangeException_WhenTargetLengthIsNegative()
-        ////{
-        ////    var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new BitArray(length: 8).Trim(-1));
-        ////    ex.Message.Should().StartWithEquivalentOf("Argument must be non-negative");
-        ////    ex.ParamName.Should().Be("targetLength");
-        ////}
+        [Test]
+        [TestCase(0, 1, 0)]
+        [TestCase(1, 1, 1)]
+        [TestCase(2, 1, 0)]
+        [TestCase(3, 1, 1)]
+        [TestCase(14, 4, 14)]
+        [TestCase(15, 4, 15)]
+        [TestCase(16, 4, 0)]
+        [TestCase(17, 4, 1)]
+        [TestCase(254, 8, 254)]
+        [TestCase(255, 8, 255)]
+        public void ToByte_ShouldMaskResultAccordingToLength(byte value, int length, byte expected)
+        {
+            new BitArray(value, length).ToByte().Should().Be(expected);
+        }
     }
 }

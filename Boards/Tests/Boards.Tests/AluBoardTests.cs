@@ -181,14 +181,14 @@ public class AluBoardTests
         var mocks = new Mocks();
         using var objUT = CreateObjectUnderTest(mocks);
         var binary42 = _bitConverter.GetBits((byte)42);
-        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.OutputE.Returns(binary42.ToList().AsEnumerable());
         mocks.aluVM.Enable = true;
         mocks.aluVM.EnableChanged += Raise.Event();
         mocks.registerAVM.Load = true;
 
         objUT.Clock();
 
-        mocks.registerAVM.Data.Should().BeEquivalentTo(binary42);
+        mocks.registerAVM.Data.Should().BeEquivalentTo(binary42.AsEnumerable());
     }
 
     [Test]
@@ -198,7 +198,7 @@ public class AluBoardTests
         using var objUT = CreateObjectUnderTest(mocks);
         var current = mocks.registerAVM.Data;
         var binary42 = _bitConverter.GetBits((byte)42);
-        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.OutputE.Returns(binary42.ToReadOnlyList());
         mocks.aluVM.Enable = true;
         mocks.aluVM.EnableChanged += Raise.Event();
         mocks.registerAVM.Load = false;
@@ -216,7 +216,7 @@ public class AluBoardTests
         var binary42 = _bitConverter.GetBits((byte)42);
         mocks.registerBVM.Data = Substitute.For<IList<Bit>>();
         mocks.registerBVM.Data.Count.Returns(8);
-        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.OutputE.Returns(binary42.ToReadOnlyList());
         mocks.aluVM.Enable = true;
         mocks.aluVM.EnableChanged += Raise.Event();
         mocks.registerBVM.Load = true;
@@ -236,7 +236,7 @@ public class AluBoardTests
         using var objUT = CreateObjectUnderTest(mocks);
         var current = mocks.registerBVM.Data;
         var binary42 = _bitConverter.GetBits((byte)42);
-        mocks.aluVM.OutputE.Returns(binary42);
+        mocks.aluVM.OutputE.Returns(binary42.ToReadOnlyList());
         mocks.aluVM.Enable = true;
         mocks.aluVM.EnableChanged += Raise.Event();
         mocks.registerBVM.Load = false;
@@ -254,11 +254,11 @@ public class AluBoardTests
         var binary1 = _bitConverter.GetBits((byte)1);
         mocks.aluVM.Enable = true;
         mocks.aluVM.EnableChanged += Raise.Event();
-        mocks.aluVM.OutputE.Returns(binary1);
+        mocks.aluVM.OutputE.Returns(binary1.ToReadOnlyList());
 
         objUT.Clock();
 
-        objUT.BusState.Should().BeEquivalentTo(binary1);
+        objUT.BusState.Should().BeEquivalentTo(binary1.AsEnumerable());
     }
 
     [Test]
@@ -299,10 +299,10 @@ public class AluBoardTests
 
             LoadRegisterA(binaryB);
             TransferRegisterAToRegisterB();
-            objUT.RegisterB.Probe.Should().BeEquivalentTo(binaryB.AsReadOnlyList<bool>());
+            objUT.RegisterB.Probe.Should().BeEquivalentTo(binaryB.ToReadOnlyList<bool>());
             LoadRegisterA(binaryA);
-            objUT.RegisterA.Probe.Should().BeEquivalentTo(binaryA.AsReadOnlyList<bool>());
-            objUT.ALU.Probe.Should().BeEquivalentTo(binaryExpectedSum.AsReadOnlyList<bool>());
+            objUT.RegisterA.Probe.Should().BeEquivalentTo(binaryA.ToReadOnlyList<bool>());
+            objUT.ALU.Probe.Should().BeEquivalentTo(binaryExpectedSum.ToReadOnlyList<bool>());
 
             void LoadRegisterA(BitArray value)
             {
@@ -310,7 +310,7 @@ public class AluBoardTests
                 objUT.RegisterA.Data = value.AsEnumerable<Bit>().ToList();
                 objUT.Clock();
                 objUT.RegisterA.Load = false;
-                objUT.RegisterA.Probe.Should().BeEquivalentTo(value.AsReadOnlyList<bool>());
+                objUT.RegisterA.Probe.Should().BeEquivalentTo(value.ToReadOnlyList<bool>());
             }
 
             void TransferRegisterAToRegisterB()

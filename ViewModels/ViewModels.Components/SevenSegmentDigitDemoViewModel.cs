@@ -174,10 +174,10 @@ public class SevenSegmentDigitDemoViewModel
             }
         }
 
-        public ICollection<bool> SegmentLines => _register.Output!;
+        public ICollection<bool> SegmentLines => _register.Output!.Value.ToList();
 
         public ReadOnlyObservableCollection<bool> RegisterState =>
-            new(new ObservableCollection<bool>(_register.ProbeState()));
+            new(new ObservableCollection<bool>(_register.ProbeState().AsEnumerable()));
 
         public FullyObservableCollection<Bit> Value { get; }
 

@@ -28,12 +28,12 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
         private static ObservableCollection<Bit> CreateObservableBitCollection(byte value)
         {
-            return new ObservableCollection<Bit>(new BitArray(value).Select(b => new Bit(b)).ToList());
+            return new ObservableCollection<Bit>(new BitArray(value).AsEnumerable<Bit>().ToList());
         }
 
         private static ObservableCollection<bool> CreateObservableBoolCollection(byte value)
         {
-            return new ObservableCollection<bool>(new BitArray(value));
+            return new ObservableCollection<bool>(new BitArray(value).AsEnumerable());
         }
 
         private static void AssertSetInputDWasCalled(IReadWriteRegister registerMock, BitArray bitArray)
