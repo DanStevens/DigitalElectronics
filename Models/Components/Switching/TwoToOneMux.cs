@@ -7,7 +7,7 @@ namespace DigitalElectronics.Components.Switching
     /// <summary>
     /// A 2-to-1 multiplexer (data selector)
     /// </summary>
-    public class TwoToOneMux
+    public class TwoToOneMux : IBooleanOutput
     {
         private readonly AndGate _and0 = new();
         private readonly Inverter _not0 = new();
@@ -17,7 +17,9 @@ namespace DigitalElectronics.Components.Switching
         /// <summary>
         /// Gets state of Z output
         /// </summary>
-        public object OutputZ => _or.OutputQ;
+        public bool OutputZ => _or.OutputQ;
+
+        bool IBooleanOutput.Output => OutputZ;
 
         /// <summary>
         /// Sets value for A input

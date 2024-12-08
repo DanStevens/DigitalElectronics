@@ -7,7 +7,7 @@ namespace DigitalElectronics.Components.LogicGates
     /// Models a XOR logic gate
     /// </summary>
     [DebuggerDisplay("AND: A = {_inputA}; B = {_inputB}; Q = {OutputQ}")]
-    public class XorGate
+    public class XorGate : IBooleanOutput
     {
         private bool _inputA;
         private bool _inputB;
@@ -38,5 +38,7 @@ namespace DigitalElectronics.Components.LogicGates
                 return _inputA != _inputB;
             }
         }
+
+        bool IBooleanOutput.Output => OutputQ;
     }
 }

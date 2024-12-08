@@ -9,6 +9,11 @@ BenchmarkRunner.Run<BE801ComputerBenchmarks>();
 
 var benchmark = new BE801ComputerBenchmarks();
 benchmark.Setup();
-benchmark.Clock(1);
+benchmark.PerformControlLogic(1);
+benchmark.PerformControlLogic(2);
+benchmark.PerformControlLogic(3);
+benchmark.PerformControlLogic(4);
+benchmark.PerformControlLogic(5);
+Console.WriteLine("Done");
 
 #endif

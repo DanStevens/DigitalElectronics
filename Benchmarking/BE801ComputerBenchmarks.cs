@@ -15,7 +15,7 @@ public class BE801ComputerBenchmarks
         _subject.LoadRAM(ZeroProgram);
     }
 
-    [Benchmark]
+    //[Benchmark]
     [Arguments(1)]
     [Arguments(10)]
     [Arguments(100)]
@@ -26,6 +26,20 @@ public class BE801ComputerBenchmarks
         for (int i = 0; i < clockCycles; i++)
         {
             _subject.Clock();
+        }
+    }
+
+    [Benchmark]
+    [Arguments(1)]
+    [Arguments(10)]
+    [Arguments(100)]
+    [Arguments(1000)]
+    [Arguments(10000)]
+    public void PerformControlLogic(int times)
+    {
+        for (int i = 0; i < times; i++)
+        {
+            _subject.PerformControlLogic();
         }
     }
 }

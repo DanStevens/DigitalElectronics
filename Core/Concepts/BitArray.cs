@@ -22,9 +22,9 @@ namespace DigitalElectronics.Concepts
     [System.Diagnostics.DebuggerDisplay("{DebuggerDisplay,nq}")]
     public struct BitArray
     {
-        private const string LengthOutOfRangeMessage = "Argument must be between 0 and 32 inclusive.";
+        private const int BitVector32Length = 32;
         private const string TooManyItemsMessageFormat = "Argument cannot contain more than {0} items.";
-
+        private static readonly string LengthOutOfRangeMessage = $"Argument must be between 0 and {BitVector32Length} inclusive.";
         private static readonly BitConverter bitConverter = new BitConverter();
 
         private BitVector32 bitVector;
@@ -44,9 +44,9 @@ namespace DigitalElectronics.Concepts
         /// <param name="length">The length of the <see cref="BitArray"/> (see <see cref="Length"/>)</param>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="length"/> is less 
         /// than zero or greater than 32</exception>
-        public BitArray(int value, int length = 32) : this (new BitVector32(value))
+        public BitArray(int value, int length = BitVector32Length) : this (new BitVector32(value))
         {
-            if (length < 0 || length > 32)
+            if (length < 0 || length > BitVector32Length)
                 throw new ArgumentOutOfRangeException(nameof(length), LengthOutOfRangeMessage);
 
             Length = length;
@@ -57,11 +57,14 @@ namespace DigitalElectronics.Concepts
         /// <see cref="BitVector32"/>
         /// </summary>
         /// <param name="bitArray">The <see cref="BitVector32"/> to initialize this <see cref="BitArray"/></param>
-        /// <remarks>The <see cref="Length"/> of the <see cref="BitArray"/> is set to 32</remarks>
-        public BitArray(BitVector32 bitArray)
+        /// <param name="length">The length of the <see cref="BitArray"/> (see <see cref="Length"/>). Default is 32</param>
+        public BitArray(BitVector32 bitArray, int length = BitVector32Length)
         {
+            if (length < 0 || length > BitVector32Length)
+                throw new ArgumentOutOfRangeException(nameof(length), LengthOutOfRangeMessage);
+
             bitVector = bitArray;
-            Length = 32;
+            Length = length;
         }
 
         /// <summary>
@@ -71,10 +74,19 @@ namespace DigitalElectronics.Concepts
         /// <param name="values">An array of <see cref="bool"/> values in LSB-first order</param>
         /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
         /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="values"/></remarks>
-        public BitArray(params bool[] values)
+        public BitArray(params bool[] values) : this(values.AsSpan()) { }
+
+        /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given a
+        /// <see cref="Span{bool}"/>, starting with the least-significant bit
+        /// </summary>
+        /// <param name="values">A <see cref="Span{bool}"/> in LSB-first order</param>
+        /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
+        /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="values"/></remarks>
+        public BitArray(params Span<bool> values)
         {
-            if (values.Length > 32)
-                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, 32), nameof(values));
+            if (values.Length > BitVector32Length)
+                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(values));
 
             bitVector = new BitVector32();
             for (int i = 0; i < values.Length; i++)
@@ -141,8 +153,8 @@ namespace DigitalElectronics.Concepts
                     bitVector[1 << i] = true;
                 i++;
 
-                if (i > 32)
-                    throw new ArgumentException(string.Format(TooManyItemsMessageFormat, 32), nameof(values));
+                if (i > BitVector32Length)
+                    throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(values));
             }
 
             Length = i;
@@ -184,7 +196,7 @@ namespace DigitalElectronics.Concepts
             get => length;
             set
             {
-                if (value < 0 || value > 32)
+                if (value < 0 || value > BitVector32Length)
                     throw new ArgumentOutOfRangeException(nameof(value), LengthOutOfRangeMessage);
                 length = value;
             }
@@ -312,9 +324,9 @@ namespace DigitalElectronics.Concepts
         /// starting with the least-significant bit.</remarks>
         public int ToInt32()
         {
-            System.Diagnostics.Debug.Assert(Length >= 0 && Length <= 32);
+            System.Diagnostics.Debug.Assert(Length >= 0 && Length <= BitVector32Length);
 
-            if (Length == 32)
+            if (Length == BitVector32Length)
                 return bitVector.Data;
 
             var mask = (1 << Length) - 1;

@@ -62,6 +62,8 @@ namespace DigitalElectronics.Components.FlipFlops
         /// </summary>
         public bool OutputNQ => _srLatch.OutputNQ;
 
+        bool IBooleanOutput.Output => OutputQ;
+
         private void Sync()
         {
             _srLatch.SetInputS(_j3InAndGate.OutputQ);

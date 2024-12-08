@@ -128,6 +128,7 @@ namespace DigitalElectronics.Components.Memory
         /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState()
         {
+            // Allocates
             return new BitArray(_registers.Select(_ => _.ProbeState()));
         }
 

@@ -6,6 +6,8 @@ using DigitalElectronics.Modules.Counters;
 using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Concepts;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Benchmarking")]
+
 namespace DigitalElectronics.BenEater.Computers
 {
 
@@ -185,7 +187,7 @@ namespace DigitalElectronics.BenEater.Computers
         /// <returns></returns>
         public BitArray ProbeMicroinstrStepCounter() => _stepCounter.Output;
 
-        private void PerformControlLogic()
+        internal void PerformControlLogic()
         {
             if (ManualControlMode) return;
 
@@ -195,7 +197,7 @@ namespace DigitalElectronics.BenEater.Computers
             // Reset step counter to 0 as soon as it hits 6
             if (_stepLimiter.OutputY[6]) _stepCounter.Set(new BitArray(0, length: 4));
 
-            var instr = _instrRegister.ProbeState();
+            var instr = _instrRegister.ProbeState(); // Allocates
             var step = _stepCounter.Output;
 
             var addr = new BitArray(step[0], step[1], step[2], instr[4], instr[5], instr[6], instr[7], false);
@@ -208,6 +210,7 @@ namespace DigitalElectronics.BenEater.Computers
                 if ((controlWordLowByte & lowControlSignal) != 0)
                     SetControlSignal((ControlSignals)lowControlSignal);
             }
+
 
             addr[7] = true;
             _microcodeROM.SetInputA(addr);

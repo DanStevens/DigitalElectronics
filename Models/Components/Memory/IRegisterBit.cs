@@ -1,6 +1,8 @@
-﻿namespace DigitalElectronics.Components.Memory
+﻿using DigitalElectronics.Components.FlipFlops;
+
+namespace DigitalElectronics.Components.Memory
 {
-    public interface IRegisterBit
+    public interface IRegisterBit : IBooleanOutput
     {
         /// <summary>
         /// Sets for for 'Enabled' input

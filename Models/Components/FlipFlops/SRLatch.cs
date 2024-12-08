@@ -47,6 +47,8 @@ namespace DigitalElectronics.Components.FlipFlops
         /// </summary>
         public bool OutputNQ => _nor2.OutputQ;
 
+        bool IBooleanOutput.Output => OutputQ;
+
         /// <summary>
         /// Synchronises state between subcomponents
         /// </summary>

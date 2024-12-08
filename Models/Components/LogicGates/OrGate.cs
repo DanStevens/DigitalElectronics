@@ -7,7 +7,7 @@ namespace DigitalElectronics.Components.LogicGates
     /// Models a OR logic gate
     /// </summary>
     [DebuggerDisplay("AND: A = {_inputA}; B = {_inputB}; Q = {OutputQ}")]
-    public class OrGate
+    public class OrGate : IBooleanOutput
     {
         private bool _inputA;
         private bool _inputB;
@@ -32,5 +32,7 @@ namespace DigitalElectronics.Components.LogicGates
         /// Gets state of Q output
         /// </summary>
         public bool OutputQ => _inputA || _inputB;
+
+        bool IBooleanOutput.Output => OutputQ;
     }
 }

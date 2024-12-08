@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
 using DigitalElectronics.Modules.ALUs;

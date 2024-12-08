@@ -61,6 +61,8 @@ namespace DigitalElectronics.Components.FlipFlops
         /// </summary>
         public bool OutputNQ => _srLatch.OutputNQ;
 
+        bool IBooleanOutput.Output => OutputQ;
+
         private void Sync()
         {
             _srLatch.SetInputR(_and1.OutputQ);

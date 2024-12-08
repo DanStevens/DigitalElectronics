@@ -49,5 +49,6 @@ namespace DigitalElectronics.Components.FlipFlops
         /// </summary>
         public bool OutputNQ => _gatedSRLatch.OutputNQ;
 
+        bool IBooleanOutput.Output => OutputQ;
     }
 }

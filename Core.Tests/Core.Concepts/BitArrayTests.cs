@@ -112,6 +112,28 @@ namespace DigitalElectronics.Concepts.Tests
         }
 
         [Test]
+        [TestCase(new bool[] { }, 0)]
+        [TestCase(new bool[] { false }, 0)]
+        [TestCase(new bool[] { true }, 1)]
+        [TestCase(new bool[] { true, false }, 1)]
+        [TestCase(new bool[] { true, true }, 3)]
+        [TestCase(new bool[] { false, false, false, false }, 0)]
+        [TestCase(new bool[] { true, false, false, false }, 1)]
+        [TestCase(new bool[] { false, true, false, false }, 2)]
+        [TestCase(new bool[] { false, false, true, false }, 4)]
+        [TestCase(new bool[] { false, false, false, true }, 8)]
+        [TestCase(new bool[] { false, true, true, true }, 14)]
+        public void BitArray_CreateFromSpanOfBool(bool[] bits, int expected)
+        {
+            using (new AssertionScope())
+            {
+                var bitArray = new BitArray(bits.AsSpan());
+                bitArray.ToInt32().Should().Be(expected);
+                bitArray.Length.Should().Be(bits.Length);
+            }
+        }
+
+        [Test]
         [TestCase(new byte[] { }, 0)]
         [TestCase(new byte[] { 0 }, 0)]
         [TestCase(new byte[] { 255 }, 255)]
