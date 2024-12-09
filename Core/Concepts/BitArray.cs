@@ -364,15 +364,23 @@ namespace DigitalElectronics.Concepts
         /// <see cref="bool"/> or <see cref="Bit"/></exception>
         public IEnumerable<T> AsEnumerable<T>()
         {
-            for (int i = 0; i < Length; i++)
+            ValidateType<T>();
+            return Enumerate(this, Length);
+
+            // Pass all data in variables to avoid capturing variables
+            // Capturing `this` isn't allowed in structs (CS1673)
+            IEnumerable<T> Enumerate(BitArray @this, int length)
             {
-                if (typeof(T) == typeof(Bit))
+                for (int i = 0; i < length; i++)
                 {
-                    yield return (T)(object)new Bit(this[i]);
-                }
-                else
-                {
-                    yield return (T)(object)this[i];
+                    if (typeof(T) == typeof(Bit))
+                    {
+                        yield return (T)(object)new Bit(@this[i]);
+                    }
+                    else
+                    {
+                        yield return (T)(object)@this[i];
+                    }
                 }
             }
         }
@@ -385,40 +393,6 @@ namespace DigitalElectronics.Concepts
         public IEnumerable<bool> AsEnumerable() => AsEnumerable<bool>();
 
         /// <summary>
-        /// Returns this <see cref="BitArray"/> as a list of the given type
-        /// </summary>
-        /// <typeparam name="T">The type of the items of the list, which can be <see cref="bool"/>
-        /// or <see cref="Bit"/></typeparam>
-        /// <returns>Returns an <see cref="IList{T}"/> of bools or Bits</returns>
-        /// <<exception cref="InvalidCastException">if <typeparamref name="T"/> is anything besides
-        /// <see cref="bool"/> or <see cref="Bit"/></exception>
-        public IList<T> ToList<T>() => AsEnumerable<T>().ToList();
-
-        /// <summary>
-        /// Returns this <see cref="BitArray"/> as a list of <see cref="bool"/> values
-        /// </summary>
-        /// <returns>A list of <see cref="bool"/> values representing the
-        /// bit pattern of the <see cref="BitArray"/> starting with the least-significant bit</returns>
-        public IList<bool> ToList() => AsEnumerable().ToList();
-
-        /// <summary>
-        /// Returns this <see cref="BitArray"/> as a read-only list of the given type
-        /// </summary>
-        /// <typeparam name="T">The type of the items of the read-only list, which can be <see cref="bool"/>
-        /// or <see cref="Bit"/></typeparam>
-        /// <returns>Returns an <see cref="IList{T}"/> of bools or Bits</returns>
-        /// <<exception cref="InvalidCastException">if <typeparamref name="T"/> is anything besides
-        /// <see cref="bool"/> or <see cref="Bit"/></exception>
-        public IReadOnlyList<T> ToReadOnlyList<T>() => (IReadOnlyList<T>)ToList<T>();
-
-        /// <summary>
-        /// Returns this <see cref="BitArray"/> as a read-only list of <see cref="bool"/> values
-        /// </summary>
-        /// <returns>A list of <see cref="bool"/> values representing the
-        /// bit pattern of the <see cref="BitArray"/> starting with the least-significant bit</returns>
-        public IReadOnlyList<bool> ToReadOnlyList() => (IReadOnlyList<bool>)ToList();
-
-        /// <summary>
         /// Returns this <see cref="BitArray"/> as an array of the given type
         /// </summary>
         /// <typeparam name="T">The type of the items of the array, which can be <see cref="bool"/>
@@ -426,14 +400,38 @@ namespace DigitalElectronics.Concepts
         /// <returns>Returns an array of bools or Bits</returns>
         /// <<exception cref="InvalidCastException">if <typeparamref name="T"/> is anything besides
         /// <see cref="bool"/> or <see cref="Bit"/></exception>
-        public T[] ToArray<T>() => AsEnumerable<T>().ToArray();
+        public T[] ToArray<T>()
+        {
+            ValidateType<T>();
+            return (T[])(object)((typeof(T) == typeof(Bit)) ? Fill(new Bit[Length]) : Fill(new bool[Length]));
+        }
 
         /// <summary>
         /// Returns this <see cref="BitArray"/> as an array of <see cref="bool"/> values
         /// </summary>
         /// <returns>An array of <see cref="bool"/> values representing the
         /// bit pattern of the <see cref="BitArray"/> starting with the least-significant bit</returns>
-        public bool[] ToArray() => AsEnumerable<bool>().ToArray();
+        public bool[] ToArray() => ToArray<bool>();
+
+        private static void ValidateType<T>()
+        {
+            if (typeof(T) != typeof(bool) && typeof(T) != typeof(Bit))
+                throw new NotSupportedException($"Only the following types are supported: System.Boolean, {typeof(Bit)}");
+        }
+
+        private IList<bool> Fill(IList<bool> list)
+        {
+            for (int i = 0; i < Length; i++)
+                list[i] = this[i];
+            return list;
+        }
+
+        private IList<Bit> Fill(IList<Bit> list)
+        {
+            for (int i = 0; i < Length; i++)
+                list[i] = new Bit(this[i]);
+            return list;
+        }
 
 #if DEBUG
         internal string DebuggerDisplay =>

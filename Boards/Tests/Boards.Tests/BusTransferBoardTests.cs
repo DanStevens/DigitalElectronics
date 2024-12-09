@@ -60,7 +60,7 @@ namespace DigitalElectronics.Boards.Tests
             using var objUT = new BusTransferBoard(registerAMock, registerBMock);
             registerAMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerAMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
+            registerAMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToArray<bool>());
             objUT.BusState.Should().BeNull();
 
             registerAMock.Enable = true;
@@ -80,7 +80,7 @@ namespace DigitalElectronics.Boards.Tests
             using var objUT = new BusTransferBoard(registerAMock, registerBMock);
             registerBMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerBMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
+            registerBMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToArray<bool>());
             objUT.BusState.Should().BeNull();
 
             registerBMock.Enable = true;
@@ -103,7 +103,7 @@ namespace DigitalElectronics.Boards.Tests
             objUT.PropertyChanged += (s, e) => raised |= e.PropertyName == nameof(objUT.BusState);
             registerAMock.Enable.Should().Be(false);
             var binary42 = _bitConverter.GetBits((byte)42);
-            registerAMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToList<bool>());
+            registerAMock.Output.Returns((IReadOnlyList<bool>?) binary42.ToArray<bool>());
             objUT.BusState.Should().BeNull();
 
             registerAMock.Enable = true;
@@ -134,7 +134,7 @@ namespace DigitalElectronics.Boards.Tests
                 registerA.Load = true;
                 registerA.Data = new ObservableCollection<Bit>(binary42.AsEnumerable<Bit>());
                 objUT.Clock();
-                registerA.Probe.Should().BeEquivalentTo(binary42.ToList<bool>());
+                registerA.Probe.Should().BeEquivalentTo(binary42.ToArray());
                 registerA.Load = false;
             }
 
@@ -145,7 +145,7 @@ namespace DigitalElectronics.Boards.Tests
                 objUT.Clock();
                 registerB.Load = false;
                 registerA.Enable = false;
-                registerB.Probe.Should().BeEquivalentTo(binary42.ToList<bool>());
+                registerB.Probe.Should().BeEquivalentTo(binary42.ToArray());
             }
 
             void ResetRegisterAToZero()
@@ -156,8 +156,8 @@ namespace DigitalElectronics.Boards.Tests
                 registerA.Data = registerAData;
                 objUT.Clock();
                 registerA.Load = false;
-                registerA.Probe.Should().BeEquivalentTo(binary0.ToList<bool>());
-                registerB.Probe.Should().BeEquivalentTo(binary42.ToList<bool>());
+                registerA.Probe.Should().BeEquivalentTo(binary0.ToArray());
+                registerB.Probe.Should().BeEquivalentTo(binary42.ToArray());
             }
 
             void TransferRegisterBToRegisterA()
@@ -165,7 +165,7 @@ namespace DigitalElectronics.Boards.Tests
                 registerB.Enable = true;
                 registerA.Load = true;
                 objUT.Clock();
-                registerA.Probe.Should().BeEquivalentTo(binary42.ToList<bool>());
+                registerA.Probe.Should().BeEquivalentTo(binary42.ToArray());
                 registerA.Load = false;
                 registerB.Enable = false;
             }

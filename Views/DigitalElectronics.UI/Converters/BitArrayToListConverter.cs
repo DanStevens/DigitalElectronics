@@ -15,7 +15,7 @@ public class BitArrayToListConverter : MarkupExtension, IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return value is BitArray bitArray ? bitArray.ToList() : value;
+        return value is BitArray bitArray ? bitArray.ToArray() : value;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

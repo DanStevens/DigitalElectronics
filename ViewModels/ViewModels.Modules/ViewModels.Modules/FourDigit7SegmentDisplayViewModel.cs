@@ -56,10 +56,10 @@ namespace DigitalElectronics.ViewModels.Modules
 
         public FullyObservableCollection<Bit> Value { get; }
 
-        public IList<bool> LinesForDigit0 => _registerForDigit0.Output!.Value.ToList();
-        public IList<bool> LinesForDigit1 => _registerForDigit1.Output!.Value.ToList();
-        public IList<bool> LinesForDigit2 => _registerForDigit2.Output!.Value.ToList();
-        public IList<bool> LinesForDigit3 => _registerForDigit3.Output!.Value.ToList();
+        public IList<bool> LinesForDigit0 => _registerForDigit0.Output!.Value.ToArray();
+        public IList<bool> LinesForDigit1 => _registerForDigit1.Output!.Value.ToArray();
+        public IList<bool> LinesForDigit2 => _registerForDigit2.Output!.Value.ToArray();
+        public IList<bool> LinesForDigit3 => _registerForDigit3.Output!.Value.ToArray();
 
         private double updateInterval = 10;
 

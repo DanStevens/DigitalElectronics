@@ -174,7 +174,7 @@ public class SevenSegmentDigitDemoViewModel
             }
         }
 
-        public ICollection<bool> SegmentLines => _register.Output!.Value.ToList();
+        public ICollection<bool> SegmentLines => _register.Output!.Value.ToArray();
 
         public ReadOnlyObservableCollection<bool> RegisterState =>
             new(new ObservableCollection<bool>(_register.ProbeState().AsEnumerable()));

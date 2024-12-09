@@ -15,6 +15,8 @@ namespace DigitalElectronics.Concepts.Tests
 {
     public class BitArrayTests
     {
+        #region Constructor tests
+
         [Test]
         public void BitArray_ShouldBeCreatableFromDotNetBitArray()
         {
@@ -56,7 +58,6 @@ namespace DigitalElectronics.Concepts.Tests
             ex.ParamName.Should().Be("values");
             ex.Message.Should().StartWith("Argument cannot contain more than 32 items.");
         }
-
 
         [Test]
         public void BitArray_ShouldThrowWhenCreatedWithByteArrayWithMoreThan4Values()
@@ -154,6 +155,38 @@ namespace DigitalElectronics.Concepts.Tests
             }
         }
 
+        #endregion
+
+        #region Length property tests
+
+        [Test]
+        public void Length_ShouldCorrespondWithSizeOfIntUsedToCreateBitArray()
+        {
+            using (new AssertionScope())
+            {
+                new BitArray(0, length: 0).Length.Should().Be(0, "length arg is 0");
+                new BitArray(0, length: 8).Length.Should().Be(8, "length arg is 8");
+                new BitArray(0, length: 9).Length.Should().Be(9, "length arg is 9");
+                new BitArray(0, length: 16).Length.Should().Be(16, "length arg is 16");
+
+                new BitArray(true).Length.Should().Be(1, "created with single bool");
+                new BitArray(true, false).Length.Should().Be(2, "created with 2 bools");
+                new BitArray(new Bit()).Length.Should().Be(1, "created with single Bit object");
+                new BitArray(new Bit(true), new Bit(false)).Length.Should().Be(2, "created with 2 Bit objects");
+
+                new BitArray(new DotNetBitVector32()).Length.Should().Be(32, "created with .NET BitVector32");
+                ////new BitArray(new [] { 0 }).Length.Should().Be(sizeof(int) * 8);
+                ////new BitArray(new [] { 0, 0 }).Length.Should().Be(sizeof(int) * 8 * 2);
+                new BitArray((byte)0).Length.Should().Be(sizeof(byte) * 8, "created with Byte value");
+
+                var bitConverter = new BitConverter();
+                bitConverter.GetBits((sbyte)0).Length.Should().Be(sizeof(sbyte) * 8);
+                bitConverter.GetBits((ushort)0).Length.Should().Be(sizeof(ushort) * 8);
+                bitConverter.GetBits((short)0).Length.Should().Be(sizeof(short) * 8);
+                bitConverter.GetBits(0).Length.Should().Be(sizeof(int) * 8);
+            }
+        }
+
         [Test]
         [TestCase(-1)]
         [TestCase(33)]
@@ -164,6 +197,10 @@ namespace DigitalElectronics.Concepts.Tests
             ex.ParamName.Should().Be("value");
             ex.Message.Should().StartWith("Argument must be between 0 and 32 inclusive.");
         }
+
+        #endregion
+
+        #region this[] indexer tests
 
         [Test]
         public void GetIndexer_ShouldGetValueOfBitAtGivenIndex()
@@ -195,14 +232,9 @@ namespace DigitalElectronics.Concepts.Tests
             }
         }
 
-        [Test]
-        public void AsList_OfBool_ShouldReturnReadOnlyListOfBools()
-        {
-            bool[] bits = { false, false, true, false, true, false, true, false };
-            var objUT = new BitArray(bits);
-            IReadOnlyList<bool> listOfBools = objUT.ToReadOnlyList<bool>();
-            listOfBools.Should().Equal(bits);
-        }
+        #endregion
+
+        #region ToString method tests
 
         [TestCase(0, "00000000")]
         [TestCase(1, "00000001")]
@@ -241,8 +273,12 @@ namespace DigitalElectronics.Concepts.Tests
             }
         }
 
+        #endregion
+        
+        #region AsEnumerable method tests
+
         [Test]
-        public void AsEnumerable_ReturnsListOfBools_WhenGivenTypeParameterOfBool()
+        public void AsEnumerable_ShouldReturnSequenceOfBools_WhenGivenTypeParameterOfBool()
         {
             bool[] bools = {false, true, false, true};
             var objUT = new BitArray(bools);
@@ -250,7 +286,7 @@ namespace DigitalElectronics.Concepts.Tests
         }
 
         [Test]
-        public void AsEnumerable_ReturnsListOfBits_WhenGivenTypeParameterOfBit()
+        public void AsEnumerable_ShouldReturnSequenceOfBits_WhenGivenTypeParameterOfBit()
         {
             bool[] bools = { false, true, false, true };
             var expectedBits = bools.Select(b => new Bit(b));
@@ -259,32 +295,61 @@ namespace DigitalElectronics.Concepts.Tests
         }
 
         [Test]
-        public void Length_ShouldCorrespondWithSizeOfIntUsedToCreateBitArray()
+        public void AsEnumerable_ShouldReturnSequence_WhenGivenNoTypeParameter()
         {
-            using (new AssertionScope())
-            {
-                new BitArray(0, length: 0).Length.Should().Be(0, "length arg is 0");
-                new BitArray(0, length: 8).Length.Should().Be(8, "length arg is 8");
-                new BitArray(0, length: 9).Length.Should().Be(9, "length arg is 9");
-                new BitArray(0, length: 16).Length.Should().Be(16, "length arg is 16");
-
-                new BitArray(true).Length.Should().Be(1, "created with single bool");
-                new BitArray(true, false).Length.Should().Be(2, "created with 2 bools");
-                new BitArray(new Bit()).Length.Should().Be(1, "created with single Bit object");
-                new BitArray(new Bit(true), new Bit(false)).Length.Should().Be(2, "created with 2 Bit objects");
-
-                new BitArray(new DotNetBitVector32()).Length.Should().Be(32, "created with .NET BitVector32");
-                ////new BitArray(new [] { 0 }).Length.Should().Be(sizeof(int) * 8);
-                ////new BitArray(new [] { 0, 0 }).Length.Should().Be(sizeof(int) * 8 * 2);
-                new BitArray((byte)0).Length.Should().Be(sizeof(byte) * 8, "created with Byte value");
-
-                var bitConverter = new BitConverter();
-                bitConverter.GetBits((sbyte)0).Length.Should().Be(sizeof(sbyte) * 8);
-                bitConverter.GetBits((ushort)0).Length.Should().Be(sizeof(ushort) * 8);
-                bitConverter.GetBits((short)0).Length.Should().Be(sizeof(short) * 8);
-                bitConverter.GetBits(0).Length.Should().Be(sizeof(int) * 8);
-            }
+            bool[] bools = { false, true, false, true };
+            var objUT = new BitArray(bools);
+            objUT.AsEnumerable().Should().BeEquivalentTo(bools);
         }
+
+        [Test]
+        public void AsEnumerable_ShouldThrow_WhenGivenTypeParameterNotBoolOrInt()
+        {
+            bool[] bools = { false, true, false, true };
+            var objUT = new BitArray(bools);
+            var ex = Assert.Throws<NotSupportedException>(() => objUT.AsEnumerable<int>());
+            ex!.Message.Should().Be($"Only the following types are supported: System.Boolean, {typeof(Bit)}");
+        }
+
+        #endregion
+
+        #region ToArray method tests
+
+        [Test]
+        public void ToArray_ShouldReturnArrayOfBools_WhenGivenTypeParameterOfBool()
+        {
+            bool[] bools = { false, true, false, true };
+            var objUT = new BitArray(bools);
+            objUT.ToArray<bool>().Should().BeEquivalentTo(bools);
+        }
+
+        [Test]
+        public void ToArray_ShouldReturnArrayOfBits_WhenGivenTypeParameterOfBit()
+        {
+            bool[] bools = { false, true, false, true };
+            var expectedBits = bools.Select(b => new Bit(b));
+            var objUT = new BitArray(bools);
+            objUT.ToArray<Bit>().Should().BeEquivalentTo(expectedBits);
+        }
+
+        [Test]
+        public void ToArray_ShouldReturnArrayOfBools_WhenGivenNoTypeParameter()
+        {
+            bool[] bools = { false, true, false, true };
+            var objUT = new BitArray(bools);
+            objUT.ToArray().Should().BeEquivalentTo(bools);
+        }
+
+        [Test]
+        public void ToArray_ShouldThrow_WhenGivenTypeParameterNotBoolOrInt()
+        {
+            bool[] bools = { false, true, false, true };
+            var objUT = new BitArray(bools);
+            var ex = Assert.Throws<NotSupportedException>(() => objUT.ToArray<int>());
+            ex!.Message.Should().Be($"Only the following types are supported: System.Boolean, {typeof(Bit)}");
+        }
+
+        #endregion
 
         [Test]
         [TestCase(0, 1, 0)]

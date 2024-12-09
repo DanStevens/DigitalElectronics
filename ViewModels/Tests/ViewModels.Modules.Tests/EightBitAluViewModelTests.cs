@@ -72,12 +72,12 @@ public class EightBitAluViewModelTests
         aluMock.ProbeState().Returns(binary42);
         var objUT = new EightBitAluViewModel(aluMock);
         objUT.SetInputA(binary42.AsEnumerable());
-        objUT.Probe.Should().BeEquivalentTo(binary42.ToReadOnlyList<bool>());
+        objUT.Probe.Should().BeEquivalentTo(binary42.ToArray<bool>());
 
         var binary43 = new BitArray((byte)43);
         aluMock.ProbeState().Returns(binary43);
         objUT.SetInputA(binary43.AsEnumerable());
-        objUT.Probe.Should().BeEquivalentTo(binary43.ToReadOnlyList<bool>());
+        objUT.Probe.Should().BeEquivalentTo(binary43.ToArray<bool>());
     }
 
     [Test]
