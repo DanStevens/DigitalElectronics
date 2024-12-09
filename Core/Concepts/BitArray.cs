@@ -90,13 +90,7 @@ namespace DigitalElectronics.Concepts
 
             bitVector = new BitVector32();
             for (int i = 0; i < values.Length; i++)
-            {
-                if (values[i])
-                {
-                    bitVector[1 << i] = true;
-                }
-            }
-
+                bitVector[1 << i] = values[i];
             Length = values.Length;
         }
 
@@ -116,9 +110,7 @@ namespace DigitalElectronics.Concepts
             // Combine the bytes into a single 32-bit integer
             int combinedValue = 0;
             for (int i = 0; i < bytes.Length; i++)
-            {
                 combinedValue |= bytes[i] << (8 * i);
-            }
 
             // Create the BitVector32 from the combined integer value
             bitVector = new BitVector32(combinedValue);
@@ -149,9 +141,7 @@ namespace DigitalElectronics.Concepts
 
             foreach (var v in values)
             {
-                if (v)
-                    bitVector[1 << i] = true;
-                i++;
+                bitVector[1 << i++] = v;
 
                 if (i > BitVector32Length)
                     throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(values));
@@ -374,13 +364,9 @@ namespace DigitalElectronics.Concepts
                 for (int i = 0; i < length; i++)
                 {
                     if (typeof(T) == typeof(Bit))
-                    {
                         yield return (T)(object)new Bit(@this[i]);
-                    }
                     else
-                    {
                         yield return (T)(object)@this[i];
-                    }
                 }
             }
         }
