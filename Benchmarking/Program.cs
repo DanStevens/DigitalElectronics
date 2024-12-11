@@ -3,7 +3,8 @@ using Benchmarking;
 
 #if RELEASE
 
-BenchmarkRunner.Run<BE801ComputerBenchmarks>();
+//BenchmarkRunner.Run<BE801ComputerBenchmarks>();
+BenchmarkRunner.Run<BitArrayBenchmarks>();
 
 #else
 
