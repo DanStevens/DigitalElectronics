@@ -1,5 +1,6 @@
 ﻿using System;
 using DigitalElectronics.Concepts;
+using DigitalElectronics.Utilities;
 
 namespace Benchmarking;
 
@@ -29,8 +30,8 @@ public class BitArrayBenchmarks
     public BitArray CreateFromArrayOf4Bytes() => new BitArray(Bytes);
 
     [Benchmark]
-    public BitArray CreateFromInt32() => new BitArray(new int[] { 0xAAAA });
+    public BitArray CreateFromInt32() => new BitArray(0xAAAA);
 
     [Benchmark]
-    public BitArray CreateFromArrayOf32Bits() => new BitArray(Bits);
+    public BitArray CreateFromArrayOf32Bits() => Bits.ToBitArray();
 }

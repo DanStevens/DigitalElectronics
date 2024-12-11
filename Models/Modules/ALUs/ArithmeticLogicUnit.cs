@@ -46,8 +46,6 @@ namespace DigitalElectronics.Modules.ALUs
         /// <param name="data">A BitArray representing the value for A input</param>
         public void SetInputA(BitArray data)
         {
-            if (data == null) return;
-            
             for (int x = 0; x < WordSize; x++)
             {
                 _adders[x].SetInputA(data[x]);
@@ -61,8 +59,6 @@ namespace DigitalElectronics.Modules.ALUs
         /// <param name="data">A BitArray representing the value for B input</param>
         public void SetInputB(BitArray data)
         {
-            if (data == null) return;
-
             for (int x = 0; x < WordSize; x++)
             {
                 _xorGates[x].SetInputA(data[x]);
@@ -111,7 +107,7 @@ namespace DigitalElectronics.Modules.ALUs
                 if (!_3SBuffers[0].OutputC.HasValue)
                     return null;
                 
-                var result = new BitArray(WordSize);
+                var result = new BitArray(0, length: WordSize);
                 for (int x = 0; x < WordSize; x++) result[x] = _3SBuffers[x].OutputC!.Value;
                 return result;
             }

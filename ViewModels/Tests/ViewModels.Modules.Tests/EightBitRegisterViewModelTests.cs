@@ -12,12 +12,10 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
     public class EightBitRegisterViewModelTests
     {
         private static readonly BitConverter BitConverter = new ();
-        private static readonly BitArray minByte = BitConverter.GetBits(byte.MinValue);
-        private static readonly BitArray maxByte = BitConverter.GetBits(byte.MaxValue);
+        private static readonly BitArray minByte = new BitArray(byte.MinValue);
+        private static readonly BitArray maxByte = new BitArray(byte.MaxValue);
         private static readonly ReadOnlyObservableCollection<Bit> BitCollectionFor255 =   new (CreateObservableBitCollection(byte.MaxValue));
         private static readonly ReadOnlyObservableCollection<bool> BoolCollectionFor255 = new (CreateObservableBoolCollection(byte.MaxValue));
-
-        private static readonly BitArrayComparer BitArrayComparer = new();
 
         #region Helper methods
 
@@ -30,23 +28,17 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
         private static ObservableCollection<Bit> CreateObservableBitCollection(byte value)
         {
-            return new ObservableCollection<Bit>(BitConverter.GetBits(value).Select(b => new Bit(b)).ToList());
+            return new ObservableCollection<Bit>(new BitArray(value).AsEnumerable<Bit>().ToList());
         }
 
         private static ObservableCollection<bool> CreateObservableBoolCollection(byte value)
         {
-            return new ObservableCollection<bool>(BitConverter.GetBits(value));
-        }
-
-        private static BitArray CreateExpectedBitArrayArg(BitArray expectedValue)
-        {
-            return Arg.Is<BitArray>(arg => BitArrayComparer.Compare(arg, expectedValue) == 0);
+            return new ObservableCollection<bool>(new BitArray(value).AsEnumerable());
         }
 
         private static void AssertSetInputDWasCalled(IReadWriteRegister registerMock, BitArray bitArray)
         {
-            var expectedArg = CreateExpectedBitArrayArg(bitArray);
-            registerMock.Received(1).SetInputD(expectedArg);
+            registerMock.Received(1).SetInputD(bitArray);
         }
 
         #endregion

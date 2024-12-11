@@ -3,7 +3,6 @@ using DigitalElectronics.Concepts;
 using FluentAssertions;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 namespace DigitalElectronics.Modules.Memory.Tests
 {
@@ -11,15 +10,13 @@ namespace DigitalElectronics.Modules.Memory.Tests
     public class TestFourBitAddressDecoder
     {
         private const int NumberOfAddressBits = 4;
-        private readonly int NumberOfOutputs = (int)Math.Pow(2, NumberOfAddressBits);
-        
-        private BitConverter _bitConverter;
+        private readonly int NumberOfOutputs = (int)Math.Pow(2, NumberOfAddressBits); // TODO replace Math.Pow with <<
+
         private FourBitAddressDecoder _decoder;
 
         [SetUp]
         public void SetUp()
         {
-            _bitConverter = new BitConverter(Endianness.Little);
             _decoder = new FourBitAddressDecoder();
         }
 
@@ -27,6 +24,18 @@ namespace DigitalElectronics.Modules.Memory.Tests
         public void NumberOfOutputs_ShouldBe16()
         {
             FourBitAddressDecoder.NumberOfOutputs.Should().Be(NumberOfOutputs);
+        }
+
+        [Test]
+        public void OutputY_ShouldHaveLength16()
+        {
+            _decoder.OutputY.Length.Should().Be(NumberOfOutputs);
+        }
+
+        [Test]
+        public void OutputY_ShouldBe0ByDefault()
+        {
+            _decoder.OutputY.ToInt32().Should().Be(0);
         }
 
         [Test]
@@ -41,8 +50,8 @@ namespace DigitalElectronics.Modules.Memory.Tests
 
         private void AssertAddress(int a)
         {
-            var address = _bitConverter.GetBits(a, NumberOfAddressBits);
-            var expectedOutput = _bitConverter.GetBits((int)Math.Pow(2, a), NumberOfOutputs);
+            var address = new BitArray(a, NumberOfAddressBits);
+            var expectedOutput = new BitArray((int)Math.Pow(2, a), NumberOfOutputs); // TODO replace Math.Pow with <<
             _decoder.SetInputA(address);
             ClassicAssert.AreEqual(expectedOutput, _decoder.OutputY, $"a = {a}");
         }

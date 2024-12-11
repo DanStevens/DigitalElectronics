@@ -42,12 +42,24 @@ namespace DigitalElectronics.Utilities
 
         public static BitArray ToBitArray(this IEnumerable<Bit> bits)
         {
-            return new BitArray(bits.ToArray());
+            return new BitArray(bits.Select(b => b.Value));
+        }
+
+        public static BitArray ToBitArray(this IEnumerable<Bit> bits, int length)
+        {
+            return new BitArray(bits.Select(b => b.Value)) { Length = length };
         }
 
         public static BitArray ToBitArray(this IEnumerable<bool> bits)
         {
             return new BitArray(bits.ToArray());
+        }
+
+        public static BitArray ToBitArray(this IEnumerable<bool> bits, int length)
+        {
+            var result = new BitArray(bits.ToArray());
+            result.Length = length;
+            return result;
         }
     }
 }

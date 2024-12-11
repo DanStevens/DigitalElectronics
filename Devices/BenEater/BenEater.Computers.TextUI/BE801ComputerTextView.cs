@@ -142,8 +142,8 @@ public class BE801ComputerTextView : IDisposable
     private void OutputInstructionRegister()
     {
         var instrRegister = _computer.ProbeInstrRegister();
-        var opcode = new BitArray(instrRegister.TakeLast(4));
-        var operand = new BitArray(instrRegister.Take(4));
+        var opcode = new BitArray(instrRegister.AsEnumerable().TakeLast(4));
+        var operand = new BitArray(instrRegister.AsEnumerable().Take(4));
 
         OutputOpcode(opcode, 8, 23);
         OutputOperand(operand, 20, 23);
@@ -195,7 +195,7 @@ public class BE801ComputerTextView : IDisposable
     /// </summary>
     private void OutputHalfRegisterValue(BitArray registerValue, int left, int top)
     {
-        var halfRegister = new BitArray(registerValue.Take(4));
+        var halfRegister = new BitArray(registerValue.AsEnumerable().Take(4));
 
         // As binary 'LEDs'
         WriteAtPosition(ToLEDs(halfRegister), left, top, 7);
@@ -226,7 +226,7 @@ public class BE801ComputerTextView : IDisposable
 
     private string ToLEDs(BitArray ba)
     {
-        return string.Join(' ', ba.Reverse().Select(ToLED));
+        return string.Join(' ', ba.AsEnumerable().Reverse().Select(ToLED));
     }
 
     private static char ToLED(bool b)

@@ -46,7 +46,7 @@ namespace DigitalElectronics.Modules.Counters
             for (int i = 0; i < AddressSize; i++)
                 _triStateBuffers[i] = new TriStateBuffer();
 
-            _jumpAddress = new BitArray(length: AddressSize);
+            _jumpAddress = new BitArray(0, length: AddressSize);
 
             Sync();
         }
@@ -132,7 +132,7 @@ namespace DigitalElectronics.Modules.Counters
         public void Reset()
         {
             SetInputL(true);
-            SetInputD(new BitArray(length: AddressSize));
+            SetInputD(new BitArray(0, length: AddressSize));
             Clock();
             SetInputL(false);
             SetInputE(false);

@@ -82,7 +82,7 @@ public class RegisterViewModel : INotifyPropertyChanged, IRegisterViewModel
 
 
     public ReadOnlyObservableCollection<bool> Probe =>
-        new(new ObservableCollection<bool>(_register.ProbeState()));
+        new(new ObservableCollection<bool>(_register.ProbeState().AsEnumerable()));
 
     public ReadOnlyObservableCollection<bool>? Output =>
         _output != null ? new ReadOnlyObservableCollection<bool>(_output) : null;
@@ -116,6 +116,6 @@ public class RegisterViewModel : INotifyPropertyChanged, IRegisterViewModel
     private void Sync()
     {
         _register.SetInputD(_data.ToBitArray());
-        _output = _register.Output != null ? new ObservableCollection<bool>(_register.Output) : null;
+        _output = _register.Output != null ? new ObservableCollection<bool>(_register.Output.Value.AsEnumerable()) : null;
     }
 }

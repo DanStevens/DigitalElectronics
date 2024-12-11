@@ -38,8 +38,6 @@ namespace DigitalElectronics.Components.Memory
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
         public void SetInputD(BitArray data)
         {
-            if (data == null) return;
-            
             var upper = Math.Min(data.Length, _registers.Length);
             for (int x = 0; x < upper; x++) SetInputDx(x, data[x]);
         }
@@ -113,8 +111,15 @@ namespace DigitalElectronics.Components.Memory
         /// <returns>If the output is enabled (see <see cref="SetInputE"/>,
         /// <see cref="BitArray"/> representing the current value; otherwise `null`,
         /// which represents the Z (high impedance) state</returns>
-        public BitArray? Output => IsReadable && _registers[0].OutputQ.HasValue ?
-                new BitArray(_registers.Select(_ => _.OutputQ!.Value)) : null;
+        public BitArray? Output
+        {
+            get
+            {
+                if (IsReadable && _registers[0].OutputQ.HasValue)
+                    return new BitArray(_registers.Select(_ => _.OutputQ!.Value));
+                return null;
+            }
+        }
 
         /// <summary>
         /// Returns the internal state of the register

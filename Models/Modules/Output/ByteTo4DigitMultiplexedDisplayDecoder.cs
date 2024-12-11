@@ -32,7 +32,7 @@ namespace DigitalElectronics.Modules.Output
 
         public string Label { get; set; } = "Byte To 4-digit Multiplexed Display Decoder";
 
-        public BitArray Output => _decoderROM.Output;
+        public BitArray Output => _decoderROM.Output!.Value;
 
         public int WordSize => 8;
 
@@ -50,7 +50,8 @@ namespace DigitalElectronics.Modules.Output
 
         private BitArray GetDecoderAddress(BitArray lines)
         {
-            var address = new BitArray(lines) {Length = WordSize + CounterSize};
+            var address = lines;
+            address.Length = WordSize + CounterSize;
             address[8] = _counter.Output[0];
             address[9] = _counter.Output[1];
             return address;

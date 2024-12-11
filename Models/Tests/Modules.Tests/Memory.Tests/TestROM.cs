@@ -89,7 +89,7 @@ namespace DigitalElectronics.Modules.Tests.Memory.Tests
 
             for (int i = bytes.Length - 1; i >= 0; i--)
             {
-                objUT.SetInputA(new BitArray(new[] { i }));
+                objUT.SetInputA(new BitArray(i, 8));
                 objUT.ProbeAddress().ToInt32().Should().Be(i);
             }
         }
@@ -175,8 +175,8 @@ namespace DigitalElectronics.Modules.Tests.Memory.Tests
 
             for (int a = 0; a < primes.Length; a++)
             {
-                objUT.SetInputA(_bitConverter.GetBits(a));
-                objUT.Output.ToByte().Should().Be(primes[a]);
+                objUT.SetInputA(_bitConverter.GetBits(a, objUT.WordSize));
+                objUT.Output!.Value.ToByte().Should().Be(primes[a]);
             }
         }
     }

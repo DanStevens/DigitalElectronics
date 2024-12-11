@@ -1,13 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
-using DigitalElectronics.Modules.Counters;
-using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Modules.Output;
-using DigitalElectronics.ViewModels.Modules.Annotations;
 using DigitalElectronics.ViewModels.Utilities;
+using DigitalElectronics.Utilities;
 
 namespace DigitalElectronics.ViewModels.Modules
 {
@@ -36,7 +33,7 @@ namespace DigitalElectronics.ViewModels.Modules
             InitializeRegister(_registerForDigit3);
 
             var initialValue = new BitArray((byte)0);
-            Value = new FullyObservableCollection<Bit>(initialValue.Select(b => new Bit(b)));
+            Value = new FullyObservableCollection<Bit>(initialValue.AsEnumerable<Bit>());
             Value.ItemPropertyChanged += OnValueBitChanged;
 
             SyncValue();
@@ -56,10 +53,10 @@ namespace DigitalElectronics.ViewModels.Modules
 
         public FullyObservableCollection<Bit> Value { get; }
 
-        public IList<bool> LinesForDigit0 => _registerForDigit0.Output!;
-        public IList<bool> LinesForDigit1 => _registerForDigit1.Output!;
-        public IList<bool> LinesForDigit2 => _registerForDigit2.Output!;
-        public IList<bool> LinesForDigit3 => _registerForDigit3.Output!;
+        public IList<bool> LinesForDigit0 => _registerForDigit0.Output!.Value.ToArray();
+        public IList<bool> LinesForDigit1 => _registerForDigit1.Output!.Value.ToArray();
+        public IList<bool> LinesForDigit2 => _registerForDigit2.Output!.Value.ToArray();
+        public IList<bool> LinesForDigit3 => _registerForDigit3.Output!.Value.ToArray();
 
         private double updateInterval = 10;
 
@@ -103,7 +100,7 @@ namespace DigitalElectronics.ViewModels.Modules
 
         private void SyncValue()
         {
-            _displayDecoder.SetInput(new BitArray(Value.ToArray()));
+            _displayDecoder.SetInput(Value.ToBitArray());
             _registerForDigit0.SetInputD(_displayDecoder.Output);
             _registerForDigit1.SetInputD(_displayDecoder.Output);
             _registerForDigit2.SetInputD(_displayDecoder.Output);
