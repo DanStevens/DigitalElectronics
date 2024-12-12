@@ -90,7 +90,7 @@ namespace DigitalElectronics.Modules.Counters
         /// </summary>
         public void Reset()
         {
-            Set(new BitArray((int)Math.Pow(2, SizeInBits) - 1, length: SizeInBits)); // TODO replaced Math.Power with <<
+            Set(new BitArray((2 << SizeInBits) - 1, length: SizeInBits));
         }
     }
 }
