@@ -33,7 +33,7 @@ public class BitArrayInstantiationBenchmarks
 
     private static readonly IList<Bit> ListOf32Bits = new List<Bit>(EnumerableOf32Bits);
 
-    private static readonly ObservableCollection<Bit> ObservableListOf32Bits = new ObservableCollection<Bit>(EnumerableOf32Bits);
+    private static readonly ObservableCollection<Bit> ObservableCollectionOf32Bits = new ObservableCollection<Bit>(EnumerableOf32Bits);
 
     private static readonly byte[] ArrayOf4Bytes = { 0xAA, 0xBB, 0xCC, 0xDD };
 
@@ -83,6 +83,9 @@ public class BitArrayInstantiationBenchmarks
 
     [Benchmark]
     public BitArray FromListOf32Bits() => ListOf32Bits.ToBitArray();
+
+    [Benchmark]
+    public BitArray FromObservableCollectionOf32Bits() => ObservableCollectionOf32Bits.ToBitArray();
 
     [Benchmark]
     public BitArray FromListOf32Bits_UsingSelect() => new BitArray(ListOf32Bits.Select(b => b.Value));
