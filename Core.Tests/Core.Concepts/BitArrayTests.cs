@@ -47,7 +47,7 @@ namespace DigitalElectronics.Concepts.Tests
         public void BitArray_ShouldThrowWhenCreatedWithByteArrayWithMoreThan4Values()
         {
             var bytes = Enumerable.Repeat((byte)0, 5).ToArray();
-            var ex = Assert.Throws<ArgumentException>(() => new BitArray(bytes));
+            var ex = Assert.Throws<ArgumentException>(() => BitArray.FromBytes(bytes));
             ex.ParamName.Should().Be("bytes");
             ex.Message.Should().StartWith("Argument cannot contain more than 4 items.");
         }
@@ -185,7 +185,7 @@ namespace DigitalElectronics.Concepts.Tests
         {
             using (new AssertionScope())
             {
-                var bitArray = new BitArray(bytes);
+                var bitArray = BitArray.FromBytes(bytes);
                 bitArray.ToInt32().Should().Be(expected);
                 bitArray.Length.Should().Be(bytes.Length * 8);
             }
@@ -213,15 +213,6 @@ namespace DigitalElectronics.Concepts.Tests
                 result.ToInt32().Should().Be(expected);
                 result.Length.Should().Be(collection.Count);
             }
-        }
-
-        [Test]
-        public void BitArray_CreateFromCollectionOfBooleanOutputComponents_ShouldThrowWhenArgHasMoreThanThan32Items()
-        {
-            var bits = (ICollection<bool>)Enumerable.Repeat(false, 33).ToArray();
-            var ex = Assert.Throws<ArgumentException>(() => new BitArray(bits));
-            ex!.ParamName.Should().Be("values");
-            ex.Message.Should().StartWith("Argument cannot contain more than 32 items.");
         }
 
         #endregion

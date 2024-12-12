@@ -58,13 +58,13 @@ public class BitArrayInstantiationBenchmarks
     public BitArray FromCollectionOf32Bools() => new BitArray((ICollection<bool>)ArrayOf32Bools);
 
     [Benchmark]
-    public BitArray FromListOf32Bools() => new BitArray(ListOf32Bools);
+    public BitArray FromListOf32Bools() => BitArray.FromList(ListOf32Bools);
 
     [Benchmark]
-    public BitArray FromObservableCollectionOf32Bools() => new BitArray(ObservableCollectionOf32Bools);
+    public BitArray FromObservableCollectionOf32Bools() => BitArray.FromList(ObservableCollectionOf32Bools);
 
     [Benchmark]
-    public BitArray FromArrayOf4Bytes() => new BitArray(ArrayOf4Bytes);
+    public BitArray FromArrayOf4Bytes() => BitArray.FromBytes(ArrayOf4Bytes);
 
     [Benchmark]
     public BitArray FromArrayOf32Bits() => ArrayOf32Bits.ToBitArray();

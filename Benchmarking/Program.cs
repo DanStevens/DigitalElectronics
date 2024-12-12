@@ -14,9 +14,9 @@ var quickJob = Job.Default
     .WithIterationCount(1);
 
 var config = DefaultConfig.Instance
-    .AddJob(Job.Default)
+    //.AddJob(Job.Default)
     //.AddJob(quickJob.WithRuntime(CoreRuntime.Core80))
-    //.AddJob(quickJob.WithRuntime(CoreRuntime.Core90))
+    .AddJob(quickJob.WithRuntime(CoreRuntime.Core90))
 ;
 
 //BenchmarkRunner.Run<BE801ComputerBenchmarks>();

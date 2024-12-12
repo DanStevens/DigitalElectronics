@@ -146,6 +146,6 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
             //monitor.Should().RaisePropertyChangeFor(_ => _.Digit3IsActive);
         }
 
-        private static byte ToByte(IList<bool> lines) => new BitArray(lines).ToByte();
+        private static byte ToByte(IList<bool> lines) => BitArray.FromList(lines).ToByte();
     }
 }

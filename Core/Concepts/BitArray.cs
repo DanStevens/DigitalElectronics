@@ -42,14 +42,30 @@ namespace DigitalElectronics.Concepts
         /// value and length
         /// </summary>
         /// <param name="value">The value to represent with the <see cref="BitArray"/></param>
-        /// <param name="length">The length of the <see cref="BitArray"/> (see <see cref="Length"/>)</param>
+        /// <param name="length">The length of the <see cref="BitArray"/> (see <see cref="Length"/>).
+        /// Default is 32.</param>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="length"/> is less 
         /// than zero or greater than 32</exception>
         public BitArray(int value, int length = BitVector32Length) : this (new BitVector32(value))
         {
             if (length < 0 || length > BitVector32Length)
                 throw new ArgumentOutOfRangeException(nameof(length), LengthOutOfRangeMessage);
+            Length = length;
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BitArray"/> representing the given byte
+        /// value and length
+        /// </summary>
+        /// <param name="value">The value to represent with the <see cref="BitArray"/></param>
+        /// <param name="length">The length of the <see cref="BitArray"/> (see <see cref="Length"/>).
+        /// Default is 8</param>
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="length"/> is less 
+        /// than zero or greater than 32</exception>
+        public BitArray(byte value, int length = 8) : this(new BitVector32(value))
+        {
+            if (length < 0 || length > BitVector32Length)
+                throw new ArgumentOutOfRangeException(nameof(length), LengthOutOfRangeMessage);
             Length = length;
         }
 
@@ -63,7 +79,6 @@ namespace DigitalElectronics.Concepts
         {
             if (length < 0 || length > BitVector32Length)
                 throw new ArgumentOutOfRangeException(nameof(length), LengthOutOfRangeMessage);
-
             bitVector = bitArray;
             Length = length;
         }
@@ -96,52 +111,13 @@ namespace DigitalElectronics.Concepts
         }
 
         /// <summary>
-        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given a
-        /// <see cref="IList{bool}"/>, starting with the least-significant bit
-        /// </summary>
-        /// <param name="values">A <see cref="IList{bool}"/> in LSB-first order</param>
-        /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
-        /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="values"/></remarks>
-        public BitArray(IList<bool> values)
-        {
-            if (values.Count > BitVector32Length)
-                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(values));
-
-            bitVector = new BitVector32();
-            for (int i = 0; i < values.Count; i++)
-                bitVector[1 << i] = values[i];
-            Length = values.Count;
-        }
-
-        /// <summary>
-        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given by array of
-        /// <see cref="bytes"/> values, in little-endian order
-        /// </summary>
-        /// <param name="bytes">An array of <see cref="byte"/> values in little-endian order</param>
-        /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
-        /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="values"/></remarks>
-        /// <exception cref="ArgumentException">if <paramref name="bytes"/> contains more than 32 items</exception>
-        public BitArray(params byte[] bytes)
-        {
-            if (bytes.Length > 4)
-                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, 4), nameof(bytes));
-
-            // Combine the bytes into a single 32-bit integer
-            int combinedValue = 0;
-            for (int i = 0; i < bytes.Length; i++)
-                combinedValue |= bytes[i] << (8 * i);
-
-            // Create the BitVector32 from the combined integer value
-            bitVector = new BitVector32(combinedValue);
-            Length = bytes.Length * 8;
-        }
-
-        /// <summary>
         /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern of the sequence of
         /// <see cref="bool"/> values yielded by the given enumerable, starting with the least-significant bit
         /// </summary>
         /// <param name="values">An sequence returning <see cref="bool"/> values representing the bit pattern
         /// in LSB-first order</param>
+        /// <note>It may be more memory efficient to use the <see cref="FromList(IList{bool})"/> factory
+        /// method if the underlying type of the argument is a list.</note>
         /// <remarks>The <see cref="Length"/> property is to equal the number of values yielded by<paramref name="values"/>
         /// up to a maximum of 32</remarks>
         public BitArray(IEnumerable<bool> values)
@@ -175,11 +151,54 @@ namespace DigitalElectronics.Concepts
             Length = length;
         }
 
-        public BitArray(ICollection<bool> values) : this(values,
-            values.Count <= BitVector32Length
-                ? values.Count
-                : throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(values)))
-        { }
+        #region Factory methods
+
+        /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given a
+        /// <see cref="IList{bool}"/>, starting with the least-significant bit
+        /// </summary>
+        /// <param name="values">A <see cref="IList{bool}"/> in LSB-first order</param>
+        /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
+        /// <returns>A <see cref="BitArray"/> that represents the bit given list of values</returns>
+        /// <note>The <see cref="Length"/> property is set to length of <paramref name="values"/></note>
+        /// <remarks>Using this method to create a <see cref="BitArray"/> from a list instead of
+        /// the <see cref="BitArray(IEnumerable{T}, int)"/> may be more memory efficient as the latter
+        /// requires a call to <see cref="IEnumerable{T}.GetEnumerator"/>, which will allocate</remarks>
+        public static BitArray FromList(IList<bool> values)
+        {
+            if (values.Count > BitVector32Length)
+                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(values));
+
+            var bitVector = new BitVector32();
+            for (int i = 0; i < values.Count; i++)
+                bitVector[1 << i] = values[i];
+
+            return new BitArray(bitVector, values.Count);
+        }
+
+        /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given by array of
+        /// <see cref="bytes"/> values, in little-endian order
+        /// </summary>
+        /// <param name="bytes">An array of <see cref="byte"/> values in little-endian order</param>
+        /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
+        /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="values"/></remarks>
+        /// <exception cref="ArgumentException">if <paramref name="bytes"/> contains more than 32 items</exception>
+        /// <returns>A <see cref="BitArray"/> that represents the bit given array of bytes</returns>
+        public static BitArray FromBytes(params byte[] bytes)
+        {
+            if (bytes.Length > 4)
+                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, 4), nameof(bytes));
+
+            // Combine the bytes into a single 32-bit integer
+            int combinedValue = 0;
+            for (int i = 0; i < bytes.Length; i++)
+                combinedValue |= bytes[i] << (8 * i);
+
+            return new BitArray(combinedValue, bytes.Length * 8);
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets or sets the value of the bit at a specific position in the <see cref="BitArray"/>.
