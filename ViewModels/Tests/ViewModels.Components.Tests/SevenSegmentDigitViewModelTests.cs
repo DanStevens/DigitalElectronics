@@ -26,7 +26,7 @@ public class SevenSegmentDigitViewModelTests
         var objUT = new SevenSegmentDigitDemoViewModel();
         objUT.HexDigitDemo.SegmentLines.Should().BeAssignableTo<ICollection<bool>>();
         objUT.HexDigitDemo.SegmentLines.Count.Should().Be(8);
-        objUT.HexDigitDemo.SegmentLines.ToBitArray().ToByte().Should().Be(0x3F);
+        ToByte(objUT.HexDigitDemo.SegmentLines).Should().Be(0x3F);
     }
 
     [Test]
@@ -34,7 +34,7 @@ public class SevenSegmentDigitViewModelTests
     {
         var objUT = new SevenSegmentDigitDemoViewModel();
         objUT.HexDigitDemo.Value[0].Value = true; // Sets value to 1
-        objUT.HexDigitDemo.SegmentLines.ToBitArray().ToByte().Should().Be(0x06);
+        ToByte(objUT.HexDigitDemo.SegmentLines).Should().Be(0x06);
     }
 
     [Test]
@@ -42,7 +42,7 @@ public class SevenSegmentDigitViewModelTests
     {
         var objUT = new SevenSegmentDigitDemoViewModel();
         objUT.HexDigitDemo.Value[3].Value = true; // Sets value to 8
-        objUT.HexDigitDemo.SegmentLines.ToBitArray().ToByte().Should().Be(0x7F);
+        ToByte(objUT.HexDigitDemo.SegmentLines).Should().Be(0x7F);
     }
 
     [Test]
@@ -53,7 +53,7 @@ public class SevenSegmentDigitViewModelTests
         objUT.HexDigitDemo.Value[1].Value = true; // Set value to 3 (0x3)
         objUT.HexDigitDemo.Value[2].Value = true; // Set value to 7 (0x7)
         objUT.HexDigitDemo.Value[3].Value = true; // Set value to 15 (0xF)
-        objUT.HexDigitDemo.SegmentLines.ToBitArray().ToByte().Should().Be(0x71);
+        ToByte(objUT.HexDigitDemo.SegmentLines).Should().Be(0x71);
     }
 
     [Test]
@@ -62,6 +62,8 @@ public class SevenSegmentDigitViewModelTests
         var objUT = new SevenSegmentDigitDemoViewModel();
         objUT.HexDigitWithRegisterDemo.Should().BeOfType<SingleHexDigitWithRegisterDemoViewModel>();
     }
+
+    private static byte ToByte(ICollection<bool> lines) => new BitArray(lines).ToByte();
 }
 
 public class SingleHexDigitWithRegisterDemoViewModelTests
@@ -80,7 +82,7 @@ public class SingleHexDigitWithRegisterDemoViewModelTests
         var objUT = new SingleHexDigitWithRegisterDemoViewModel();
         objUT.SegmentLines.Should().BeAssignableTo<ICollection<bool>>();
         objUT.SegmentLines.Count.Should().Be(8);
-        objUT.SegmentLines.ToBitArray().ToByte().Should().Be(0x3F);
+        ToByte(objUT.SegmentLines).Should().Be(0x3F);
     }
 
     [Test]
@@ -89,7 +91,7 @@ public class SingleHexDigitWithRegisterDemoViewModelTests
         var objUT = new SingleHexDigitWithRegisterDemoViewModel();
         objUT.Load.Should().Be(true);
         objUT.Value[0].Value = true; // Sets Value to 1
-        objUT.SegmentLines.ToBitArray().ToByte().Should().Be(0x3F);
+        ToByte(objUT.SegmentLines).Should().Be(0x3F);
     }
 
     [Test]
@@ -99,6 +101,8 @@ public class SingleHexDigitWithRegisterDemoViewModelTests
         objUT.Load.Should().Be(true);
         objUT.Value[0].Value = true; // Sets Value to 1
         objUT.Clock();
-        objUT.SegmentLines.ToBitArray().ToByte().Should().Be(0x06);
+        ToByte(objUT.SegmentLines).Should().Be(0x06);
     }
+
+    private static byte ToByte(ICollection<bool> lines) => new BitArray(lines).ToByte();
 }
