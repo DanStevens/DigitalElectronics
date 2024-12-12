@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using DigitalElectronics.Components;
 using DigitalElectronics.Components.FlipFlops;
 using DigitalElectronics.Concepts;
 
@@ -47,7 +45,7 @@ namespace DigitalElectronics.Modules.Counters
         /// <summary>
         /// The output of the binary counter
         /// </summary>
-        public BitArray Output => new (_jkFlipFlops.Select(_ => _.OutputQ)); // TODO: Allocates
+        public BitArray Output => BitArray.FromList(_jkFlipFlops);
 
         /// <summary>
         /// Clocks (increments) the binary counter by 1

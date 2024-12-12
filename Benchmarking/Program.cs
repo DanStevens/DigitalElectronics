@@ -19,8 +19,8 @@ var config = DefaultConfig.Instance
     //.AddJob(quickJob.WithRuntime(CoreRuntime.Core90))
 ;
 
-//BenchmarkRunner.Run<BE801ComputerBenchmarks>();
-BenchmarkRunner.Run<BitArrayInstantiationBenchmarks>(config);
+BenchmarkRunner.Run<BE801ComputerBenchmarks>();
+//BenchmarkRunner.Run<BitArrayInstantiationBenchmarks>(config);
 
 #else
 

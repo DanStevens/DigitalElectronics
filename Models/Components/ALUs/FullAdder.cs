@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using DigitalElectronics.Components.LogicGates;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.ALUs
 {
@@ -8,7 +9,7 @@ namespace DigitalElectronics.Components.ALUs
     /// Models a full adder for summing a single pair of bits
     /// </summary>
     [DebuggerDisplay("A = {_halfAdder1._xor._inputA}; B = {_halfAdder1._xor._inputB}; ∑ = {OutputE}; C => {OutputC}")]
-    public class FullAdder
+    public class FullAdder : IBooleanOutput
     {
         private readonly HalfAdder _halfAdder1, _halfAdder2;
         private readonly OrGate _or;
@@ -65,5 +66,6 @@ namespace DigitalElectronics.Components.ALUs
         /// </summary>
         public bool OutputE => _halfAdder2.OutputE;
 
+        bool IBooleanOutput.Output => OutputE;
     }
 }

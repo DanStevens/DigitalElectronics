@@ -10,7 +10,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
     public class TestFourBitAddressDecoder
     {
         private const int NumberOfAddressBits = 4;
-        private readonly int NumberOfOutputs = (int)Math.Pow(2, NumberOfAddressBits); // TODO replace Math.Pow with <<
+        private readonly int NumberOfOutputs = (int)Math.Pow(2, NumberOfAddressBits);
 
         private FourBitAddressDecoder _decoder;
 
@@ -51,7 +51,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
         private void AssertAddress(int a)
         {
             var address = new BitArray(a, NumberOfAddressBits);
-            var expectedOutput = new BitArray((int)Math.Pow(2, a), NumberOfOutputs); // TODO replace Math.Pow with <<
+            var expectedOutput = new BitArray((int)Math.Pow(2, a), NumberOfOutputs);
             _decoder.SetInputA(address);
             ClassicAssert.AreEqual(expectedOutput, _decoder.OutputY, $"a = {a}");
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using DigitalElectronics.Components.ALUs;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Concepts;
@@ -119,10 +118,7 @@ namespace DigitalElectronics.Modules.ALUs
         /// </summary>
         /// <remarks>Consumers can use this to get the ALU's sum output without have to set
         /// the 'Sum Output' signal (<see cref="SetInputEO(bool)"/>) to `true`.</remarks>
-        public BitArray ProbeState()
-        {
-            return new BitArray(_adders.Select(_ => _.OutputE).ToArray());
-        }
+        public BitArray ProbeState() => BitArray.FromList(_adders);
 
         private void SyncBit(int x)
         {

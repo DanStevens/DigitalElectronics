@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
-using static DigitalElectronics.BenEater.Computers.BE801Computer.ControlSignals;
-using System.Linq;
+﻿using System;
 using DigitalElectronics.Modules.Counters;
 using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Concepts;
+using static DigitalElectronics.BenEater.Computers.BE801Computer.ControlSignals;
 
 namespace DigitalElectronics.BenEater.Computers
 {

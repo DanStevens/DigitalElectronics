@@ -20,6 +20,7 @@ public class BE801ComputerBenchmarks
     [Arguments(10)]
     [Arguments(100)]
     [Arguments(1000)]
+    [Arguments(10000)]
     public void Clock(int clockCycles)
     {
         for (int i = 0; i < clockCycles; i++)

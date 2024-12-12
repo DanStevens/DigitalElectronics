@@ -1,11 +1,9 @@
-﻿
-
-#nullable enable
+﻿#nullable enable
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
@@ -142,12 +140,23 @@ namespace DigitalElectronics.Modules.Memory
         /// determined by the most recent call to <see cref="SetInputA(BitArray)"/>,
         /// unless <see cref="SetInputE(bool)">'Enable' input</see> has been set
         /// to `false`, in which case `null` is output.</remarks>
-        public BitArray? Output =>
-            _8BitRegisters.FirstOrDefault(_ => _.Output != null)?.Output;
+        public BitArray? Output
+        {
+            get
+            {
+                for (int i = 0; i < _8BitRegisters.Length; i++)
+                {
+                    if (_8BitRegisters[i].Output != null)
+                        return _8BitRegisters[i].Output;
+                }
+
+                return null;
+            }
+        }
 
         public IList<BitArray> ProbeState()
         {
-            return _8BitRegisters.Select(r => r.ProbeState()).ToArray(); // TODO: Allocation?
+            return _8BitRegisters.Select(r => r.ProbeState()).ToArray(); // TODO: Allocates
         }
 
         public BitArray ProbeState(BitArray address)

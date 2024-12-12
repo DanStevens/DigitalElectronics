@@ -116,7 +116,7 @@ namespace DigitalElectronics.Components.Memory
             get
             {
                 if (IsReadable && _registers[0].OutputQ.HasValue)
-                    return new BitArray(_registers.Select(_ => _.OutputQ!.Value));
+                    return new BitArray(_registers.Select(_ => _.OutputQ!.Value)); // TODO: Allocates
                 return null;
             }
         }
@@ -128,7 +128,7 @@ namespace DigitalElectronics.Components.Memory
         /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState()
         {
-            return new BitArray(_registers.Select(_ => _.ProbeState()));
+            return new BitArray(_registers.Select(_ => _.ProbeState())); // TODO: Allocates
         }
 
         /// <summary>
