@@ -100,7 +100,7 @@ public class SevenSegmentDigitDemoViewModel
 
         private void Sync()
         {
-            var val = Value.ToBitArray();
+            var val = BitArray.FromList(Value);
             _valueToSegmentsROM.SetInputA(val);
             RaisePropertyChanged(nameof(SegmentLines));
         }
@@ -195,7 +195,7 @@ public class SevenSegmentDigitDemoViewModel
 
         private void Sync()
         {
-            var val = Value.ToBitArray();
+            var val = BitArray.FromList(Value);
             _valueToSegmentsROM.SetInputA(val);
             _register.SetInputD(_valueToSegmentsROM.Output!.Value);
         }

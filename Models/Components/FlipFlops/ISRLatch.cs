@@ -1,11 +1,13 @@
-﻿namespace DigitalElectronics.Components.FlipFlops
+﻿using DigitalElectronics.Concepts;
+
+namespace DigitalElectronics.Components.FlipFlops
 {
 
     /// <summary>
     /// A component that has the same inputs and outputs as an SR Latch
     /// <seealso cref="SRLatch"/>
     /// </summary>
-    public interface ISRLatch : IOutputsQAndNQ
+    public interface ISRLatch : IOutputsQAndNQ, IBooleanOutput
     {
         /// <summary>
         /// Sets value for 'Reset' input

@@ -73,7 +73,7 @@ public class SingleHexDigitWithRegisterDemoViewModelTests
     {
         var objUT = new SingleHexDigitWithRegisterDemoViewModel();
         objUT.Load.Should().Be(true);
-        objUT.Value.ToBitArray().ToByte().Should().Be(0);
+        BitArray.FromList(objUT.Value).ToByte().Should().Be(0);
     }
 
     [Test]

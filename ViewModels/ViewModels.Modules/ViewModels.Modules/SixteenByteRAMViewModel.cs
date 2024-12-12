@@ -87,7 +87,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
             if (!_data.SequenceEqual(value))
             {
                 _data = value;
-                _ram.SetInputD(_data.ToBitArray());
+                _ram.SetInputD(BitArray.FromList(_data));
                 RaisePropertyChanged();
                 if (Enable) RaisePropertyChanged(nameof(Output));
             }
@@ -111,8 +111,12 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         }
     }
 
-    private void OnAddressBitChanged(object? sender, ItemPropertyChangedEventArgs e) =>
-        SyncAddress(_address.ToBitArray(AddressLength));
+    private void OnAddressBitChanged(object? sender, ItemPropertyChangedEventArgs e)
+    {
+        var newAddress = BitArray.FromList(_address);
+        newAddress.Length = AddressLength;
+        SyncAddress(newAddress);
+    }
 
     public ReadOnlyObservableCollection<bool>? Output => _output != null ? new ReadOnlyObservableCollection<bool>(_output) : null;
 
@@ -123,7 +127,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         if (Load && Enable)
             throw new InvalidOperationException("Load and Enable should not both be set high at the same time");
 
-        _ram.SetInputD(_data.ToBitArray());
+        _ram.SetInputD(BitArray.FromList(_data));
         SyncOutput();
         _ram.Clock();
 

@@ -10,6 +10,7 @@ using FluentAssertions;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
 using DotNetBitVector32 = System.Collections.Specialized.BitVector32;
 using FluentAssertions.Execution;
+using NSubstitute;
 
 namespace DigitalElectronics.Concepts.Tests
 {
@@ -53,17 +54,17 @@ namespace DigitalElectronics.Concepts.Tests
         }
 
         [Test]
-        [TestCase(new bool[] {}, 0)]
+        [TestCase(new bool[] { }, 0)]
         [TestCase(new bool[] { false }, 0)]
         [TestCase(new bool[] { true }, 1)]
         [TestCase(new bool[] { true, false }, 1)]
         [TestCase(new bool[] { true, true }, 3)]
-        [TestCase(new bool[] { false, false, false, false}, 0)]
-        [TestCase(new bool[] { true, false, false, false}, 1)]
-        [TestCase(new bool[] { false, true, false, false}, 2)]
-        [TestCase(new bool[] { false, false, true, false}, 4)]
-        [TestCase(new bool[] { false, false, false, true}, 8)]
-        [TestCase(new bool[] { false, true, true, true}, 14)]
+        [TestCase(new bool[] { false, false, false, false }, 0)]
+        [TestCase(new bool[] { true, false, false, false }, 1)]
+        [TestCase(new bool[] { false, true, false, false }, 2)]
+        [TestCase(new bool[] { false, false, true, false }, 4)]
+        [TestCase(new bool[] { false, false, false, true }, 8)]
+        [TestCase(new bool[] { false, true, true, true }, 14)]
         [TestCase(new bool[] { false, true, true, true, true, true, true, true }, 254)]
         public void BitArray_CreateFromBoolArray(bool[] bits, int expected)
         {
@@ -142,7 +143,7 @@ namespace DigitalElectronics.Concepts.Tests
         [TestCase(33)]
         public void BitArray_CreateFromBoolEnumerableAndLength_ShouldThrow_WhenLengthArgIsNotBetween0And32(int length)
         {
-            var ex = Assert.Throws<ArgumentOutOfRangeException>(() =>  new BitArray(Enumerable.Empty<bool>(), length));
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new BitArray(Enumerable.Empty<bool>(), length));
             ex!.ParamName.Should().Be("length");
             ex.Message.Should().StartWith(BitArray.LengthOutOfRangeMessage);
         }
@@ -265,7 +266,7 @@ namespace DigitalElectronics.Concepts.Tests
         [Test]
         public void GetIndexer_ShouldGetValueOfBitAtGivenIndex()
         {
-            bool[] bits = {false, false, true, false, true, false, true, false};
+            bool[] bits = { false, false, true, false, true, false, true, false };
             var objUT = new BitArray(bits);
 
             using (new AssertionScope())
@@ -273,7 +274,7 @@ namespace DigitalElectronics.Concepts.Tests
                 for (int i = 0; i < bits.Length; i++)
                 {
                     objUT[i].Should().Be(bits[i], $"(i => {i})");
-                } 
+                }
             }
         }
 
@@ -288,7 +289,7 @@ namespace DigitalElectronics.Concepts.Tests
                 for (int i = 0; i < 8; i++)
                 {
                     objUT[i].Should().Be(i == 2, $"(i => {i})");
-                } 
+                }
             }
         }
 
@@ -334,15 +335,15 @@ namespace DigitalElectronics.Concepts.Tests
         }
 
         #endregion
-        
+
         #region AsEnumerable method tests
 
         [Test]
         public void AsEnumerable_ShouldReturnSequenceOfBools_WhenGivenTypeParameterOfBool()
         {
-            bool[] bools = {false, true, false, true};
+            bool[] bools = { false, true, false, true };
             var objUT = new BitArray(bools);
-            objUT.AsEnumerable<bool>().Should().BeEquivalentTo(bools); 
+            objUT.AsEnumerable<bool>().Should().BeEquivalentTo(bools);
         }
 
         [Test]
@@ -446,5 +447,177 @@ namespace DigitalElectronics.Concepts.Tests
         {
             new BitArray(value, length).ToByte().Should().Be(expected);
         }
+
+        #region Static factory method tests
+
+        [Test]
+        [TestCase(new bool[] { }, 0)]
+        [TestCase(new bool[] { false }, 0)]
+        [TestCase(new bool[] { true }, 1)]
+        [TestCase(new bool[] { true, false }, 1)]
+        [TestCase(new bool[] { true, true }, 3)]
+        [TestCase(new bool[] { false, false, false, false }, 0)]
+        [TestCase(new bool[] { true, false, false, false }, 1)]
+        [TestCase(new bool[] { false, true, false, false }, 2)]
+        [TestCase(new bool[] { false, false, true, false }, 4)]
+        [TestCase(new bool[] { false, false, false, true }, 8)]
+        [TestCase(new bool[] { false, true, true, true }, 14)]
+        [TestCase(new bool[] { false, true, true, true, true, true, true, true }, 254)]
+        public void FromList_GivenArrayOfBooleanOutputComponents_ShouldReturnBitArray(bool[] componentOutputs, int expected)
+        {
+            using (new AssertionScope())
+            {
+                var components = componentOutputs.Select(CreateMockComponent).ToArray();
+                var result = BitArray.FromList(components);
+                result.ToInt32().Should().Be(expected);
+                result.Length.Should().Be(componentOutputs.Length);
+            }
+        }
+
+        [Test]
+        public void FromList_GivenArrayOfBooleanOutputComponents_ShouldThrowWhenArgHasMoreThanThan32Items()
+        {
+            var components = Enumerable.Repeat(false, 33).Select(CreateMockComponent).ToArray();
+            var ex = Assert.Throws<ArgumentException>(() => BitArray.FromList(components));
+            ex!.ParamName.Should().Be("components");
+            ex.Message.Should().StartWith("Argument cannot contain more than 32 items.");
+        }
+
+        [Test]
+        [TestCase(new bool[] { }, 0)]
+        [TestCase(new bool[] { false }, 0)]
+        [TestCase(new bool[] { true }, 1)]
+        [TestCase(new bool[] { true, false }, 1)]
+        [TestCase(new bool[] { true, true }, 3)]
+        [TestCase(new bool[] { false, false, false, false }, 0)]
+        [TestCase(new bool[] { true, false, false, false }, 1)]
+        [TestCase(new bool[] { false, true, false, false }, 2)]
+        [TestCase(new bool[] { false, false, true, false }, 4)]
+        [TestCase(new bool[] { false, false, false, true }, 8)]
+        [TestCase(new bool[] { false, true, true, true }, 14)]
+        [TestCase(new bool[] { false, true, true, true, true, true, true, true }, 254)]
+        public void FromComponents_GivenSequenceOfBooleanOutputComponents_ShouldReturnBitArray(bool[] componentOutputs, int expected)
+        {
+            using (new AssertionScope())
+            {
+                var components = componentOutputs.Select(CreateMockComponent);
+                var result = BitArray.FromComponents(components);
+                result.ToInt32().Should().Be(expected);
+                result.Length.Should().Be(componentOutputs.Length);
+            }
+        }
+
+        [Test]
+        public void FromComponents_GivenSequenceOfBooleanOutputComponents_ShouldOnlyTakeFirst32Bits_WhenSequenceYields33Values()
+        {
+            using (new AssertionScope())
+            {
+                var components = new[] { true }
+                    .Concat(Enumerable.Repeat(false, 31))
+                    .Concat([true])
+                    .Select(CreateMockComponent);
+                var result = BitArray.FromComponents(components);
+                result.ToInt32().Should().Be(1);
+                result.Length.Should().Be(32);
+            }
+        }
+
+        [Test]
+        [TestCase(new bool[] { }, 0, 0)]
+        [TestCase(new bool[] { false }, 1, 0)]
+        [TestCase(new bool[] { true }, 1, 1)]
+        [TestCase(new bool[] { true, false }, 2, 1)]
+        [TestCase(new bool[] { true, true }, 2, 3)]
+        [TestCase(new bool[] { false, false, false, false }, 4, 0)]
+        [TestCase(new bool[] { true, false, false, false }, 4, 1)]
+        [TestCase(new bool[] { false, true, false, false }, 4, 2)]
+        [TestCase(new bool[] { false, false, true, false }, 4, 4)]
+        [TestCase(new bool[] { false, false, false, true }, 4, 8)]
+        [TestCase(new bool[] { false, true, true, true }, 4, 14)]
+        [TestCase(new bool[] { false, true, true, true }, 8, 14)]
+        [TestCase(new bool[] { false, true, true, true, true, true, true, true }, 8, 254)]
+        [TestCase(new bool[] { false, true, true, true, true, true, true, true }, 4, 14)]
+        public void FromComponents_GivenSequenceOfBooleanOutputComponentsAndLength_ShouldReturnBitArray(bool[] componentOutputs, int length, int expected)
+        {
+            using (new AssertionScope())
+            {
+                var components = componentOutputs.Select(CreateMockComponent);
+                var result = BitArray.FromComponents(components, length);
+                result.ToInt32().Should().Be(expected);
+                result.Length.Should().Be(length);
+            }
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(4)]
+        [TestCase(8)]
+        [TestCase(16)]
+        [TestCase(32)]
+        public void FromComponents_GivenSequenceOfBooleanOutputComponentsAndLength_ShouldOnlyTakeFirstLengthBits(int length)
+        {
+            using (new AssertionScope())
+            {
+                var components = new[] { true }
+                    .Concat(Enumerable.Repeat(false, length - 1))
+                    .Concat([true])
+                    .Select(CreateMockComponent);
+                var result = BitArray.FromComponents(components, length);
+                result.ToInt32().Should().Be(1);
+                result.Length.Should().Be(length);
+            }
+        }
+
+        [Test]
+        [TestCase(-1)]
+        [TestCase(33)]
+        public void FromComponents_GivenSequenceOfBooleanOutputComponentsAndLength_ShouldThrowWhenLengthNotBetween0And32(int length)
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => BitArray.FromComponents(Enumerable.Empty<IBooleanOutput>(), length));
+            ex!.ParamName.Should().Be("length");
+            ex.Message.Should().StartWith(BitArray.LengthOutOfRangeMessage);
+        }
+
+        [Test]
+        [TestCase(new bool[] { }, 0)]
+        [TestCase(new bool[] { false }, 0)]
+        [TestCase(new bool[] { true }, 1)]
+        [TestCase(new bool[] { true, false }, 1)]
+        [TestCase(new bool[] { true, true }, 3)]
+        [TestCase(new bool[] { false, false, false, false }, 0)]
+        [TestCase(new bool[] { true, false, false, false }, 1)]
+        [TestCase(new bool[] { false, true, false, false }, 2)]
+        [TestCase(new bool[] { false, false, true, false }, 4)]
+        [TestCase(new bool[] { false, false, false, true }, 8)]
+        [TestCase(new bool[] { false, true, true, true }, 14)]
+        [TestCase(new bool[] { false, true, true, true, true, true, true, true }, 254)]
+        public void FromComponents_GivenCollectionOfBooleanOutputComponents_ShouldReturnBitArray(bool[] componentOutputs, int expected)
+        {
+            using (new AssertionScope())
+            {
+                var components = (ICollection<IBooleanOutput>)componentOutputs.Select(CreateMockComponent).ToArray();
+                var result = BitArray.FromComponents(components);
+                result.ToInt32().Should().Be(expected);
+                result.Length.Should().Be(components.Count);
+            }
+        }
+
+        [Test]
+        public void FromList_GivenListOfBooleanOutputComponents_ShouldThrowWhenArgHasMoreThanThan32Items()
+        {
+            var components = Enumerable.Repeat(false, 33).Select(CreateMockComponent).ToList();
+            var ex = Assert.Throws<ArgumentException>(() => BitArray.FromList(components));
+            ex!.ParamName.Should().Be("components");
+            ex.Message.Should().StartWith("Argument cannot contain more than 32 items.");
+        }
+
+        private static IBooleanOutput CreateMockComponent(bool output)
+        {
+            var mock = Substitute.For<IBooleanOutput>();
+            mock.Output.Returns(output);
+            return mock;
+        }
+
+        #endregion
     }
 }

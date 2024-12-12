@@ -1,5 +1,5 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.FlipFlops
 {
@@ -43,5 +43,6 @@ namespace DigitalElectronics.Components.FlipFlops
         /// </summary>
         public bool OutputNQ => _gatedDLatch.OutputNQ;
 
+        bool IBooleanOutput.Output => OutputQ;
     }
 }

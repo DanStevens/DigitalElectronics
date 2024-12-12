@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using BitConverter = DigitalElectronics.Utilities.BitConverter;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Core.Tests")]
@@ -176,6 +177,30 @@ namespace DigitalElectronics.Concepts
             return new BitArray(bitVector, values.Count);
         }
 
+        [OverloadResolutionPriority(10)]
+        public static BitArray FromList(IList<Bit> bits)
+        {
+            if (bits.Count > BitVector32Length)
+                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(bits));
+
+            var bitVector = new BitVector32();
+            for (int i = 0; i < bits.Count; i++)
+                bitVector[1 << i] = bits[i]?.Value ?? false;
+            return new BitArray(bitVector, bits.Count);
+        }
+
+        public static BitArray FromList(IList<IBooleanOutput> components)
+        {
+            if (components.Count > BitVector32Length)
+                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(components));
+
+            var bitVector = new BitVector32();
+            for (int i = 0; i < components.Count; i++)
+                bitVector[1 << i] = components[i]?.Output ?? false;
+
+            return new BitArray(bitVector, components.Count);
+        }
+
         /// <summary>
         /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given by array of
         /// <see cref="bytes"/> values, in little-endian order
@@ -196,6 +221,31 @@ namespace DigitalElectronics.Concepts
                 combinedValue |= bytes[i] << (8 * i);
 
             return new BitArray(combinedValue, bytes.Length * 8);
+        }
+
+        public static BitArray FromBits(IEnumerable<Bit> bits) => FromComponents(bits);
+
+        public static BitArray FromBits(IEnumerable<Bit> bits, int length) => FromComponents(bits, length);
+
+        public static BitArray FromComponents(IEnumerable<IBooleanOutput> components)
+        {
+            int i = 0;
+            var bitVector = new BitVector32();
+            foreach (var bit in components.Take(BitVector32Length))
+                bitVector[1 << i++] = bit?.Output ?? false;
+            return new BitArray(bitVector, i);
+        }
+
+        public static BitArray FromComponents(IEnumerable<IBooleanOutput> components, int length)
+        {
+            if (length < 0 || length > BitVector32Length)
+                throw new ArgumentOutOfRangeException(nameof(length), LengthOutOfRangeMessage);
+
+            int i = 0;
+            var bitVector = new BitVector32();
+            foreach (var bit in components.Take(length))
+                bitVector[1 << i++] = bit?.Output ?? false;
+            return new BitArray(bitVector, length);
         }
 
         #endregion

@@ -100,7 +100,7 @@ namespace DigitalElectronics.ViewModels.Modules
 
         private void SyncValue()
         {
-            _displayDecoder.SetInput(Value.ToBitArray());
+            _displayDecoder.SetInput(BitArray.FromList(Value));
             _registerForDigit0.SetInputD(_displayDecoder.Output);
             _registerForDigit1.SetInputD(_displayDecoder.Output);
             _registerForDigit2.SetInputD(_displayDecoder.Output);

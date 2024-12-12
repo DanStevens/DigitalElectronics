@@ -26,7 +26,7 @@ namespace DigitalElectronics.ViewModels.Modules.Tests
 
             objUT.Value.Should().BeOfType<FullyObservableCollection<Bit>>();
             objUT.Value.Count.Should().Be(8);
-            objUT.Value.ToBitArray().ToByte().Should().Be(0);
+            BitArray.FromBits(objUT.Value).ToByte().Should().Be(0);
 
             // All segments of all digits should be lit in initial state
             objUT.LinesForDigit0.Should().BeAssignableTo<IList<bool>>();

@@ -115,7 +115,7 @@ public class RegisterViewModel : INotifyPropertyChanged, IRegisterViewModel
 
     private void Sync()
     {
-        _register.SetInputD(_data.ToBitArray());
+        _register.SetInputD(BitArray.FromList(_data));
         _output = _register.Output != null ? new ObservableCollection<bool>(_register.Output.Value.AsEnumerable()) : null;
     }
 }

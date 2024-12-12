@@ -67,25 +67,25 @@ public class BitArrayInstantiationBenchmarks
     public BitArray FromArrayOf4Bytes() => BitArray.FromBytes(ArrayOf4Bytes);
 
     [Benchmark]
-    public BitArray FromArrayOf32Bits() => ArrayOf32Bits.ToBitArray();
+    public BitArray FromArrayOf32Bits() => BitArray.FromList(ArrayOf32Bits);
 
     [Benchmark]
-    public BitArray FromEnumerableOf32Bits() => ArrayOf32Bits.AsEnumerable().ToBitArray();
+    public BitArray FromEnumerableOf32Bits() => BitArray.FromBits(ArrayOf32Bits.AsEnumerable());
 
     [Benchmark]
-    public BitArray FromEnumerableOf32BitsAndLength() => ArrayOf32Bits.AsEnumerable().ToBitArray(32);
+    public BitArray FromEnumerableOf32BitsAndLength() => BitArray.FromBits(ArrayOf32Bits.AsEnumerable(), 32);
 
     [Benchmark]
     public BitArray FromEnumerableOf32Bits_UsingSelect() => new BitArray(ArrayOf32Bits.Select(b => b.Value));
 
     [Benchmark]
-    public BitArray FromCollectionOf32Bits() => ((ICollection<Bit>)ArrayOf32Bits).ToBitArray();
+    public BitArray FromCollectionOf32Bits() => BitArray.FromBits((ICollection<Bit>)ArrayOf32Bits);
 
     [Benchmark]
-    public BitArray FromListOf32Bits() => ListOf32Bits.ToBitArray();
+    public BitArray FromListOf32Bits() => BitArray.FromList(ListOf32Bits);
 
     [Benchmark]
-    public BitArray FromObservableCollectionOf32Bits() => ObservableCollectionOf32Bits.ToBitArray();
+    public BitArray FromObservableCollectionOf32Bits() => BitArray.FromList(ObservableCollectionOf32Bits);
 
     [Benchmark]
     public BitArray FromListOf32Bits_UsingSelect() => new BitArray(ListOf32Bits.Select(b => b.Value));
@@ -93,8 +93,8 @@ public class BitArrayInstantiationBenchmarks
     [Benchmark]
     public BitArray FromListOf32Bits_UsingSelectAndLength() => new BitArray(ListOf32Bits.Select(b => b.Value), ListOf32Bits.Count);
 
-    //[Benchmark]
-    //public BitArray FromArrayOf32Buffers() => ArrayOf32Buffers.ToBitArray();
+    [Benchmark]
+    public BitArray FromArrayOf32Buffers() => BitArray.FromList(ArrayOf32Buffers);
 
     [Benchmark]
     public BitArray FromArrayOf32Buffers_UsingSelect() => new BitArray(ArrayOf32Buffers.Select(b => b.OutputQ));

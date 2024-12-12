@@ -1,5 +1,7 @@
-﻿using DigitalElectronics.Components.FlipFlops;
+﻿using System;
+using DigitalElectronics.Components.FlipFlops;
 using DigitalElectronics.Components.LogicGates;
+using DigitalElectronics.Concepts;
 using System.Diagnostics;
 
 namespace DigitalElectronics.Components.Memory
@@ -71,6 +73,9 @@ namespace DigitalElectronics.Components.Memory
         /// Gets state of Q output, where `null` indicates Z (high impedance) state
         /// </summary>
         public bool? OutputQ => _triStateBuffer.OutputC;
+
+        bool IBooleanOutput.Output =>
+            OutputQ ?? throw new InvalidOperationException("Register output is Z (high impedance)");
 
         /// <summary>
         /// Simulates the receipt of a clock pulse
