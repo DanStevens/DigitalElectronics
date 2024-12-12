@@ -96,6 +96,24 @@ namespace DigitalElectronics.Concepts
         }
 
         /// <summary>
+        /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given a
+        /// <see cref="IList{bool}"/>, starting with the least-significant bit
+        /// </summary>
+        /// <param name="values">A <see cref="IList{bool}"/> in LSB-first order</param>
+        /// <exception cref="ArgumentException">if <paramref name="values"/> contains more than 32 items</exception>
+        /// <remarks>The <see cref="Length"/> property is set to length of <paramref name="values"/></remarks>
+        public BitArray(IList<bool> values)
+        {
+            if (values.Count > BitVector32Length)
+                throw new ArgumentException(string.Format(TooManyItemsMessageFormat, BitVector32Length), nameof(values));
+
+            bitVector = new BitVector32();
+            for (int i = 0; i < values.Count; i++)
+                bitVector[1 << i] = values[i];
+            Length = values.Count;
+        }
+
+        /// <summary>
         /// Initialize a new instance of the <see cref="BitArray"/> to match the bit pattern given by array of
         /// <see cref="bytes"/> values, in little-endian order
         /// </summary>
