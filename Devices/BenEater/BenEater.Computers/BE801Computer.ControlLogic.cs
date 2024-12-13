@@ -4,6 +4,8 @@ using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Concepts;
 using static DigitalElectronics.BenEater.Computers.BE801Computer.ControlSignals;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Benchmarking")]
+
 namespace DigitalElectronics.BenEater.Computers
 {
 
@@ -183,7 +185,7 @@ namespace DigitalElectronics.BenEater.Computers
         /// <returns></returns>
         public BitArray ProbeMicroinstrStepCounter() => _stepCounter.Output;
 
-        private void PerformControlLogic()
+        internal void PerformControlLogic()
         {
             if (ManualControlMode) return;
 
