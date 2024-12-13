@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using DigitalElectronics.Concepts;
 
 #nullable enable
@@ -115,9 +114,13 @@ namespace DigitalElectronics.Components.Memory
         {
             get
             {
-                if (IsReadable && _registers[0].OutputQ.HasValue)
-                    return new BitArray(_registers.Select(_ => _.OutputQ!.Value)); // TODO: Allocates
-                return null;
+                if (!IsReadable || !_registers[0].OutputQ.HasValue)
+                    return null;
+
+                var bitVector = new System.Collections.Specialized.BitVector32();
+                for (int i = 0; i < _registers.Length; i++)
+                    bitVector[1 << i] = _registers[i].OutputQ!.Value;
+                return new BitArray(bitVector, WordSize);
             }
         }
 
@@ -128,7 +131,10 @@ namespace DigitalElectronics.Components.Memory
         /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState()
         {
-            return new BitArray(_registers.Select(_ => _.ProbeState())); // TODO: Allocates
+            var bitVector = new System.Collections.Specialized.BitVector32();
+            for (int i = 0; i < _registers.Length; i++)
+                bitVector[1 << i] = _registers[i].ProbeState();
+            return new BitArray(bitVector, WordSize);
         }
 
         /// <summary>

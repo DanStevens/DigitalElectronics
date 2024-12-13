@@ -9,7 +9,13 @@ public class RegisterBenchmarks
 {
     private static Register register = new(8);
 
-    [Benchmark]
+    [GlobalSetup]
+    public void GlobalSetup()
+    {
+        SetInputE();
+    }
+
+    //[Benchmark]
     public bool IsReadable()
     {
         return register.IsReadable;
@@ -33,5 +39,11 @@ public class RegisterBenchmarks
     public void Clock()
     {
         register.Clock();
+    }
+
+    [Benchmark]
+    public BitArray Output()
+    {
+        return register.Output.Value;
     }
 }
