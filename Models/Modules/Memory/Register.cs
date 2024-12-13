@@ -139,7 +139,7 @@ namespace DigitalElectronics.Components.Memory
         /// When a register is not readable, <see cref="Output"/> will always return
         /// `null` since setting the <see cref="SetInputE">enable signal></see> to
         /// `true` has no affect.
-        public bool IsReadable => Mode.HasFlag(RegisterMode.Read);
+        public bool IsReadable => (Mode & RegisterMode.Read) == RegisterMode.Read;
 
         /// <summary>
         /// Resets the register, setting all bits to 1 and disabling output

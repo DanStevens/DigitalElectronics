@@ -174,7 +174,7 @@ namespace DigitalElectronics.BenEater.Computers
             for (int i = 0; i < 16; i++)
             {
                 var controlSignal = (ControlSignals)(1 << i);
-                if (controlWord.HasFlag(controlSignal))
+                if ((controlWord & controlSignal) == controlSignal)
                     SetControlSignal(controlSignal);
             }
         }
