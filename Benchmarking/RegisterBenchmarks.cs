@@ -9,19 +9,14 @@ public class RegisterBenchmarks
 {
     private static Register register = new(8);
 
-    [GlobalSetup]
-    public void GlobalSetup()
-    {
-        SetInputE();
-    }
-
-    //[Benchmark]
+    [Benchmark]
     public bool IsReadable()
     {
         return register.IsReadable;
     }
 
-    //[Benchmark]
+    [Benchmark]
+    [GlobalSetup(Target = nameof(Output))]
     public void SetInputE()
     {
         if (!register.IsReadable)
@@ -29,13 +24,13 @@ public class RegisterBenchmarks
         register.SetInputE(true);
     }
 
-    //[Benchmark] // Does not allocate
+    [Benchmark] // Does not allocate
     public BitArray ProbeState()
     {
         return register.ProbeState();
     }
 
-    //[Benchmark]
+    [Benchmark]
     public void Clock()
     {
         register.Clock();
@@ -45,5 +40,11 @@ public class RegisterBenchmarks
     public BitArray Output()
     {
         return register.Output.Value;
+    }
+
+    [Benchmark]
+    public void SetInputL()
+    {
+        register.SetInputL(true);
     }
 }

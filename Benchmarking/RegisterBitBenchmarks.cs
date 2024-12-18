@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DigitalElectronics.Components.Memory;
 
 namespace Benchmarking;
@@ -16,5 +12,11 @@ public class RegisterBitBenchmarks
     public void SetInputE()
     {
         registerBit.SetInputE(true);
+    }
+
+    [Benchmark]
+    public void SetInputL()
+    {
+        registerBit.SetInputL(true);
     }
 }
