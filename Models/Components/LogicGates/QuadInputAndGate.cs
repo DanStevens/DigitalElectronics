@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.LogicGates
 {
@@ -7,7 +8,7 @@ namespace DigitalElectronics.Components.LogicGates
     /// Models a AND logic gate with 4 inputs
     /// </summary>
     [DebuggerDisplay("AND: A = {_andAB._inputA}; B = {_andAB._inputB}; C = {_andCD._inputA};  D = {_andCD._inputB}; Q = {OutputQ}")]
-    public class QuadInputAndGate
+    public class QuadInputAndGate : IBooleanOutput
     {
         private readonly AndGate _andAB, _andCD;
         private readonly AndGate _andQ;
@@ -44,6 +45,8 @@ namespace DigitalElectronics.Components.LogicGates
         }
 
         public bool OutputQ => _andQ.OutputQ;
+
+        bool IBooleanOutput.Output => OutputQ;
 
         private void Sync()
         {

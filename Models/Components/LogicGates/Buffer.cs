@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.LogicGates
 {
@@ -7,7 +8,7 @@ namespace DigitalElectronics.Components.LogicGates
     /// Models a digital buffer
     /// </summary>
     [DebuggerDisplay("Buffer: A = {_inputA}; Q = {OutputQ}")]
-    public class Buffer
+    public class Buffer : IBooleanOutput
     {
         private bool _inputA;
 
@@ -24,5 +25,6 @@ namespace DigitalElectronics.Components.LogicGates
         /// </summary>
         public bool OutputQ => _inputA;
 
+        bool IBooleanOutput.Output => OutputQ;
     }
 }

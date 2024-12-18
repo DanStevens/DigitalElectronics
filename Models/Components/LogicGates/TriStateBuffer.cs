@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.LogicGates
 {
@@ -7,7 +8,7 @@ namespace DigitalElectronics.Components.LogicGates
     /// Models a tri-state buffer
     /// </summary>
     [DebuggerDisplay("3S Buffer: A = {_inputA}; B = {_inputB}; C = {OutputC}")]
-    public class TriStateBuffer
+    public class TriStateBuffer : IBooleanOutput
     {
         private bool _inputA;
         private bool _inputB;
@@ -37,5 +38,8 @@ namespace DigitalElectronics.Components.LogicGates
         /// Returns the current state of A input
         /// </summary>
         public bool ProbeInputA() => _inputA;
+
+        // May throw NullReferenceException
+        bool IBooleanOutput.Output => this.OutputC!.Value;
     }
 }

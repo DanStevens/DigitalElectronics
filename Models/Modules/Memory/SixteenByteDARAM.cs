@@ -1,14 +1,12 @@
-﻿
-
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
+
 namespace DigitalElectronics.Modules.Memory
 {
 
@@ -49,7 +47,7 @@ namespace DigitalElectronics.Modules.Memory
                 _8BitRegisters[x] = new Register(WordSize);
             }
 
-            SetInputA(new BitArray(AddressSize));
+            SetInputA(new BitArray(0, length: AddressSize));
         }
 
         public string Label { get; set; } = "Direct Access RAM";
@@ -142,12 +140,26 @@ namespace DigitalElectronics.Modules.Memory
         /// determined by the most recent call to <see cref="SetInputA(BitArray)"/>,
         /// unless <see cref="SetInputE(bool)">'Enable' input</see> has been set
         /// to `false`, in which case `null` is output.</remarks>
-        public BitArray? Output =>
-            _8BitRegisters.FirstOrDefault(_ => _.Output != null)?.Output;
+        public BitArray? Output
+        {
+            get
+            {
+                for (int i = 0; i < _8BitRegisters.Length; i++)
+                {
+                    if (_8BitRegisters[i].Output != null)
+                        return _8BitRegisters[i].Output;
+                }
+
+                return null;
+            }
+        }
 
         public IList<BitArray> ProbeState()
         {
-            return _8BitRegisters.Select(r => new BitArray(r.ProbeState())).ToArray();
+            var result = new BitArray[_Capacity];
+            for (int i = 0; i < _Capacity; i++)
+                result[i] = _8BitRegisters[i].ProbeState();
+            return result;
         }
 
         public BitArray ProbeState(BitArray address)
@@ -157,7 +169,7 @@ namespace DigitalElectronics.Modules.Memory
 
         public void ResetAddress()
         {
-            SetInputA(new BitArray(length: AddressSize));
+            SetInputA(new BitArray(0, length: AddressSize));
             Clock();
         }
 

@@ -1,6 +1,8 @@
-﻿namespace DigitalElectronics.Components.FlipFlops
+﻿using DigitalElectronics.Concepts;
+
+namespace DigitalElectronics.Components.FlipFlops
 {
-    public interface IJKFlipFlop : IOutputsQAndNQ
+    public interface IJKFlipFlop : IOutputsQAndNQ, IBooleanOutput
     {
         /// <summary>
         /// Simulates the receipt of a clock pulse

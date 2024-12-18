@@ -34,22 +34,13 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         _ram = ram ?? throw new ArgumentNullException(nameof(ram));
         initialAddress = Math.Clamp(initialAddress, 0, ram.Capacity - 1);
 
-        _data = new ObservableCollection<Bit>(CreateBits(_ram.WordSize, true));
+        _data = new ObservableCollection<Bit>(Enumerable.Range(0, _ram.WordSize).Select(_ => new Bit(true)));
 
-        var initialAddressBitArray = new BitArray(new [] { initialAddress }).Trim(AddressLength);
-        Address = new FullyObservableCollection<Bit>(CreateBits(initialAddressBitArray));
+        var initialAddressBitArray = new BitArray(initialAddress, AddressLength);
+        Address = new FullyObservableCollection<Bit>(initialAddressBitArray.AsEnumerable<Bit>());
 
         _probe = new ObservableCollection<BitArray>(_ram.ProbeState());
-        _output = _ram.Output != null ? new ObservableCollection<bool>(_ram.Output) : null;
-    }
-
-    private static IEnumerable<Bit> CreateBits(BitArray bitArray)
-    {
-        return bitArray.Select(b => new Bit(b));
-    }
-    private static IEnumerable<Bit> CreateBits(int length, bool bitState)
-    {
-        return Enumerable.Range(0, length).Select(_ => new Bit(bitState));
+        _output = _ram.Output != null ? new ObservableCollection<bool>(_ram.Output.Value.AsEnumerable()) : null;
     }
 
     public bool Enable
@@ -96,7 +87,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
             if (!_data.SequenceEqual(value))
             {
                 _data = value;
-                _ram.SetInputD(_data.ToBitArray());
+                _ram.SetInputD(BitArray.FromList(_data));
                 RaisePropertyChanged();
                 if (Enable) RaisePropertyChanged(nameof(Output));
             }
@@ -110,18 +101,22 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         {
             if (_address?.SequenceEqual(value) != true)
             {
-                var newAddress = value.ToBitArray().Trim(AddressLength);
+                var newAddress = new BitArray(value.Select(b => b.Value));
                 SyncAddress(newAddress);
                 if (_address != null) _address.ItemPropertyChanged -= OnAddressBitChanged;
-                _address = new FullyObservableCollection<Bit>(CreateBits(newAddress));
+                _address = new FullyObservableCollection<Bit>(newAddress.AsEnumerable<Bit>());
                 _address.ItemPropertyChanged += OnAddressBitChanged;
                 RaisePropertyChanged();
             }
         }
     }
 
-    private void OnAddressBitChanged(object? sender, ItemPropertyChangedEventArgs e) =>
-        SyncAddress(_address.ToBitArray().Trim(AddressLength));
+    private void OnAddressBitChanged(object? sender, ItemPropertyChangedEventArgs e)
+    {
+        var newAddress = BitArray.FromList(_address);
+        newAddress.Length = AddressLength;
+        SyncAddress(newAddress);
+    }
 
     public ReadOnlyObservableCollection<bool>? Output => _output != null ? new ReadOnlyObservableCollection<bool>(_output) : null;
 
@@ -132,7 +127,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
         if (Load && Enable)
             throw new InvalidOperationException("Load and Enable should not both be set high at the same time");
 
-        _ram.SetInputD(_data.ToBitArray());
+        _ram.SetInputD(BitArray.FromList(_data));
         SyncOutput();
         _ram.Clock();
 
@@ -160,7 +155,7 @@ public class SixteenByteRAMViewModel : INotifyPropertyChanged
 
     private void SyncOutput()
     {
-        _output = _ram.Output != null ? new ObservableCollection<bool>(_ram.Output) : null;
+        _output = _ram.Output != null ? new ObservableCollection<bool>(_ram.Output.Value.AsEnumerable()) : null;
         RaisePropertyChanged(nameof(Output));
     }
 }

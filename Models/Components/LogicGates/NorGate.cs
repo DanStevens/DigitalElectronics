@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.LogicGates
 {
@@ -7,7 +8,7 @@ namespace DigitalElectronics.Components.LogicGates
     /// Models a NOR logic gate
     /// </summary>
     [DebuggerDisplay("NOR: A = {_inputA}; B = {_inputB}; Q = {OutputQ}")]
-    public class NorGate
+    public class NorGate : IBooleanOutput
     {
         private bool _inputA;
         private bool _inputB;
@@ -32,5 +33,7 @@ namespace DigitalElectronics.Components.LogicGates
         /// Gets state of Q output
         /// </summary>
         public bool OutputQ => !(_inputA || _inputB);
+
+        bool IBooleanOutput.Output => OutputQ;
     }
 }

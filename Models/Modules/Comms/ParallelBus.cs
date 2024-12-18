@@ -46,19 +46,39 @@ namespace DigitalElectronics.Modules.Comms
             {
                 try
                 {
-                    var singleModuleEnabledForOutput =
-                        _modules.OfType<IOutputModule>().SingleOrDefault(m => m.Output != null);
+                    var singleModuleEnabledForOutput = FindSingleModuleEnabledForInput();
 
                     if (singleModuleEnabledForOutput?.Output == null)
                         return null;
 
-                    return new BitArray(singleModuleEnabledForOutput.Output) { Length = NumberOfChannels };
+                    var result = singleModuleEnabledForOutput.Output.Value;
+                    result.Length = NumberOfChannels;
+                    return result;
                 }
                 catch (InvalidOperationException)
                 {
                     throw new BusContentionException();
                 }
             }
+        }
+
+        private IOutputModule? FindSingleModuleEnabledForInput()
+        {
+            IOutputModule? result = null;
+
+            // Find the single IOutputModule that has output.
+            for (int i = 0; i < _modules.Length; i++)
+            {
+                if (_modules[i] is IOutputModule outputModule && outputModule.Output != null)
+                {
+                    // Throw if a second module is found
+                    if (result != null)
+                        throw new InvalidOperationException("Sequence contains more than one matching element");
+                    result = outputModule;
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -71,8 +91,13 @@ namespace DigitalElectronics.Modules.Comms
         {
             var output = Output;
             if (output != null)
-                foreach (var inputModule in _modules.OfType<IInputModule>())
-                    inputModule.SetInputD(output);
+            {
+                for (int i = 0; i < _modules.Length; i++)
+                {
+                    if (_modules[i] is IInputModule inputModule)
+                        inputModule.SetInputD(output.Value);
+                }
+            }
         }
 
         internal string DebuggerDisplay =>

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System;
-using static DigitalElectronics.BenEater.Computers.BE801Computer.ControlSignals;
-using System.Linq;
+﻿using System;
 using DigitalElectronics.Modules.Counters;
 using DigitalElectronics.Modules.Memory;
 using DigitalElectronics.Concepts;
+using static DigitalElectronics.BenEater.Computers.BE801Computer.ControlSignals;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Benchmarking")]
 
 namespace DigitalElectronics.BenEater.Computers
 {
@@ -174,7 +174,7 @@ namespace DigitalElectronics.BenEater.Computers
             for (int i = 0; i < 16; i++)
             {
                 var controlSignal = (ControlSignals)(1 << i);
-                if (controlWord.HasFlag(controlSignal))
+                if ((controlWord & controlSignal) == controlSignal)
                     SetControlSignal(controlSignal);
             }
         }
@@ -185,7 +185,7 @@ namespace DigitalElectronics.BenEater.Computers
         /// <returns></returns>
         public BitArray ProbeMicroinstrStepCounter() => _stepCounter.Output;
 
-        private void PerformControlLogic()
+        internal void PerformControlLogic()
         {
             if (ManualControlMode) return;
 
@@ -193,14 +193,14 @@ namespace DigitalElectronics.BenEater.Computers
             _stepLimiter.SetInputA(_stepCounter.Output);
 
             // Reset step counter to 0 as soon as it hits 6
-            if (_stepLimiter.OutputY[6]) _stepCounter.Set(new BitArray(length: 4));
+            if (_stepLimiter.OutputY[6]) _stepCounter.Set(new BitArray(0, length: 4));
 
             var instr = _instrRegister.ProbeState();
             var step = _stepCounter.Output;
 
             var addr = new BitArray(step[0], step[1], step[2], instr[4], instr[5], instr[6], instr[7], false);
             _microcodeROM.SetInputA(addr);
-            var controlWordLowByte = _microcodeROM.Output.ToByte();
+            var controlWordLowByte = _microcodeROM.Output!.Value.ToByte();
 
             for (int i = 0; i < 8; i++)
             {
@@ -211,7 +211,7 @@ namespace DigitalElectronics.BenEater.Computers
 
             addr[7] = true;
             _microcodeROM.SetInputA(addr);
-            var controlWordHighByte = _microcodeROM.Output.ToByte() << 8;
+            var controlWordHighByte = _microcodeROM.Output!.Value.ToByte() << 8;
 
             for (int i = 8; i < 16; i++)
             {

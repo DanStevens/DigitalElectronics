@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using DigitalElectronics.Components.LogicGates;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.FlipFlops
 {
@@ -62,6 +63,8 @@ namespace DigitalElectronics.Components.FlipFlops
         /// </summary>
         public bool OutputNQ => _srLatch.OutputNQ;
 
+        bool IBooleanOutput.Output => OutputQ;
+
         private void Sync()
         {
             _srLatch.SetInputS(_j3InAndGate.OutputQ);
@@ -69,6 +72,5 @@ namespace DigitalElectronics.Components.FlipFlops
             _k3InAndGate.SetInputC(_srLatch.OutputQ);
             _j3InAndGate.SetInputC(_srLatch.OutputNQ);
         }
-
     }
 }

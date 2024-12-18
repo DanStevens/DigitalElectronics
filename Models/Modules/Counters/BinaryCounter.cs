@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using DigitalElectronics.Components.FlipFlops;
 using DigitalElectronics.Concepts;
 
@@ -46,7 +45,7 @@ namespace DigitalElectronics.Modules.Counters
         /// <summary>
         /// The output of the binary counter
         /// </summary>
-        public BitArray Output => new (_jkFlipFlops.Select(_ => _.OutputQ));
+        public BitArray Output => BitArray.FromList(_jkFlipFlops);
 
         /// <summary>
         /// Clocks (increments) the binary counter by 1
@@ -70,8 +69,6 @@ namespace DigitalElectronics.Modules.Counters
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
         public void Set(BitArray value)
         {
-            if (value == null) return;
-
             var upper = Math.Min(value.Length, SizeInBits);
             for (int x = 0; x < upper; x++)
                 Set(x, value[x]);
@@ -91,7 +88,7 @@ namespace DigitalElectronics.Modules.Counters
         /// </summary>
         public void Reset()
         {
-            Set(new BitArray(length: SizeInBits, true));
+            Set(new BitArray((2 << SizeInBits) - 1, length: SizeInBits));
         }
     }
 }

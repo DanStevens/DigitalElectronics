@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using DigitalElectronics.Components.FlipFlops;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Concepts;
 
@@ -46,7 +44,7 @@ namespace DigitalElectronics.Modules.Counters
             for (int i = 0; i < AddressSize; i++)
                 _triStateBuffers[i] = new TriStateBuffer();
 
-            _jumpAddress = new BitArray(length: AddressSize);
+            _jumpAddress = new BitArray(0, length: AddressSize);
 
             Sync();
         }
@@ -65,7 +63,7 @@ namespace DigitalElectronics.Modules.Counters
         /// <see cref="BitArray"/> representing the current value; otherwise `null`,
         /// which represents the Z (high impedance) state</returns>
         public BitArray? Output => _triStateBuffers[0].OutputC.HasValue ?
-            new BitArray(_triStateBuffers.Select(_ => _.OutputC!.Value)) : null;
+            BitArray.FromList(_triStateBuffers) : null;
 
         /// <summary>
         /// Sets value for 'Enabled' input
@@ -132,7 +130,7 @@ namespace DigitalElectronics.Modules.Counters
         public void Reset()
         {
             SetInputL(true);
-            SetInputD(new BitArray(length: AddressSize));
+            SetInputD(new BitArray(0, length: AddressSize));
             Clock();
             SetInputL(false);
             SetInputE(false);

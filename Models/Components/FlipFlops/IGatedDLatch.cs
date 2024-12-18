@@ -1,6 +1,8 @@
-﻿namespace DigitalElectronics.Components.FlipFlops
+﻿using DigitalElectronics.Concepts;
+
+namespace DigitalElectronics.Components.FlipFlops
 {
-    public interface IGatedDLatch : IOutputsQAndNQ
+    public interface IGatedDLatch : IOutputsQAndNQ, IBooleanOutput
     {
         /// <summary>
         /// Sets value for 'Data' input

@@ -1,4 +1,5 @@
 ﻿using DigitalElectronics.Components.LogicGates;
+using DigitalElectronics.Concepts;
 using System;
 using System.Diagnostics;
 
@@ -60,6 +61,8 @@ namespace DigitalElectronics.Components.FlipFlops
         /// Gets state of Q̅ output, which is the opposite of Q output
         /// </summary>
         public bool OutputNQ => _srLatch.OutputNQ;
+
+        bool IBooleanOutput.Output => OutputQ;
 
         private void Sync()
         {

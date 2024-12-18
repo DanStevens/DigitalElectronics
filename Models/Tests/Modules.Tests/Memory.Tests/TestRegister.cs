@@ -158,7 +158,7 @@ namespace DigitalElectronics.Components.Memory.Tests
             PushL();
             _4bitRegister.SetInputD(data);
             Clock();
-            _4bitRegister.Output.Should().BeEquivalentTo(data.AsReadOnlyList<bool>());
+            _4bitRegister.Output.Should().Be(data);
         }
 
         [Test]
@@ -183,7 +183,7 @@ namespace DigitalElectronics.Components.Memory.Tests
             Clock();
             ReleaseE();
             _4bitRegister.Output.Should().BeNull();
-            _4bitRegister.ProbeState().Should().BeEquivalentTo(data.AsReadOnlyList<bool>());
+            _4bitRegister.ProbeState().Should().Be(data);
         }
 
         [Test]
@@ -227,7 +227,7 @@ namespace DigitalElectronics.Components.Memory.Tests
             Clock();
             ReleaseL();
             AssertOutputs(true, false, true, false);
-            _4bitRegister.Output.ToByte().Should().Be(5);
+            _4bitRegister.Output!.Value.ToByte().Should().Be(5);
 
             _4bitRegister.Reset();
             _4bitRegister.Output.Should().BeNull();
@@ -237,7 +237,7 @@ namespace DigitalElectronics.Components.Memory.Tests
 
         private void AssertOutputs(params bool[] expectedOutputs)
         {
-            var expectedData = new BitArray(expectedOutputs).AsReadOnlyList<bool>();
+            var expectedData = new BitArray(expectedOutputs);
             _4bitRegister.Output.Should().BeEquivalentTo(expectedData);
         }
 

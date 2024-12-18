@@ -1,5 +1,6 @@
-﻿using DigitalElectronics.Components.LogicGates;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using DigitalElectronics.Components.LogicGates;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.FlipFlops
 {
@@ -46,6 +47,8 @@ namespace DigitalElectronics.Components.FlipFlops
         /// Gets state of Q̅ output, which is the opposite of Q output
         /// </summary>
         public bool OutputNQ => _nor2.OutputQ;
+
+        bool IBooleanOutput.Output => OutputQ;
 
         /// <summary>
         /// Synchronises state between subcomponents

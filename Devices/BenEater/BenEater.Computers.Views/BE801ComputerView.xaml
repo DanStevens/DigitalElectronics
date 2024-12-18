@@ -8,6 +8,9 @@
              xmlns:controls="clr-namespace:DigitalElectronics.UI.Controls;assembly=DigitalElectronics.UI" xmlns:converters="clr-namespace:DigitalElectronics.UI.Converters;assembly=DigitalElectronics.UI"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:BitArrayToListConverter x:Key="BitArrayToListConverter"/>
+    </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="local:BE801ComputerView.ClockTick">
             <BeginStoryboard>
@@ -94,7 +97,7 @@
                             <Run Text="(high impedance)" />
                         </TextBlock>
                         <controls:LedStrip Visibility="{Binding State, Converter={converters:NullToVisibilityConverter}}"
-                                           Lines="{Binding State}" LedSize="12" />
+                                           Lines="{Binding State, Converter={StaticResource BitArrayToListConverter}}" LedSize="12" />
                     </Grid>
                 </Viewbox>
             </StackPanel>
@@ -102,14 +105,14 @@
         <Border x:Name="ProgramCounterModuleContainer" Grid.Row="0" Grid.Column="2">
             <StackPanel Orientation="Vertical" DataContext="{Binding ProgramCounterModule}">
                 <TextBlock Text="Program Counter" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding State}" LitLedColor="Lime" />
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding State, Converter={converters:BitArrayToListConverter}}" LitLedColor="Lime" />
             </StackPanel>
         </Border>
         <Border x:Name="MemoryModuleContainer" Grid.Row="1" Grid.Column="0">
             <StackPanel Orientation="Vertical" DataContext="{Binding MemoryModule}"
                         HorizontalAlignment="Stretch">
                 <TextBlock Text="Memory Address Register" HorizontalAlignment="Center" />
-                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="Gold" Lines="{Binding MAR}" />
+                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="Gold" Lines="{Binding MAR, Converter={converters:BitArrayToListConverter}}" />
                 <TextBlock Text="16-Byte RAM" HorizontalAlignment="Center" Margin="0,10,0,0" />
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -129,7 +132,7 @@
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center"  Margin="5,0, 5, 0">
                                     <TextBlock FontSize="8" Height="9" Width="10" TextAlignment="Right"  Margin="0,0,1,0"
                                                Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource TemplatedParent}}" FontFamily="Consolas" />
-                                    <controls:LedStrip Lines="{Binding}" LedSize="8" BitOrder="LsbFirst" />
+                                    <controls:LedStrip Lines="{Binding Converter={converters:BitArrayToListConverter}, Mode=OneWay}" LedSize="8" BitOrder="LsbFirst" />
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -143,23 +146,23 @@
         <Border x:Name="ARegisterContainer" Grid.Row="1" Grid.Column="2">
             <StackPanel Orientation="Vertical" DataContext="{Binding ALUModule}">
                 <TextBlock Text="A Register" HorizontalAlignment="Center" Margin="0,0,0,0" />
-                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding ARegister}" />
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding ARegister, Converter={converters:BitArrayToListConverter}}" />
                 <TextBlock Text="ALU" HorizontalAlignment="Center" Margin="0,5,0,0" />
-                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding ALU}" />
-                <controls:LedStrip HorizontalAlignment="Center" Margin="0,20,0,0" Lines="{Binding BRegister}" />
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding ALU, Converter={converters:BitArrayToListConverter}}" />
+                <controls:LedStrip HorizontalAlignment="Center" Margin="0,20,0,0" Lines="{Binding BRegister, Converter={converters:BitArrayToListConverter}}" />
                 <TextBlock Text="B Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
             </StackPanel>
         </Border>
         <Border x:Name="InstructionRegisterContainer" Grid.Row="2" Grid.Column="0">
             <StackPanel Orientation="Vertical" DataContext="{Binding InstrRegisterModule}">
                 <TextBlock Text="Instruction Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="DeepSkyBlue" Lines="{Binding State}"/>
+                <controls:LedStrip HorizontalAlignment="Center" LitLedColor="DeepSkyBlue" Lines="{Binding State, Converter={converters:BitArrayToListConverter}}"/>
             </StackPanel>
         </Border>
         <Border x:Name="OutputRegisterContainer" Grid.Row="2" Grid.Column="2">
             <StackPanel Orientation="Vertical" DataContext="{Binding OutputModule}">
                 <TextBlock Text="Output Register" HorizontalAlignment="Center" Margin="0,0,0,10" />
-                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding OutRegister}"/>
+                <controls:LedStrip HorizontalAlignment="Center" Lines="{Binding OutRegister, Converter={converters:BitArrayToListConverter}}"/>
             </StackPanel>
         </Border>
         <TextBlock Text="Microcode ROM" Grid.Row="3" Grid.Column="0" />

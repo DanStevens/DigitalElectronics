@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DigitalElectronics.Concepts;
+﻿using DigitalElectronics.Concepts;
 using DigitalElectronics.Utilities;
 using FluentAssertions;
 using NUnit.Framework;
@@ -20,7 +19,7 @@ namespace DigitalElectronics.Modules.Memory.Tests
             decoder.SetInputA0(a0);
             decoder.SetInputA1(a1);
             var expectedOutput = _bitConverter.GetBits(expectedY, 4);
-            decoder.OutputY.Should().BeEquivalentTo(expectedOutput.AsReadOnlyList<bool>());
+            decoder.OutputY.Should().BeEquivalentTo(expectedOutput);
         }
     }
 }

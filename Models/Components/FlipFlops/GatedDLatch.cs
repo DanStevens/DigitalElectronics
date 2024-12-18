@@ -1,10 +1,11 @@
 ﻿using DigitalElectronics.Components.LogicGates;
+using DigitalElectronics.Concepts;
 using System.Diagnostics;
 
 namespace DigitalElectronics.Components.FlipFlops
 {
     [DebuggerDisplay("D Latch: Q = {OutputQ}; Q̅ = {OutputNQ}")]
-    public class GatedDLatch : IGatedDLatch
+    public class GatedDLatch : IGatedDLatch, IBooleanOutput
     {
         private readonly GatedSRLatch _gatedSRLatch;
         private readonly Inverter _inverter;
@@ -49,5 +50,6 @@ namespace DigitalElectronics.Components.FlipFlops
         /// </summary>
         public bool OutputNQ => _gatedSRLatch.OutputNQ;
 
+        bool IBooleanOutput.Output => OutputQ;
     }
 }

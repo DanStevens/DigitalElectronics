@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using DigitalElectronics.Concepts;
 
 namespace DigitalElectronics.Components.LogicGates
 {
@@ -8,7 +9,7 @@ namespace DigitalElectronics.Components.LogicGates
     /// Models an inverter or OR logic gate
     /// </summary>
     [DebuggerDisplay("NOT: A = {_inputA};  Q = {OutputQ}")]
-    public class Inverter
+    public class Inverter : IBooleanOutput
     {
         private bool _inputA;
 
@@ -24,5 +25,7 @@ namespace DigitalElectronics.Components.LogicGates
         /// Gets state of Q output
         /// </summary>
         public bool OutputQ => !_inputA;
+
+        bool IBooleanOutput.Output => OutputQ;
     }
 }

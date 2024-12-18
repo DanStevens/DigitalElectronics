@@ -13,7 +13,6 @@ namespace DigitalElectronics.Utilities.Tests
         {
             var bitConverter = new BitConverter();
             var bitArray = bitConverter.GetBits((byte)0);
-            bitArray.Count.Should().Be(8);
             bitArray.Length.Should().Be(8);
         }
 
@@ -22,7 +21,6 @@ namespace DigitalElectronics.Utilities.Tests
         {
             var bitConverter = new BitConverter();
             var bitArray = bitConverter.GetBits((sbyte)0);
-            bitArray.Count.Should().Be(8);
             bitArray.Length.Should().Be(8);
         }
 

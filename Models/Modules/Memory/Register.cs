@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using DigitalElectronics.Concepts;
 
 #nullable enable
@@ -38,8 +37,6 @@ namespace DigitalElectronics.Components.Memory
         /// more elements than the number of bits in the register, the excess elements are unused.</param>
         public void SetInputD(BitArray data)
         {
-            if (data == null) return;
-            
             var upper = Math.Min(data.Length, _registers.Length);
             for (int x = 0; x < upper; x++) SetInputDx(x, data[x]);
         }
@@ -113,8 +110,19 @@ namespace DigitalElectronics.Components.Memory
         /// <returns>If the output is enabled (see <see cref="SetInputE"/>,
         /// <see cref="BitArray"/> representing the current value; otherwise `null`,
         /// which represents the Z (high impedance) state</returns>
-        public BitArray? Output => IsReadable && _registers[0].OutputQ.HasValue ?
-                new BitArray(_registers.Select(_ => _.OutputQ!.Value)) : null;
+        public BitArray? Output
+        {
+            get
+            {
+                if (!IsReadable || !_registers[0].OutputQ.HasValue)
+                    return null;
+
+                var bitVector = new System.Collections.Specialized.BitVector32();
+                for (int i = 0; i < _registers.Length; i++)
+                    bitVector[1 << i] = _registers[i].OutputQ!.Value;
+                return new BitArray(bitVector, WordSize);
+            }
+        }
 
         /// <summary>
         /// Returns the internal state of the register
@@ -123,7 +131,10 @@ namespace DigitalElectronics.Components.Memory
         /// the 'enable' signal (<see cref="SetInputE(bool)"/>) to `true`.</remarks>
         public BitArray ProbeState()
         {
-            return new BitArray(_registers.Select(_ => _.ProbeState()));
+            var bitVector = new System.Collections.Specialized.BitVector32();
+            for (int i = 0; i < _registers.Length; i++)
+                bitVector[1 << i] = _registers[i].ProbeState();
+            return new BitArray(bitVector, WordSize);
         }
 
         /// <summary>
@@ -134,7 +145,7 @@ namespace DigitalElectronics.Components.Memory
         /// When a register is not readable, <see cref="Output"/> will always return
         /// `null` since setting the <see cref="SetInputE">enable signal></see> to
         /// `true` has no affect.
-        public bool IsReadable => Mode.HasFlag(RegisterMode.Read);
+        public bool IsReadable => (Mode & RegisterMode.Read) == RegisterMode.Read;
 
         /// <summary>
         /// Resets the register, setting all bits to 1 and disabling output

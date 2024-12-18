@@ -77,6 +77,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenEater.Computers.TextUI",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{3CF64D35-A73F-48E6-AED4-BB2A42CAA232}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarking", "Benchmarking\Benchmarking.csproj", "{A49DD7F9-FEC1-4394-9474-B830BDAC012D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +177,10 @@ Global
 		{3CF64D35-A73F-48E6-AED4-BB2A42CAA232}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CF64D35-A73F-48E6-AED4-BB2A42CAA232}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CF64D35-A73F-48E6-AED4-BB2A42CAA232}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A49DD7F9-FEC1-4394-9474-B830BDAC012D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A49DD7F9-FEC1-4394-9474-B830BDAC012D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A49DD7F9-FEC1-4394-9474-B830BDAC012D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A49DD7F9-FEC1-4394-9474-B830BDAC012D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

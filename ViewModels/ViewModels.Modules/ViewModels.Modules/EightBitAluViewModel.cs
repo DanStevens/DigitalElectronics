@@ -25,7 +25,7 @@ namespace DigitalElectronics.ViewModels.Modules
         public EightBitAluViewModel(IArithmeticLogicUnit alu)
         {
             _alu = alu ?? throw new ArgumentNullException(nameof(alu));
-            _probe = new ObservableCollection<bool>(_alu.ProbeState());
+            _probe = new ObservableCollection<bool>(_alu.ProbeState().AsEnumerable());
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -86,7 +86,7 @@ namespace DigitalElectronics.ViewModels.Modules
 
         private void Sync()
         {
-            _probe = new ObservableCollection<bool>(_alu.ProbeState());
+            _probe = new ObservableCollection<bool>(_alu.ProbeState().AsEnumerable());
             RaisePropertyChanged(nameof(Probe));
             if (Enable) RaisePropertyChanged(nameof(OutputE));
         }

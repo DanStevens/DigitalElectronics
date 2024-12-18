@@ -10,8 +10,8 @@ namespace DigitalElectronics.Utilities
     /// Converts base data types to a <see cref="BitArray"/>, and a `BitArray` to
     /// base data types.
     /// </summary>
-    /// <remarks>The class can be configured to convert to and from binary forms using a
-    /// specific endianness, or the system architecture's endianness.</remarks>
+    /// <remarks>Although the class accepts an endianness parameter, support for big-endian
+    /// has been removed and will throw <see cref="NotSupportedException"/> if specified</remarks>
     /// <seealso cref="System.BitConverter.IsLittleEndian"/>
     // Dev note: This class has not been fully tested: Since most systems are little-endian, the endianness
     // conversion is probably skipped when ran on most systems by default.
@@ -28,7 +28,7 @@ namespace DigitalElectronics.Utilities
         /// </summary>
         /// <seealso cref="System.BitConverter.IsLittleEndian"/>
         public BitConverter()
-            : this(Endianness.System)
+            : this(Endianness.Little)
         {
         }
 
@@ -36,8 +36,13 @@ namespace DigitalElectronics.Utilities
         /// Creates a new instance of `BitConverter` configured to use the given endianness
         /// </summary>
         /// <param name="endianness">The endianness to use in conversions</param>
+        /// <exception cref="NotSupportedException">if <paramref name="endianness"/> is anything but
+        /// <see cref="Endianness.Little"/></exception>
         public BitConverter(Endianness endianness)
         {
+            if (endianness != Endianness.Little)
+                throw new NotSupportedException("Only LittleEndian is supported");
+
             _byteConverter = new ByteConverter(endianness);
         }
 
@@ -52,7 +57,7 @@ namespace DigitalElectronics.Utilities
         /// <returns>A `BitArray` with length 8, that represents the given integer.</returns>
         public BitArray GetBits(byte value)
         {
-            return new BitArray(value);
+            return new BitArray((int)value, sizeof(byte) * 8);
         }
 
         /// <summary>
@@ -62,9 +67,7 @@ namespace DigitalElectronics.Utilities
         /// <returns>A `BitArray` with length 8, that represents the given integer>.</returns>
         public BitArray GetBits(sbyte value)
         {
-            var bitArray = new BitArray((byte)value);
-            bitArray.Length = sizeof(sbyte) * 8;
-            return bitArray;
+            return new BitArray(value, sizeof(sbyte) * 8);
         }
 
         /// <summary>
@@ -74,9 +77,7 @@ namespace DigitalElectronics.Utilities
         /// <returns>A `BitArray` with length 16, that represents the given integer>.</returns>
         public BitArray GetBits(ushort value)
         {
-            var bitArray = new BitArray(new int[] {value});
-            bitArray.Length = sizeof(ushort) * 8;
-            return bitArray;
+            return new BitArray(value, sizeof(ushort) * 8);
         }
 
         /// <summary>
@@ -88,7 +89,7 @@ namespace DigitalElectronics.Utilities
         /// <seealso cref="ByteConverter.GetBytes(short)"/>
         public BitArray GetBits(short value)
         {
-            return new BitArray(_byteConverter.GetBytes(value));
+            return new BitArray(value, sizeof(short) * 8);
         }
 
         /// <summary>
@@ -100,7 +101,7 @@ namespace DigitalElectronics.Utilities
         /// <seealso cref="ByteConverter.GetBytes(int)"/>
         public BitArray GetBits(int value)
         {
-            return new BitArray(_byteConverter.GetBytes(value));
+            return new BitArray(value);
         }
 
         /// <summary>
@@ -120,47 +121,7 @@ namespace DigitalElectronics.Utilities
         /// </remarks>
         public BitArray GetBits(int value, int length)
         {
-            return CreateBitArrayOfLengthAndPopulate(length, GetBits(value));
-        }
-
-        /// <summary>
-        /// Returns the specified 16-bit signed integer value as a <see cref="BitArray"/> padded or truncated
-        /// to match the given <paramref name="length"/>.
-        /// </summary>
-        /// <param name="value">The number to convert.</param>
-        /// <param name="length">The number of bits in the resulting `BitArray`</param>
-        /// <returns>Returns a BitArray with length <paramref name="length"/> that represents the given integer
-        /// with the endianness of <see cref="Endianness"/>.</returns>
-        /// <remarks>
-        /// <paramref name="value"/> is converted to binary form, of which the first <paramref name="length"/> bits
-        /// are used to set the BitArray. Therefore, the resulting BitArray will only correctly represent
-        /// <paramref name="value"/> if <paramref name="length"/> is of sufficient number. If not, the actual
-        /// resulting BitArray will be the equivalent to the full binary representation truncated
-        /// to <paramref name="length"/> (removing high-order bits).
-        /// </remarks>
-        public BitArray GetBits(short value, int length)
-        {
-            return CreateBitArrayOfLengthAndPopulate(length, GetBits(value));
-        }
-
-        /// <summary>
-        /// Returns the specified 8-bit signed integer value as a <see cref="BitArray"/> padded or truncated
-        /// to match the given <paramref name="length"/>.
-        /// </summary>
-        /// <param name="value">The number to convert.</param>
-        /// <param name="length">The number of bits in the resulting `BitArray`</param>
-        /// <returns>Returns a BitArray with length <paramref name="length"/> that represents the given integer
-        /// with the endianness of <see cref="Endianness"/>.</returns>
-        /// <remarks>
-        /// <paramref name="value"/> is converted to binary form, of which the first <paramref name="length"/> bits
-        /// are used to set the BitArray. Therefore, the resulting BitArray will only correctly represent
-        /// <paramref name="value"/> if <paramref name="length"/> is of sufficient number. If not, the actual
-        /// resulting BitArray will be the equivalent to the full binary representation truncated
-        /// to <paramref name="length"/> (removing high-order bits).
-        /// </remarks>
-        public BitArray GetBits(byte value, int length)
-        {
-            return CreateBitArrayOfLengthAndPopulate(length, GetBits(value));
+            return new BitArray(value, length);
         }
 
         #endregion
@@ -221,8 +182,6 @@ namespace DigitalElectronics.Utilities
 
         public string ToString(BitArray value, NumberFormat format)
         {
-            _ = value ?? throw new ArgumentNullException(nameof(value));
-
             var binaryString = MaybeToBinary();
             if (binaryString != null)
             {
@@ -289,32 +248,10 @@ namespace DigitalElectronics.Utilities
             };
         }
 
-        private static Type InferIntTypeFromLength(int length, bool isSigned)
-        {
-            if (length <= 8)
-                return isSigned ? typeof(sbyte) : typeof(byte);
-            if (length <= 16)
-                return isSigned ? typeof(short) : typeof(ushort);
-            if (length <= 32)
-                return isSigned ? typeof(int) : typeof(uint);
-            if (length <= 64)
-                return isSigned ? typeof(long) : typeof(ulong);
-            throw new NotImplementedException();
-        }
-
-        private static BitArray CreateBitArrayOfLengthAndPopulate(int length, BitArray ba)
-        {
-            var result = new BitArray(length);
-            for (int x = 0; x < length; x++) result.Set(x, ba[x]);
-            return result;
-        }
-
         private static ulong BitArrayToInteger(BitArray value, int length)
         {
-            _ = value ?? throw new ArgumentNullException(nameof(value));
-
             ulong result = 0;
-            for (int i = 0; i < Math.Min(value.Count, length); i++)
+            for (int i = 0; i < Math.Min(value.Length, length); i++)
             {
                 if (value[i])
                 {
