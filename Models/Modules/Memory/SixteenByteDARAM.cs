@@ -1,12 +1,12 @@
 ﻿#nullable enable
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DigitalElectronics.Components.LogicGates;
 using DigitalElectronics.Components.Memory;
 using DigitalElectronics.Concepts;
+
 namespace DigitalElectronics.Modules.Memory
 {
 
@@ -156,7 +156,10 @@ namespace DigitalElectronics.Modules.Memory
 
         public IList<BitArray> ProbeState()
         {
-            return _8BitRegisters.Select(r => r.ProbeState()).ToArray(); // TODO: Allocates
+            var result = new BitArray[_Capacity];
+            for (int i = 0; i < _Capacity; i++)
+                result[i] = _8BitRegisters[i].ProbeState();
+            return result;
         }
 
         public BitArray ProbeState(BitArray address)
